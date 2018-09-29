@@ -2,7 +2,7 @@ gcUnicorn
 =========
 gcUnicorn is an opensource tool for [geocaching.com](https://www.geocaching.com/) platform. It is a web application requiring nothing more but [Java JRE](https://www.oracle.com/technetwork/java/javase/downloads/index.html) installed on your machine.
 
-The web application allows you to search for caches of selected types, within given coordinates and radius. Its output contains not only exhaustive cache details, but links to spoiler images, detailed log entries including links to uploaded pictures as well. The output is served as GPX file with following schemas applied to it:
+The web application allows you to search for caches of selected types within given coordinates and radius. Its output contains not only exhaustive cache details, but links to spoiler images, detailed log entries including links to uploaded pictures as well. The output is served as GPX file with following schemas applied to it:
 * GPX v1.1
 * Groundspeak v1.0.1
 * Gsak v1.6
@@ -24,7 +24,7 @@ Author of the application is not responsible for any damage caused by using it.
 See [gcUnicorn album](https://photos.app.goo.gl/vA4nyUmZSjE3HxUQ8) for full resolution screenshots.
 
 ## How to run
-For Windows OS there is an executable file created. This approach always enable tray icon.
+For Windows OS there is an executable file created. This approach always enables tray icon.
 
 If you want to run the application from within command line, run the following command:
 ```bash
@@ -67,7 +67,7 @@ The application uses [Spring Boot](https://spring.io/projects/spring-boot) so ba
 
 The list of all available properties (not all of them are applicable to the application) can be found on [Spring Boot reference page](https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html).
 
-If the application will be exposed on the internet it is recommended to enable SSL within the application. You can do that by specifying required `server.ssl.*` properties and providing valid certificate. See the reference page for mor details.
+If the application will be exposed on the internet it is recommended to enable SSL within the application. You can do that by specifying required `server.ssl.*` properties and providing valid certificate. See the reference page for more details.
 
 You can find examples of configuration files inside [webapp](https://github.com/little-fish/gcUnicorn/tree/master/webapp/resources/configuration-examples) module.
 
@@ -97,7 +97,7 @@ logging.config=file:<path-to-logging-config>
 ```
 
 #### Displaying tray icon
-Tray icon can be handy if you want to quickly shut down the application. To display tray icon, you have two options here as well:
+If you want to shut down the application quickly, tray icon can be handy. To display the tray icon, you have two options here as well:
 * Add `-Dtray` argument to the executing command:
 ```bash
 java -jar -Dtray gcUnicorn-webapp-1.0.0.jar
