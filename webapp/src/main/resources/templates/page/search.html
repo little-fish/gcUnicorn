@@ -1,0 +1,81 @@
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  -->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{/fragment/head :: head(~{::title}, ~{::script})}">
+        <title th:text="#{page.title}"></title>
+        <script>
+            $(document).ready(function() {
+                // Hide empty parameters.
+                $("#form-search").submit(function() {
+                    $(this).find(':input').filter(function() { return !this.value; }).attr("disabled", "disabled");
+                    return true;
+                });
+                // Un-disable form fields when page loads, in case an user clicks back after submission.
+                $("#form-search").find( ":input" ).prop( "disabled", false );
+            });
+        </script>
+    </head>
+    <body>
+        <div class="content-wrapper">
+            <img class="center-logo logo-rainbow" th:src="@{/resources/img/rainbow.png}">
+            <div class="content">
+                <div class="form simple-panel">
+                    <form id="logout-form" th:action="@{/logout}" method="post">
+                        <label th:text="${user}" class="line"></label>
+                        <button class="logout-button-submit" th:text="#{label.logout.text}"></button>
+                    </form>
+                </div>
+                <div class="panel-divider"></div>
+                <div class="form">
+                    <form id="form-search" th:action="@{/gcUnicorn/search}" th:object="${cacheFilterWeb}" method="post">
+                        <div class="form-input-with-label">
+                            <div th:text="#{label.cachetype.text}"></div>
+                            <select th:field="*{cacheType}" th:errorclass="fieldError">
+                                <option th:each="type: ${cacheTypes}" th:value="${type.code}" th:text="#{${'cachetype.' + type.name().toLowerCase()}}"></option>
+                            </select>
+                        </div>
+                        <label for="coordinates"></label><input type="text" id="coordinates" th:field="*{coordinates}" th:placeholder="#{label.coordinates.text}" th:errorclass="field-error"/>
+                        <label for="count"></label><input type="number" min="1" max="200" step="1" id="count" th:field="*{count}" th:placeholder="#{label.count.text}"/>
+                        <label for="distance"></label><input type="number" min="0.1" step="0.1" id="distance" th:field="*{distance}" th:placeholder="#{label.distance.text}"/>
+                        <div class="form-input-checkbox">
+                            <input type="checkbox" id="allowDisabled" name="allowDisabled"/><label for="allowDisabled" th:text="#{label.allowDisabled.text}"></label>
+                        </div>
+                        <div class="form-input-checkbox">
+                            <input type="checkbox" id="includeOwnAndFound" name="includeOwnAndFound"/><label for="includeOwnAndFound" th:text="#{label.includeOwn.text}"></label>
+                        </div>
+                        <div class="form-input-checkbox">
+                            <input type="checkbox" id="skipPremium" name="skipPremium" checked/><label for="skipPremium" th:text="#{label.skipPremium.text}"></label>
+                        </div>
+                        <button class="cache-button-submit" th:text="#{label.search.text}">login</button>
+                    </form>
+                </div>
+                <div th:if="${queueSize!=null && queueSize!=0}" class="panel-divider"></div>
+                <div th:if="${queueSize!=null && queueSize!=0}" class="form simple-panel">
+                    <form id="queue-form" th:action="@{/gcUnicorn/queue}" method="get">
+                        <label th:text="#{label.queue.actual_count.text} + ': ' + ${queueSize}" class="line"></label>
+                        <button class="queue-button-submit" th:text="#{label.queue.text}"></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="footer-left" th:insert="~{/fragment/version :: version}"></div>
+        <div class="footer-right" th:insert="~{/fragment/copyright :: copyright}"></div>
+    </body>
+</html>

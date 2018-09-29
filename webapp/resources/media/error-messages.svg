@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="error-messages.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="517.73202"
+     inkscape:cy="925.39055"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="2560"
+     inkscape:window-height="1393"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3717" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:25.27418137px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.63185459;"
+       x="65.972206"
+       y="28.135605"
+       id="text3715"
+       transform="scale(0.78804265,1.2689669)"
+       inkscape:export-xdpi="163.70912"
+       inkscape:export-ydpi="163.70912"><tspan
+         sodipodi:role="line"
+         id="tspan3713"
+         x="65.972206"
+         y="28.135605"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';stroke-width:0.63185459;fill:#6cffff;fill-opacity:1;">404</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3723"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;"
+       transform="matrix(0.35927152,0,0,0.18390639,-20.109876,12.000695)"
+       inkscape:export-xdpi="163.70912"
+       inkscape:export-ydpi="163.70912"><flowRegion
+         id="flowRegion3725"
+         style="fill:#6cffff;fill-opacity:1;"><rect
+           id="rect3727"
+           width="135"
+           height="45"
+           x="200"
+           y="142.51968"
+           style="fill:#6cffff;fill-opacity:1;" /></flowRegion><flowPara
+         id="flowPara3729">ups!!!</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.96395969px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.27409899;"
+       x="62.211342"
+       y="47.951027"
+       id="text3733"
+       transform="scale(0.84617449,1.1817894)"
+       inkscape:export-xdpi="163.70912"
+       inkscape:export-ydpi="163.70912"><tspan
+         sodipodi:role="line"
+         id="tspan3731"
+         x="62.211342"
+         y="47.951027"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';stroke-width:0.27409899;fill:#6cffff;fill-opacity:1;">WRONG</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:13.27041721px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.33176041;"
+       x="40.534691"
+       y="81.497154"
+       id="text3737"
+       transform="scale(1.2686454,0.78824231)"
+       inkscape:export-xdpi="163.70912"
+       inkscape:export-ydpi="163.70912"><tspan
+         sodipodi:role="line"
+         id="tspan3735"
+         x="40.534691"
+         y="81.497154"
+         style="stroke-width:0.33176041;fill:#6cffff;fill-opacity:1;">page</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:8.45681px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.21142028;"
+       x="37.786602"
+       y="99.981079"
+       id="text3741"
+       transform="scale(1.3764865,0.72648734)"
+       inkscape:export-xdpi="163.70912"
+       inkscape:export-ydpi="163.70912"><tspan
+         sodipodi:role="line"
+         id="tspan3739"
+         x="37.786602"
+         y="99.981079"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';stroke-width:0.21142028;fill:#6cffff;fill-opacity:1;">buddy</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:25.47204208px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.63680112;"
+       x="130.46375"
+       y="29.106344"
+       id="text3715-1"
+       transform="scale(0.79421191,1.2591098)"
+       inkscape:export-xdpi="164.15575"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-filename="C:\Users\babi\Desktop\403.png"><tspan
+         sodipodi:role="line"
+         id="tspan3713-9"
+         x="130.46375"
+         y="29.106344"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#6cffff;fill-opacity:1;stroke-width:0.63680112;">403</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3723-4"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;"
+       transform="matrix(0.14377214,0,0,0.18390639,75.193519,12.992873)"
+       inkscape:export-xdpi="164.15575"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-filename="C:\Users\babi\Desktop\403.png"><flowRegion
+         id="flowRegion3725-6"
+         style="fill:#6cffff;fill-opacity:1;"><rect
+           id="rect3727-1"
+           width="333.48254"
+           height="49.419235"
+           x="200"
+           y="142.51968"
+           style="fill:#6cffff;fill-opacity:1;" /></flowRegion><flowPara
+         id="flowPara3729-7">FORBiDDEN!!!</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15.06026173px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.37650654;"
+       x="90.027626"
+       y="67.019485"
+       id="text3733-6"
+       transform="scale(1.1623181,0.86034968)"
+       inkscape:export-xdpi="164.15575"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-filename="C:\Users\babi\Desktop\403.png"><tspan
+         sodipodi:role="line"
+         id="tspan3731-2"
+         x="90.027626"
+         y="67.019485"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#6cffff;fill-opacity:1;stroke-width:0.37650654;">YOU</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.39535522px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.13488385;"
+       x="73.557846"
+       y="87.65361"
+       id="text3737-2"
+       transform="scale(1.4151899,0.70661896)"
+       inkscape:export-xdpi="164.15575"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-filename="C:\Users\babi\Desktop\403.png"><tspan
+         sodipodi:role="line"
+         id="tspan3735-6"
+         x="73.557846"
+         y="87.65361"
+         style="fill:#6cffff;fill-opacity:1;stroke-width:0.13488385;">should not</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:7.19866514px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.17996664;"
+       x="78.553787"
+       y="89.648949"
+       id="text3741-5"
+       transform="scale(1.3201099,0.7575127)"
+       inkscape:export-xdpi="164.15575"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-filename="C:\Users\babi\Desktop\403.png"><tspan
+         sodipodi:role="line"
+         id="tspan3739-6"
+         x="78.553787"
+         y="89.648949"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#6cffff;fill-opacity:1;stroke-width:0.17996664;">be here</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:8.73617744px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6cffff;fill-opacity:1;stroke:none;stroke-width:0.21840443;"
+       x="124.18192"
+       y="64.316788"
+       id="text901"
+       transform="scale(0.83637818,1.1956314)"
+       inkscape:export-filename="C:\Users\babi\Desktop\403.png"
+       inkscape:export-xdpi="164.15575"
+       inkscape:export-ydpi="164.15575"><tspan
+         sodipodi:role="line"
+         id="tspan899"
+         x="124.18192"
+         y="64.316788"
+         style="fill:#6cffff;fill-opacity:1;stroke-width:0.21840443;">my FRiEND</tspan></text>
+    <text
+       inkscape:export-filename="C:\Users\babi\Desktop\500.png"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-xdpi="164.15575"
+       transform="scale(0.79421191,1.2591098)"
+       id="text881"
+       y="29.256441"
+       x="191.38066"
+       style="font-style:normal;font-weight:normal;font-size:25.47204208px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#7dffff;fill-opacity:1;stroke:none;stroke-width:0.63680112;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#7dffff;fill-opacity:1;stroke-width:0.63680112;"
+         y="29.256441"
+         x="191.38066"
+         id="tspan879"
+         sodipodi:role="line">500</tspan></text>
+    <flowRoot
+       inkscape:export-filename="C:\Users\babi\Desktop\500.png"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-xdpi="164.15575"
+       transform="matrix(0.19194228,0,0,0.18390639,114.81594,13.181861)"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#7dffff;fill-opacity:1;stroke:none;"
+       id="flowRoot889"
+       xml:space="preserve"><flowRegion
+         style="fill:#7dffff;fill-opacity:1;"
+         id="flowRegion885"><rect
+           style="fill:#7dffff;fill-opacity:1;"
+           y="142.51968"
+           x="200"
+           height="49.419235"
+           width="333.48254"
+           id="rect883" /></flowRegion><flowPara
+         id="flowPara887">whaaat???</flowPara></flowRoot>    <text
+       inkscape:export-filename="C:\Users\babi\Desktop\500.png"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-xdpi="164.15575"
+       transform="scale(1.1623181,0.86034968)"
+       id="text893"
+       y="67.239151"
+       x="132.30254"
+       style="font-style:normal;font-weight:normal;font-size:15.06026173px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#7dffff;fill-opacity:1;stroke:none;stroke-width:0.37650654;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#7dffff;fill-opacity:1;stroke-width:0.37650654;"
+         y="67.239151"
+         x="132.30254"
+         id="tspan891"
+         sodipodi:role="line">YOU</tspan></text>
+    <text
+       inkscape:export-filename="C:\Users\babi\Desktop\500.png"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-xdpi="164.15575"
+       transform="scale(1.4076695,0.71039402)"
+       id="text897"
+       y="87.45385"
+       x="108.62765"
+       style="font-style:normal;font-weight:normal;font-size:5.36668396px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#7dffff;fill-opacity:1;stroke:none;stroke-width:0.13416708;"
+       xml:space="preserve"><tspan
+         style="fill:#7dffff;fill-opacity:1;stroke-width:0.13416708;"
+         y="87.45385"
+         x="108.62765"
+         id="tspan895"
+         sodipodi:role="line">have killed</tspan></text>
+    <text
+       inkscape:export-filename="C:\Users\babi\Desktop\500.png"
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-xdpi="164.15575"
+       transform="scale(2.1593123,0.46311041)"
+       id="text902"
+       y="147.04744"
+       x="70.772469"
+       style="font-style:normal;font-weight:normal;font-size:11.7749033px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#7dffff;fill-opacity:1;stroke:none;stroke-width:0.29437262;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#7dffff;fill-opacity:1;stroke-width:0.29437262;"
+         y="147.04744"
+         x="70.772469"
+         id="tspan900"
+         sodipodi:role="line">the</tspan></text>
+    <text
+       inkscape:export-ydpi="164.15575"
+       inkscape:export-xdpi="164.15575"
+       inkscape:export-filename="C:\Users\babi\Desktop\500.png"
+       transform="scale(0.73450605,1.3614592)"
+       id="text906"
+       y="58.937363"
+       x="208.0327"
+       style="font-style:normal;font-weight:normal;font-size:10.79211807px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#7dffff;fill-opacity:1;stroke:none;stroke-width:0.26980293;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#7dffff;fill-opacity:1;stroke-width:0.26980293;"
+         y="58.937363"
+         x="208.0327"
+         id="tspan904"
+         sodipodi:role="line">UNiCORN</tspan></text>
+  </g>
+</svg>

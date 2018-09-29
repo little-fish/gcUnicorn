@@ -1,0 +1,144 @@
+/*
+ * gcUnicorn
+ * Copyright (C) 2018  Martin Misiarz
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 2
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+html {
+    position: relative;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+:root {
+    --font-size: 2.6em;
+}
+.content-wrapper {
+    margin: 3.5em 0 6em;
+}
+.error-page {
+    margin-top: 3.5em;
+}
+.login-error {
+    margin: 0 0 0.8em;
+    padding: 0.6em;
+    font-size: var(--font-size);
+}
+.center-logo {
+    margin: 3em auto 3em;
+}
+.logo-rainbow {
+    display: none;
+}
+.form-input-with-label div {
+    padding: 0 0 0.7em 0.6em;
+    font-size: var(--font-size);
+}
+.content {
+    margin-top: 1.2em;
+}
+.simple-panel label {
+    font-size: var(--font-size);
+}
+.simple-panel table {
+    font-size: var(--font-size);
+}
+.panel-divider {
+    margin: 0 0 1.9em;
+}
+.form {
+    width: 42em;
+    box-shadow: 0 0 1.5em 0 rgba(0, 0, 0, 0.2), 0 0.6em 0.6em 0 rgba(0, 0, 0, 0.24);
+    padding: 1.9em;
+}
+.form-input-checkbox {
+    margin: 0 0 0.7em;
+    padding: 0.7em;
+}
+.form-input-checkbox label {
+    margin-left: 0.8em;
+    font-size: var(--font-size);
+}
+.form select {
+    margin: 0 0 0.8em;
+    padding: 0.6em;
+    font-size: var(--font-size);
+}
+.form input {
+    margin: 0 0 0.8em;
+    padding: 0.6em;
+    font-size: var(--font-size);
+}
+.form button {
+    padding: 0.8em;
+    font-size: var(--font-size);
+}
+.form .message {
+    margin: 0.8em 0 0;
+    font-size: var(--font-size);
+}
+.font-size {
+    font-size: var(--font-size);
+}
+.line {
+    margin-bottom: 0.7em;
+}
+.footer-left {
+    padding: 0.6em;
+    font-size: 2.1em;
+    position: absolute;
+    bottom: 0;
+}
+.footer-right {
+    padding: 0.6em;
+    font-size: 2.1em;
+    position: absolute;
+    bottom: 0;
+}
+.loader {
+    border-top: 1.3em solid #d866a2;
+    border-right: 1.3em solid #f8f16c;
+    border-bottom: 1.3em solid #90c5ef;
+    border-left: 1.3em solid #ffffff;
+    width: 7em;
+    height: 7em;
+    margin-top: -4.8em;
+    margin-left: -4.8em;
+}
+.job-loader {
+    border-top: 0.2em solid #d866a2;
+    border-right: 0.2em solid #f8f16c;
+    border-bottom: 0.2em solid #90c5ef;
+    border-left: 0.2em solid #ffffff;
+    width: 1em;
+    height: 1em;
+}
+.job-icon {
+    width: 1.6em;
+    height: 1.6em;
+}
+.jobs table thead tr th:first-child {
+    padding-left: 0.6em;
+}
+.job-id {
+    width: 2.2em;
+}
+.jobs table tbody tr {
+    border-top: 0.5em solid transparent;
+    height: 2.8em;
+}
+.jobs table tbody td:first-child {
+    padding-left: 0.6em;
+}

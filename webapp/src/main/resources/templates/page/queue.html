@@ -1,0 +1,114 @@
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  -->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{/fragment/head :: head(~{::title}, ~{::script})}">
+        <title th:text="#{page.title}"></title>
+        <script th:src="@{/resources/script/sockjs-1.3.0.min.js}"></script>
+        <script th:src="@{/resources/script/stomp.min.js}"></script>
+        <script type="application/javascript">
+            $(document).ready(function() {
+                $("#button-back").click(function() {
+                    window.location.href = "/gcUnicorn/search"
+                });
+
+                $("#button-test").click(function() {
+                    stompClient.send("/gcUnicorn/queue/status")
+                });
+
+                connect();
+            });
+        </script>
+        <script type="application/javascript">
+            var stompClient = null;
+
+            function connect() {
+                var socket = new SockJS("/gcUnicorn");
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function(frame) {
+                    console.log('Connected: ' + frame);
+                    stompClient.subscribe('/topic/queue/statusChanged', function(message) {
+                        statusChanged(JSON.parse(message.body))
+                    });
+                    stompClient.subscribe('/topic/queue/activeCountChanged', function(message) {
+                        activeCountChanged(message.body);
+                    });
+                });
+            }
+            
+            function statusChanged(jobStatus) {
+                $(document.getElementById('job-status-' + jobStatus.id)).children().each(function(index, element) {
+                   if(!$(element).hasClass('hidden')) {
+                       $(element).addClass('hidden');
+                   }
+                });
+
+                $(document.getElementById('job-status-' + jobStatus.id + '-' + jobStatus.status)).removeClass('hidden');
+            }
+
+            function activeCountChanged(count) {
+                $("#activeJobsCount").text(count);
+            }
+        </script>
+    </head>
+    <body>
+        <div class="content-wrapper">
+            <img class="center-logo logo-rainbow" th:src="@{/resources/img/rainbow.png}">
+            <div class="content">
+                <div class="form queue">
+                    <div class="simple-panel">
+                        <div class="centered font-size line"><span th:text="${searchJobs.isEmpty()} ? #{label.job.no_running_jobs.text} : #{label.job.running_jobs.text} + ': '"></span><span id="activeJobsCount" th:text="${activeJobsCount}"></span></div>
+                        <button id="button-back" class="button-back" th:text="#{label.back.text}"></button>
+                    </div>
+                </div>
+                <div th:if="${not searchJobs.isEmpty()}">
+                    <div class="panel-divider"></div>
+                    <div class="form simple-panel">
+                        <div class="simple-panel jobs">
+                            <table th:if="${not searchJobs.isEmpty()}">
+                                <thead>
+                                    <tr>
+                                        <th class="job-id" th:text="#{label.job.id.text}"></th>
+                                        <th th:text="#{label.job.started.text}"></th>
+                                        <th th:text="#{label.job.status.text}"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:id="'job-' + ${searchJob.id}" th:each="searchJob : ${searchJobs}">
+                                        <td th:text="${searchJob.id}"></td>
+                                        <td th:text="${searchJob.getReadableStart(T(cz.babi.gcunicorn.fun.Constant).DATETIME_PATTERN_UI)}"></td>
+                                        <td th:id="'job-status-' + ${searchJob.id}">
+                                            <div th:id="'job-status-' + ${searchJob.id} + '-ACTIVE'" th:classappend="${searchJob.getStatus()!=T(cz.babi.gcunicorn.webapp.entity.task.Status).ACTIVE} ? hidden"><div class="job-loader-wrapper"><div class="job-loader"></div></div></div>
+                                            <div th:id="'job-status-' + ${searchJob.id} + '-RESOLVED'" th:classappend="${searchJob.getStatus()!=T(cz.babi.gcunicorn.webapp.entity.task.Status).RESOLVED} ? hidden"><div><a th:href="@{/gcUnicorn/queue/__${searchJob.id}__/gpx}"><img class="job-icon" th:src="@{/resources/img/download-128.png}"></a></div></div>
+                                            <div th:id="'job-status-' + ${searchJob.id} + '-CANCELED'" th:classappend="${searchJob.getStatus()!=T(cz.babi.gcunicorn.webapp.entity.task.Status).CANCELED} ? hidden"><div><img class="job-icon" th:src="@{/resources/img/smile-sad-128.png}"></div></div>
+                                            <div th:id="'job-status-' + ${searchJob.id} + '-UNKNOWN'" th:classappend="${searchJob.getStatus()!=T(cz.babi.gcunicorn.webapp.entity.task.Status).UNKNOWN} ? hidden"><div><img class="job-icon" th:src="@{/resources/img/smile-sad-128.png}"></div></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-divider"></div>
+        </div>
+        <div class="footer-left" th:insert="~{/fragment/version :: version}"></div>
+        <div class="footer-right" th:insert="~{/fragment/copyright :: copyright}"></div>
+    </body>
+</html>

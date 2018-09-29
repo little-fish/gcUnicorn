@@ -1,0 +1,194 @@
+/*
+ * gcUnicorn
+ * Copyright (C) 2018  Martin Misiarz
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 2
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+package cz.babi.gcunicorn.webapp.spring.configuration
+
+import cz.babi.gcunicorn.webapp.spring.validation.Validators
+import cz.babi.gcunicorn.webapp.spring.web.advice.Advices
+import cz.babi.gcunicorn.webapp.spring.web.controller.Controllers
+import io.undertow.Undertow
+import io.undertow.server.XnioByteBufferPool
+import io.undertow.websockets.jsr.WebSocketDeploymentInfo
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.boot.web.embedded.undertow.UndertowDeploymentInfoCustomizer
+import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory
+import org.springframework.boot.web.server.ErrorPage
+import org.springframework.boot.web.server.WebServerFactoryCustomizer
+import org.springframework.context.MessageSource
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.support.ResourceBundleMessageSource
+import org.springframework.http.HttpStatus
+import org.springframework.mobile.device.DeviceResolverHandlerInterceptor
+import org.springframework.mobile.device.view.LiteDeviceDelegatingViewResolver
+import org.springframework.web.filter.CharacterEncodingFilter
+import org.springframework.web.servlet.DispatcherServlet
+import org.springframework.web.servlet.HandlerInterceptor
+import org.springframework.web.servlet.LocaleResolver
+import org.springframework.web.servlet.ViewResolver
+import org.springframework.web.servlet.config.annotation.EnableWebMvc
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor
+import org.springframework.web.servlet.i18n.SessionLocaleResolver
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+import org.thymeleaf.spring5.ISpringTemplateEngine
+import org.thymeleaf.spring5.SpringTemplateEngine
+import org.thymeleaf.spring5.view.ThymeleafViewResolver
+import org.thymeleaf.templatemode.TemplateMode
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
+import org.thymeleaf.templateresolver.ITemplateResolver
+import org.xnio.ByteBufferSlicePool
+import org.xnio.OptionMap
+import org.xnio.Xnio
+import java.util.Locale
+import javax.servlet.Filter
+
+/**
+ * Web configuration.
+ *
+ * [https://github.com/spring-projects/spring-boot/issues/8762](https://github.com/spring-projects/spring-boot/issues/8762).
+ *
+ * @see [EnableConfigurationProperties]
+ *
+ * @author Martin Misiarz `<dev.misiarz@gmail.com>`
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+@Configuration
+@EnableWebMvc
+@EnableConfigurationProperties
+@ComponentScan(basePackageClasses = [Controllers::class, Advices::class, Validators::class])
+class WebConfiguration : WebMvcConfigurer {
+
+    @Bean
+    fun requestMappingHandlerAdapter() = RequestMappingHandlerAdapter().apply {
+            setIgnoreDefaultModelOnRedirect(true)
+        }
+
+    @Bean
+    fun dispatcherServlet() = DispatcherServlet()
+
+    @Bean
+    fun undertowWebServerCustomizer() = WebServerFactoryCustomizer<UndertowServletWebServerFactory> { factory ->
+        factory.addErrorPages(
+                ErrorPage(HttpStatus.NOT_FOUND, "/error/404"),
+                ErrorPage(HttpStatus.FORBIDDEN, "/error/403"),
+                ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/error/500")
+        )
+
+        factory.addDeploymentInfoCustomizers(UndertowDeploymentInfoCustomizer { deploymentInfo ->
+                deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, WebSocketDeploymentInfo().apply {
+                        worker = Xnio.getInstance("nio", Undertow::class.java.classLoader).createWorker(OptionMap.builder().map)
+                        buffers = XnioByteBufferPool(ByteBufferSlicePool(1024, 1024))
+                })
+        })
+    }
+
+    @Bean
+    fun characterEncodingFilter(): Filter {
+        return CharacterEncodingFilter().apply {
+            encoding = Charsets.UTF_8.name()
+            setForceEncoding(true)
+        }
+    }
+
+    @Bean
+    fun messageSource(): MessageSource {
+        return ResourceBundleMessageSource().apply {
+            setUseCodeAsDefaultMessage(true)
+            setBasename("i18n/messages")
+        }
+    }
+
+    @Bean
+    fun localeResolver(): LocaleResolver {
+        return SessionLocaleResolver().apply {
+            setDefaultLocale(Locale.ENGLISH)
+        }
+    }
+
+    @Bean
+    fun localeChangeInterceptor(): HandlerInterceptor {
+        return LocaleChangeInterceptor().apply {
+            paramName = "lang"
+        }
+    }
+
+    @Bean
+    fun deviceResolverInterceptor(): HandlerInterceptor {
+        return DeviceResolverHandlerInterceptor()
+    }
+
+    @Bean
+    fun templateResolver(): ITemplateResolver {
+        return ClassLoaderTemplateResolver().apply {
+            prefix = "templates/"
+            suffix = ".html"
+            templateMode = TemplateMode.HTML
+            characterEncoding = Charsets.UTF_8.name()
+        }
+    }
+
+    @Bean
+    fun templateEngine(templateResolver: ITemplateResolver): ISpringTemplateEngine {
+        return SpringTemplateEngine().apply {
+            setTemplateResolver(templateResolver)
+        }
+    }
+
+    @Bean
+    fun thymeleafViewResolver(): ViewResolver {
+        return ThymeleafViewResolver().apply {
+            templateEngine = templateEngine(templateResolver())
+            characterEncoding = Charsets.UTF_8.name()
+        }
+    }
+
+    /**
+     * Currently I have no device-specific pages, so we can point all pages to one location.<br>
+     * Device specific views are handled by css rules.
+     */
+    @Bean
+    fun liteDeviceDelegatingViewResolver(@Qualifier("thymeleafViewResolver") viewResolver: ViewResolver): ViewResolver {
+        return LiteDeviceDelegatingViewResolver(viewResolver).apply {
+            setNormalPrefix("page/")
+            setMobilePrefix("page/")
+            setTabletPrefix("page/")
+        }
+    }
+
+    override fun configureViewResolvers(registry: ViewResolverRegistry?) {
+        registry?.viewResolver(liteDeviceDelegatingViewResolver(thymeleafViewResolver()))
+    }
+
+    override fun addInterceptors(registry: InterceptorRegistry?) {
+        registry?.addInterceptor(localeChangeInterceptor())
+        registry?.addInterceptor(deviceResolverInterceptor())
+    }
+
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry?) {
+        registry
+                ?.addResourceHandler("/resources/**")
+                ?.addResourceLocations("classpath:static/")
+    }
+}

@@ -1,0 +1,101 @@
+/*
+ * gcUnicorn
+ * Copyright (C) 2018  Martin Misiarz
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 2
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+import java.text.SimpleDateFormat
+
+plugins {
+	id 'propdeps'
+    id 'propdeps-idea'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.71'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.71'
+    id 'org.jetbrains.kotlin.plugin.allopen' version '1.2.71'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.71'
+}
+
+ext {
+    // Version Kotlin coroutines.
+    versionKotlinCoroutines = '0.26.1'
+    // Version Jsoup.
+    versionJsoup = '1.11.3'
+    // Version Jackson.
+    versionJackson = '2.9.6'
+    // Version OkHttp.
+    versionOkHttp = '3.11.0'
+    // Version Spring.
+    versionSpring = '5.0.8.RELEASE'
+    // Version Kotlin XML Builder.
+    versionKotlinXmlBuilder = '1.4.2'
+}
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    compile(
+            "org.jetbrains.kotlin:kotlin-stdlib:$versionKotlin",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versionKotlin",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versionKotlin",
+            "org.jetbrains.kotlin:kotlin-reflect:$versionKotlin",
+            "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versionKotlinCoroutines",
+            "org.jsoup:jsoup:$versionJsoup",
+            "org.slf4j:slf4j-api:$versionSlf4J",
+            "org.redundent:kotlin-xml-builder:$versionKotlinXmlBuilder",
+            "com.squareup.okhttp3:okhttp:$versionOkHttp",
+            "com.fasterxml.jackson.module:jackson-module-kotlin:$versionJackson"
+    )
+    testCompile(
+            "org.testng:testng:$versionTestNG",
+            "org.springframework:spring-context:$versionSpring",
+            "org.springframework:spring-test:$versionSpring"
+    )
+    testRuntime(
+            "ch.qos.logback:logback-classic:$versionLogback"
+    )
+}
+
+compileKotlin.dependsOn(processResources)
+
+jar {
+    manifest {
+        attributes(
+                "Created-By" : project.maintainer,
+                "Created-On" : new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
+                "Implementation-Title" : project.name,
+                "Implementation-Version" : project.version,
+                "Build-JDK" : System.getProperty('java.version'),
+                "Source-Compatibility" : project.sourceCompatibility,
+                "Target-Compatibility" : project.targetCompatibility,
+                "License" : "GPL-2.0"
+        )
+    }
+}

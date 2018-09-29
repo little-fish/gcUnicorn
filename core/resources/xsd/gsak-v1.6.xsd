@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  -->
+
+<xsd:schema targetNamespace="http://www.gsak.net/xmlv1/6"
+  elementFormDefault="qualified"
+  xmlns="http://www.gsak.net/xmlv1/6"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:annotation><xsd:documentation>
+  This schema defines the GSAK extensions to be used with the GPX schema.
+  The root elements defined by this schema are intended to be used as child
+  elements of the "extensions" elements in the GPX schema. The GPX
+  schema is available at http://www.topografix.com/GPX/1/0/gpx.xsd.
+  </xsd:documentation></xsd:annotation>
+
+  <xsd:element name="wptExtension" type="wptExtension_t" />
+
+  <xsd:complexType name="wptExtension_t">
+    <xsd:annotation><xsd:documentation>
+    This type contains data fields available in GSAK waypoints that cannot
+    be represented in waypoints in GPX instances.
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="UserFlag" type="xsd:boolean" minOccurs="0" />
+      <xsd:element name="Lock" type="xsd:boolean" minOccurs="0" />
+      <xsd:element name="DNF" type="xsd:boolean" minOccurs="0" />
+      <xsd:element name="Watch" type="xsd:boolean" minOccurs="0" />
+      <xsd:element name="UserData" type="xsd:string" minOccurs="0" />
+      <xsd:element name="UserFound" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="DNFDate" type="xsd:string" minOccurs="0" />
+      <xsd:element name="LatBeforeCorrect" type="xsd:string" minOccurs="0" />	  
+	  <xsd:element name="LonBeforeCorrect" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="StateBeforeCorrect" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="CountyBeforeCorrect" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="FirstToFind" type="xsd:boolean" minOccurs="0" />
+	  <xsd:element name="User2" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="User3" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="User4" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="County" type="xsd:string" minOccurs="0" />	  
+	  <xsd:element name="Parent" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="Child_ByGSAK" type="xsd:boolean" minOccurs="0" />
+	  <xsd:element name="Child_Flag" type="xsd:boolean" minOccurs="0" />
+	  <xsd:element name="UserSort" type="xsd:integer" minOccurs="0" />
+	  <xsd:element name="SmartName" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="LastGpxDate" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="Code" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="Resolution" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="IsPremium" type="xsd:boolean" minOccurs="0" />
+	  <xsd:element name="FavPoints" type="xsd:integer" minOccurs="0" />
+	  <xsd:element name="GcNote" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="Guid" type="xsd:string" minOccurs="0" />
+	  <xsd:element name="CacheImages" minOccurs="0" maxOccurs="unbounded">
+	  	<xsd:complexType>
+	  		<xsd:sequence>
+	  			<xsd:element name="CacheImage" nillable="true" minOccurs="0" maxOccurs="unbounded">
+	  				<xsd:complexType>
+	  					<xsd:sequence>
+	  						<xsd:element name="iname" type="xsd:string" minOccurs="0" />
+	  						<xsd:element name="idescription" type="xsd:string" minOccurs="0" />
+	  						<xsd:element name="iguid" type="xsd:string" minOccurs="0" />
+	  						<xsd:element name="iimage" type="xsd:string" minOccurs="0" />
+	  				  </xsd:sequence>
+	  				</xsd:complexType>
+	  			</xsd:element>
+	  		</xsd:sequence>
+	  	</xsd:complexType>
+	  </xsd:element>	
+	  
+	  <xsd:element name="LogImages" minOccurs="0" maxOccurs="unbounded">
+	  	<xsd:complexType>
+	  		<xsd:sequence>
+	  			<xsd:element name="LogImage" nillable="true" minOccurs="0" maxOccurs="unbounded">
+	  				<xsd:complexType>
+	  					<xsd:sequence>
+	  						<xsd:element name="ilogid" type="xsd:string" minOccurs="0" />
+	  						<xsd:element name="iname" type="xsd:string" minOccurs="0" />
+	  						<xsd:element name="idescription" type="xsd:string" minOccurs="0" />
+	  						<xsd:element name="iguid" type="xsd:string" minOccurs="0" />
+	  						<xsd:element name="iimage" type="xsd:string" minOccurs="0" />
+	  				  </xsd:sequence>
+	  				</xsd:complexType>
+	  			</xsd:element>
+	  		</xsd:sequence>
+	  	</xsd:complexType>
+	  </xsd:element>	
+	  <xsd:element name="CustomData" type="xsd:string" minOccurs="0" />	  	
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>
+
