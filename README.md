@@ -28,7 +28,7 @@ For Windows OS there is an executable file created. This approach always enables
 
 If you want to run the application from within command line, run the following command:
 ```bash
-java -jar gcUnicorn-webapp-1.0.0.jar
+java -jar gcUnicorn-webapp-<version>.jar
 ```
 The application is then available at `http://<hostname>:8080/`. Most likely it will be `http://localhost:8080/`
 
@@ -63,7 +63,7 @@ Here you can see all your search jobs. If a job is still running, spinning circl
 
 
 ## How to configure
-The application uses [Spring Boot](https://spring.io/projects/spring-boot) so basic configuration can be done by creating `application.properties` file next to the `gcUnicorn-webapp-1.0.0.jar` with properties specified inside it.
+The application uses [Spring Boot](https://spring.io/projects/spring-boot) so basic configuration can be done by creating `application.properties` file next to the `gcUnicorn-webapp-<version>.jar` with properties specified inside it.
 
 The list of all available properties (not all of them are applicable to the application) can be found on [Spring Boot reference page](https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html).
 
@@ -75,9 +75,9 @@ You can find examples of configuration files inside [webapp](https://github.com/
 You have two options how to configure application port:
 * Add `-Dserver.port=<port-number>` argument to the executing command:
 ```bash
-java -jar -Dserver.port=<port-number> gcUnicorn-webapp-1.0.0.jar
+java -jar -Dserver.port=<port-number> gcUnicorn-webapp-<version>.jar
 ```
-* Create/edit `application.properties` file next to the `gcUnicorn-webapp-1.0.0.jar` with following content:
+* Create/edit `application.properties` file next to the `gcUnicorn-webapp-<version>.jar` with following content:
 ```
 server.port=<port-number>
 ```
@@ -89,9 +89,9 @@ You can specify logging configuration with following options:
  
 * Add `-Dlogging.config=file:<path-to-logging-config>` argument to the executing command:
 ```bash
-java -jar -Dlogging.config=file:<path-to-logging-config> gcUnicorn-webapp-1.0.0.jar
+java -jar -Dlogging.config=file:<path-to-logging-config> gcUnicorn-webapp-<version>.jar
 ```
-* Create/edit `application.properties` file next to the `gcUnicorn-webapp-1.0.0.jar` with following content:
+* Create/edit `application.properties` file next to the `gcUnicorn-webapp-<version>.jar` with following content:
 ```
 logging.config=file:<path-to-logging-config>
 ```
@@ -100,9 +100,9 @@ logging.config=file:<path-to-logging-config>
 If you want to shut down the application quickly, tray icon can be handy. To display the tray icon, you have two options here as well:
 * Add `-Dtray` argument to the executing command:
 ```bash
-java -jar -Dtray gcUnicorn-webapp-1.0.0.jar
+java -jar -Dtray gcUnicorn-webapp-<version>.jar
 ```
-* Create/edit `application.properties` file next to the `gcUnicorn-webapp-1.0.0.jar` with following content:
+* Create/edit `application.properties` file next to the `gcUnicorn-webapp-<version>.jar` with following content:
 ```
 tray
 ```

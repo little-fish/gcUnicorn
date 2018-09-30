@@ -18,6 +18,7 @@
 
 plugins {
     id 'idea'
+    id 'base'
 }
 
 group 'cz.babi'
@@ -40,5 +41,12 @@ subprojects {
     repositories {
         jcenter()
         mavenCentral()
+    }
+}
+
+allprojects {
+    clean {
+        delete "$projectDir/build"
+        delete "$projectDir/out"
     }
 }
