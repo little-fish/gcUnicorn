@@ -18,9 +18,11 @@
 
 package cz.babi.gcunicorn.webapp.desktop
 
+import cz.babi.gcunicorn.`fun`.loggerFor
 import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
 import org.springframework.core.type.AnnotatedTypeMetadata
+import java.awt.AWTError
 import java.awt.SystemTray
 
 /**
@@ -33,5 +35,17 @@ import java.awt.SystemTray
  * @since 1.0.0
  */
 class TrayCondition : Condition {
-    override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata) = SystemTray.isSupported() && context.environment.containsProperty("tray")
+
+    companion object {
+        private val LOG = loggerFor<TrayCondition>()
+    }
+
+    override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata): Boolean {
+        return try {
+            context.environment.containsProperty("tray") && SystemTray.isSupported()
+        } catch (e: AWTError) {
+            LOG.warn("Tray is not supported.", e)
+            false
+        }
+    }
 }

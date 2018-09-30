@@ -35,8 +35,8 @@ import org.springframework.web.bind.annotation.ModelAttribute
 class VersionControllerAdvice {
 
     @ModelAttribute(name = "versionCore")
-    fun coreVersion() = VersionControllerAdvice::class.java.`package`?.implementationVersion ?: "unknown"
+    fun versionCore() = Service::class.java.`package`?.implementationVersion ?: "unknown"
 
-    @ModelAttribute(name = "versionServer")
-    fun uiVersion() = Service::class.java.`package`?.implementationVersion ?: "unknown"
+    @ModelAttribute(name = "versionWebapp")
+    fun versionWebapp() = VersionControllerAdvice::class.java.`package`?.implementationVersion ?: "unknown"
 }
