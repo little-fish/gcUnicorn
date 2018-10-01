@@ -19,6 +19,7 @@
 package cz.babi.gcunicorn.webapp.spring.configuration
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreeEmptySidesParser
 import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesParser
 import cz.babi.gcunicorn.core.location.parser.impl.DegreesDecimalMinuteParser
 import cz.babi.gcunicorn.core.location.parser.impl.ParserWrapper
@@ -46,7 +47,7 @@ import javax.imageio.ImageIO
  * Application configuration.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 @Configuration
@@ -82,8 +83,11 @@ class ApplicationConfiguration {
     @Bean
     fun decimalDegreesParser() = DecimalDegreesParser()
 
+    @Bean
+    fun decimalDegreesEmptySidesParser() = DecimalDegreeEmptySidesParser()
+
     @Bean(name = ["parser"])
-    fun parsers() = ParserWrapper(decimalDegreesParser(), degreesDecimalMinuteParser())
+    fun parsers() = ParserWrapper(decimalDegreesParser(), degreesDecimalMinuteParser(), decimalDegreesEmptySidesParser())
 
     @Bean
     fun jsonMapper() = ObjectMapper()

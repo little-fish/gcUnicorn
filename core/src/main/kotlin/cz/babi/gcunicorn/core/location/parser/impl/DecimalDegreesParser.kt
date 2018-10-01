@@ -38,17 +38,17 @@ import cz.babi.gcunicorn.core.location.parser.Parser
  * @version 1.0.0
  * @since 1.0.0
  */
-class DecimalDegreesParser : Parser {
+open class DecimalDegreesParser : Parser {
 
     companion object {
         //                               (     2 & 5     )
-        private const val PATTERN = "\\s?(-?\\d+[.,]?\\d+)°?"
+        internal const val PATTERN = "\\s?(-?\\d+[.,]?\\d+)°?"
         //                                    ( 1  )
         private const val PATTERN_LATITUDE = "([NS])$PATTERN"
         //                                     ( 4  )
         private const val PATTERN_LONGITUDE = "([EW])$PATTERN"
-        //                                     (    3    )
-        private const val PATTERN_SEPARATOR = "(\\s?[,|\\s+]\\s?)"
+        //                                     (       3        )
+        internal const val PATTERN_SEPARATOR = "(\\s?[,|\\s+]\\s?)"
 
         @JvmField val REGEX_LATITUDE = PATTERN_LATITUDE.toRegex(RegexOption.IGNORE_CASE)
         @JvmField val REGEX_LONGITUDE = PATTERN_LONGITUDE.toRegex(RegexOption.IGNORE_CASE)
