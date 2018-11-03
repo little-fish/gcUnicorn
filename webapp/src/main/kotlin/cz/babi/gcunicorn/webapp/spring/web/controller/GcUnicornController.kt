@@ -20,7 +20,7 @@ package cz.babi.gcunicorn.webapp.spring.web.controller
 
 import cz.babi.gcunicorn.`fun`.Constant
 import cz.babi.gcunicorn.`fun`.dateFormat
-import cz.babi.gcunicorn.`fun`.loggerFor
+import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.`fun`.nullableExecute
 import cz.babi.gcunicorn.core.network.service.Service
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheFilter
@@ -77,7 +77,7 @@ class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheF
                           @Autowired private val simpMessagingTemplate: SimpMessagingTemplate) {
 
     companion object {
-        private val LOG: Logger = loggerFor<GcUnicornController>()
+        private val LOG: Logger = logger<GcUnicornController>()
     }
 
     @GetMapping(path = ["/search"])

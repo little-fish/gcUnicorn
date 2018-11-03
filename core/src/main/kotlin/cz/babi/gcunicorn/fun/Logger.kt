@@ -28,4 +28,4 @@ import org.slf4j.LoggerFactory
  * @version 1.0.0
  * @since 1.0.0
  */
-inline fun <reified T: Any> loggerFor() = LoggerFactory.getLogger(T::class.java)!!
+inline fun <reified T: Any> logger() = LoggerFactory.getLogger(T::class.java)!!

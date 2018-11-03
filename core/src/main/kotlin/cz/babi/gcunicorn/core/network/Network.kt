@@ -18,7 +18,7 @@
 
 package cz.babi.gcunicorn.core.network
 
-import cz.babi.gcunicorn.`fun`.loggerFor
+import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.core.exception.network.NetworkException
 import cz.babi.gcunicorn.core.network.model.HttpParameters
 import okhttp3.FormBody
@@ -49,7 +49,7 @@ class Network(private val okHttpClient: OkHttpClient) {
     enum class Method { POST, GET }
 
     companion object {
-        private val LOG: Logger = loggerFor<Network>()
+        private val LOG: Logger = logger<Network>()
     }
 
     /**

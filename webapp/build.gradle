@@ -30,7 +30,7 @@ plugins {
 
 ext {
     // Spring Boot.
-    versionSpringBoot = '2.0.5.RELEASE'
+    versionSpringBoot = '2.1.0.RELEASE'
 }
 
 repositories {
@@ -84,6 +84,11 @@ dependencyManagement {
     }
 }
 
+ext {
+    // Version Jackson.
+    versionJackson = '2.9.6'
+}
+
 dependencies {
     compile project(':gcUnicorn-core')
     optional(
@@ -101,11 +106,10 @@ dependencies {
             'org.springframework:spring-webmvc',
             'org.springframework:spring-messaging',
             'org.springframework:spring-websocket',
-            'org.springframework.security:spring-security-messaging',
-            "org.jetbrains.kotlin:kotlin-stdlib:$versionKotlin",
-//            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versionKotlin",
-            "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versionKotlin",
-            "org.jetbrains.kotlin:kotlin-reflect:$versionKotlin"
+            'org.springframework.security:spring-security-messaging'
+    )
+    runtime(
+            "com.fasterxml.jackson.module:jackson-module-kotlin:$versionJackson"
     )
     provided(
             'org.springframework.boot:spring-boot-devtools'

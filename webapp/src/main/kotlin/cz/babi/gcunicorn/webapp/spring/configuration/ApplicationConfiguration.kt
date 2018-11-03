@@ -18,7 +18,7 @@
 
 package cz.babi.gcunicorn.webapp.spring.configuration
 
-import com.fasterxml.jackson.databind.ObjectMapper
+//import com.fasterxml.jackson.databind.ObjectMapper
 import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreeEmptySidesParser
 import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesParser
 import cz.babi.gcunicorn.core.location.parser.impl.DegreesDecimalMinuteParser
@@ -89,14 +89,14 @@ class ApplicationConfiguration {
     @Bean(name = ["parser"])
     fun parsers() = ParserWrapper(decimalDegreesParser(), degreesDecimalMinuteParser(), decimalDegreesEmptySidesParser())
 
-    @Bean
-    fun jsonMapper() = ObjectMapper()
+//    @Bean
+//    fun jsonMapper() = ObjectMapper()
+//
+//    @Bean
+//    fun jsonReader() = jsonMapper().reader()!!
 
     @Bean
-    fun jsonReader() = jsonMapper().reader()!!
-
-    @Bean
-    fun service() = GeoCachingCom(network(), parsers(), jsonReader())
+    fun service() = GeoCachingCom(network(), parsers())
 
     /** The bean is a good candidate for session scoped component. But the component is used during WebSocket communication so there is no way to obtain it from the session. */
     @Bean

@@ -18,10 +18,9 @@
 
 package cz.babi.gcunicorn.core.network.service.geocachingcom
 
-import com.fasterxml.jackson.databind.ObjectReader
 import cz.babi.gcunicorn.`fun`.containsHtml
 import cz.babi.gcunicorn.`fun`.format
-import cz.babi.gcunicorn.`fun`.loggerFor
+import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.`fun`.nullableExecute
 import cz.babi.gcunicorn.`fun`.rot13
 import cz.babi.gcunicorn.core.exception.location.CoordinateParseException
@@ -56,10 +55,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import org.jsoup.Jsoup
+import kotlinx.serialization.json.JsonTreeParser
+import kotlinx.serialization.json.content
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.longOrNull
 import org.redundent.kotlin.xml.xml
 import org.slf4j.Logger
-import java.io.IOException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -74,16 +75,15 @@ import kotlin.coroutines.EmptyCoroutineContext
  *
  * @param network Network. It is used for communication with external sites.
  * @param parser Coordination parser. Parse used for parsing geocaches' coordinates.
- * @param jsonReader Object reader. Used for reading log entries.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
  * @version 1.0.0
  * @since 1.0.0
  */
-class GeoCachingCom(private val network: Network, private val parser: Parser, private val jsonReader: ObjectReader) : Service {
+class GeoCachingCom(private val network: Network, private val parser: Parser) : Service {
 
     companion object {
-        private val LOG: Logger = loggerFor<GeoCachingCom>()
+        private val LOG: Logger = logger<GeoCachingCom>()
     }
 
     /**
@@ -996,102 +996,98 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                 Parameter.LOG_DECRYPT.parameterName, "false"
         )
 
-        val cacheLogsStream = network.getResponseByteStreamBody(network.getRequest(Constant.URI_CACHE_LOGBOOK, parameters, null))
+        val cacheLogs = network.getResponseStringBody(network.getRequest(Constant.URI_CACHE_LOGBOOK, parameters, null))
 
         try {
-            val jsonLogTree = jsonReader.readTree(cacheLogsStream)
+            val logEntries = JsonTreeParser.parse(cacheLogs)
 
-            val logStatus = jsonLogTree.get(Constant.LOG_STATUS)
-            if(logStatus!=null && logStatus.textValue()=="success") {
+            if(logEntries.getOrNull(Constant.REQUEST_STATUS)?.content=="success") {
                 val cacheLogEntries = mutableListOf<LogEntry>()
 
-                jsonLogTree.get(Constant.LOG_DATA)?.forEach { jsonLogEntry ->
-                    val logEntry = LogEntry()
+                logEntries.getArrayOrNull(Constant.REQUEST_DATA)
+                        ?.forEach { jsonLogEntryElement ->
+                            val logEntry = LogEntry()
+                            val jsonLogEntry = jsonLogEntryElement.jsonObject
 
-                    jsonLogEntry.get(Constant.LOG_ID)?.asLong().nullableExecute({
-                        if(this!=0L) logEntry.id = this
-                    }, {
-                        LOG.warn("Can not obtain log entry's id.")
-                    })
+                            jsonLogEntry.getOrNull(Constant.LOG_ID)?.longOrNull.nullableExecute({
+                                logEntry.id = this
+                            }, {
+                                LOG.warn("Can not obtain log entry's id.")
+                            })
 
-                    jsonLogEntry.get(Constant.LOG_TYPE)?.textValue().nullableExecute({
-                        logEntry.type = LogType.findByType(this)
-                    }, {
-                        LOG.warn("Can not obtain log entry's type.")
-                    })
+                            jsonLogEntry.getOrNull(Constant.LOG_TYPE)?.contentOrNull.nullableExecute({
+                                logEntry.type = LogType.findByType(this)
+                            }, {
+                                LOG.warn("Can not obtain log entry's id.")
+                            })
 
-                    jsonLogEntry.get(Constant.LOG_TEXT)?.textValue()?.trim()?.replace("<p>", "")?.replace("</p>", "").nullableExecute({
-                        logEntry.text = this
-                    }, {
-                        LOG.warn("Can not obtain log entry's text.")
-                    })
+                            jsonLogEntry.getOrNull(Constant.LOG_TEXT)?.contentOrNull?.trim()?.replace("<p>", "")?.replace("</p>", "").nullableExecute({
+                                logEntry.text = this
+                            }, {
+                                LOG.warn("Can not obtain log entry's text.")
+                            })
 
-                    jsonLogEntry.get(Constant.LOG_VISITED)?.textValue().nullableExecute({
-                        try {
-                            logEntry.visited = SimpleDateFormat(Constant.PATTERN_DATE_PAGE, Locale.ENGLISH).parse(this).time
-                        } catch (e: ParseException) {
-                            LOG.warn("Can not parse log visited date.", e)
-                        }
-                    }, {
-                        LOG.warn("Can not obtain log visited.")
-                    })
+                            jsonLogEntry.getOrNull(Constant.LOG_VISITED)?.contentOrNull.nullableExecute({
+                                try {
+                                    logEntry.visited = SimpleDateFormat(Constant.PATTERN_DATE_PAGE, Locale.ENGLISH).parse(this).time
+                                } catch (e: ParseException) {
+                                    LOG.warn("Can not parse log visited date.", e)
+                                }
+                            }, {
+                                LOG.warn("Can not obtain log visited.")
+                            })
 
-                    jsonLogEntry.get(Constant.LOG_AUTHOR)?.textValue().nullableExecute({
-                        logEntry.author = this
-                    }, {
-                        LOG.warn("Can not obtain log author.")
-                    })
+                            jsonLogEntry.getOrNull(Constant.LOG_AUTHOR)?.contentOrNull.nullableExecute({
+                                logEntry.author = this
+                            }, {
+                                LOG.warn("Can not obtain log author.")
+                            })
 
-                    jsonLogEntry.get(Constant.LOG_AUTHOR_ID)?.asLong().nullableExecute({
-                        if(this!=0L) logEntry.authorId = this
-                    }, {
-                        LOG.warn("Can not obtain log author's id.")
-                    })
+                            jsonLogEntry.getOrNull(Constant.LOG_AUTHOR_ID)?.longOrNull.nullableExecute({
+                                logEntry.authorId = this
+                            }, {
+                                LOG.warn("Can not obtain log author's id.")
+                            })
 
-                    val logImages = mutableListOf<Image>()
-                    jsonLogEntry.get(Constant.LOG_IMAGES)?.forEach logImageTree@ { logImageTree ->
-                        val imageFileName = logImageTree.get(Constant.LOG_IMAGE_FILENAME)?.textValue() ?: return@logImageTree
+                            val logImages = mutableListOf<Image>()
+                            jsonLogEntry.getOrNull(Constant.LOG_IMAGES)?.jsonArray?.forEach logImageTree@ { logImageTreeElement ->
+                                val logImageTree = logImageTreeElement.jsonObject
+                                val imageFileName = logImageTree.getOrNull(Constant.LOG_IMAGE_FILENAME)?.contentOrNull ?: return@logImageTree
 
-                        val logImage = Image(Constant.URI_IMAGE_LARGE + imageFileName)
-                        logImage.guid = imageFileName.substringBefore(".")
+                                val logImage = Image(Constant.URI_IMAGE_LARGE + imageFileName)
+                                logImage.guid = imageFileName.substringBefore(".")
 
-                        logImageTree.get(Constant.LOG_IMAGE_NAME)?.textValue().nullableExecute({
-                            if(isNotEmpty()) {
-                                logImage.title = this
+                                logImageTree.getOrNull(Constant.LOG_IMAGE_NAME)?.contentOrNull.nullableExecute({
+                                    if (isNotEmpty()) {
+                                        logImage.title = this
+                                    }
+                                }, {
+                                    LOG.warn("Can not obtain log image's name.")
+                                })
+
+                                logImageTree.getOrNull(Constant.LOG_IMAGE_DESCRIPTION)?.contentOrNull.nullableExecute({
+                                    if (isNotEmpty()) logImage.description = this
+                                }, {
+                                    LOG.warn("Can not obtain log image's description.")
+                                })
+
+                                logImages.add(logImage)
                             }
-                        }, {
-                            LOG.warn("Can not obtain log image's name.")
-                        })
 
-                        logImageTree.get(Constant.LOG_IMAGE_DESCRIPTION)?.textValue().nullableExecute({
-                            if(isNotEmpty()) logImage.description = this
-                        }, {
-                            LOG.warn("Can not obtain log image's description.")
-                        })
+                            if (logImages.isNotEmpty()) {
+                                logEntry.images = logImages
+                            }
 
-                        logImages.add(logImage)
-                    }
-
-                    if(logImages.isNotEmpty()) {
-                        logEntry.images = logImages
-                    }
-
-                    cacheLogEntries.add(logEntry)
-                }
+                            cacheLogEntries.add(logEntry)
+                        }
 
                 return cacheLogEntries
-            } else {
-                return null
             }
-        } catch (e: IOException) {
+
+            return null
+        } catch (e: Exception) {
             LOG.warn("Can not parse log entries for cache '{}'.", geocacheUrl)
             return null
-        } finally {
-            try {
-                cacheLogsStream.close()
-            } catch(e: IOException) {
-                LOG.warn("Can not close stream.")
-            }
         }
     }
 
@@ -1135,28 +1131,16 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
      * @return True if language is English, otherwise returns false.
      */
     private fun isLanguageEnglish(pageBody: String): Boolean {
-        val value = Jsoup.parse(pageBody).select(Constant.SELECTOR_LANGUAGE)?.first()?.text()
-
-        val isEnglish = !(value==null || value!="English")
-
-        if(isEnglish) {
-            LOG.debug("English version of Geocaching page has been set.")
-        } else {
-            LOG.debug("English version of Geocaching page han not been set.")
-        }
-
-        return isEnglish
+        return Constant.REGEX_LANGUAGE_SELECTED.find(pageBody)?.groupValues?.get(1) == "English"
     }
 
     /**
-     * Extract value of [Constant.SELECTOR_REQUEST_VERIFICATION_TOKEN] from given HTML page.
+     * Extract value of '__RequestVerificationToken' from given HTML page.
      * @param pageBody HTML page.
-     * @return Extracted value from given HTML page. Or null if extracted value is empty or given HTML page doesn't contain seeking value.
+     * @return Extracted value from given HTML page. Or null if given HTML page doesn't contain seeking value.
      */
     private fun extractRequestVerificationToken(pageBody: String): String? {
-        val value = Jsoup.parse(pageBody).select(Constant.SELECTOR_REQUEST_VERIFICATION_TOKEN)?.attr("value")
-
-        return if(value==null || value.isEmpty()) null else value
+        return Constant.REGEX_REQUEST_VERIFICATION_TOKEN.find(pageBody)?.groupValues?.get(1)
     }
 }
 
@@ -1210,12 +1194,12 @@ object Constant {
     const val PATTERN_DATE_PAGE = "MM/dd/yyyy"
     const val PATTERN_DATE_GPX = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val DEFAULT_LOGS_COUNT = 35
-    const val LOG_DATA = "data"
+    const val REQUEST_DATA = "data"
     const val LOG_IMAGES = "Images"
     const val LOG_IMAGE_NAME = "Name"
     const val LOG_IMAGE_DESCRIPTION = "Descr"
     const val LOG_IMAGE_FILENAME = "FileName"
-    const val LOG_STATUS = "status"
+    const val REQUEST_STATUS = "status"
     const val LOG_ID = "LogID"
     const val LOG_TYPE = "LogType"
     const val LOG_VISITED = "Visited"
@@ -1223,8 +1207,8 @@ object Constant {
     const val LOG_AUTHOR = "UserName"
     const val LOG_AUTHOR_ID = "AccountID"
 
-    val SELECTOR_REQUEST_VERIFICATION_TOKEN = "form > input[name=\"${Parameter.REQUEST_VERIFICATION_TOKEN.parameterName}\"]"
-
+    @JvmField val REGEX_LANGUAGE_SELECTED = "<div class=\"language-dropdown[\\s\\S]*?<li class=\"selected\">.*>(.*)</a></li>".toRegex()
+    @JvmField val REGEX_REQUEST_VERIFICATION_TOKEN = "<input name=\"__RequestVerificationToken\" type=\"hidden\" value=\"([^\"]*)\"[^/>]*".toRegex()
     @JvmField val REGEX_IS_LOGGED_IN = "<span class=\"user-name\">(.*)</span>".toRegex()
     @JvmField val REGEX_USER_TOKEN = "userToken\\s*=\\s*'([^']+)'".toRegex()
     @JvmField val REGEX_SEARCH_RESULTS_TABLE = "<table.+class=\".*SearchResultsTable.*\">([\\s\\S]*?)</table>".toRegex()

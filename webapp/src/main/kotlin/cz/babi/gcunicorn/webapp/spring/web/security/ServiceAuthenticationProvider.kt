@@ -18,7 +18,7 @@
 
 package cz.babi.gcunicorn.webapp.spring.web.security
 
-import cz.babi.gcunicorn.`fun`.loggerFor
+import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.core.exception.network.LoginException
 import cz.babi.gcunicorn.core.network.model.Credentials
 import cz.babi.gcunicorn.core.network.service.Service
@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component
 class ServiceAuthenticationProvider(private val service: Service) : AuthenticationProvider {
 
     companion object {
-        private val LOG = loggerFor<ServiceAuthenticationProvider>()
+        private val LOG = logger<ServiceAuthenticationProvider>()
         const val ROLE = "gcuser"
     }
 

@@ -18,7 +18,7 @@
 
 package cz.babi.gcunicorn.webapp.desktop
 
-import cz.babi.gcunicorn.`fun`.loggerFor
+import cz.babi.gcunicorn.`fun`.logger
 import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
 import org.springframework.core.type.AnnotatedTypeMetadata
@@ -37,7 +37,7 @@ import java.awt.SystemTray
 class TrayCondition : Condition {
 
     companion object {
-        private val LOG = loggerFor<TrayCondition>()
+        private val LOG = logger<TrayCondition>()
     }
 
     override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata): Boolean {

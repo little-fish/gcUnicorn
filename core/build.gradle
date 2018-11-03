@@ -18,6 +18,16 @@
 
 import java.text.SimpleDateFormat
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$versionKotlin"
+    }
+}
+
 plugins {
 	id 'propdeps'
     id 'propdeps-idea'
@@ -27,19 +37,19 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.0'
 }
 
+apply plugin: 'kotlinx-serialization'
+
 ext {
     // Version Kotlin coroutines.
     versionKotlinCoroutines = '1.0.0'
-    // Version Jsoup.
-    versionJsoup = '1.11.3'
-    // Version Jackson.
-    versionJackson = '2.9.6'
     // Version OkHttp.
     versionOkHttp = '3.11.0'
     // Version Spring.
-    versionSpring = '5.0.8.RELEASE'
+    versionSpring = '5.1.2.RELEASE'
     // Version Kotlin XML Builder.
     versionKotlinXmlBuilder = '1.4.2'
+    // Version Kotlin serialization.
+    versionKotlinSerialization = '0.9.0'
 }
 
 kotlin {
@@ -62,16 +72,13 @@ compileTestKotlin {
 
 dependencies {
     compile(
-            "org.jetbrains.kotlin:kotlin-stdlib:$versionKotlin",
-//            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versionKotlin",
             "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versionKotlin",
             "org.jetbrains.kotlin:kotlin-reflect:$versionKotlin",
+            "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$versionKotlinSerialization",
             "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versionKotlinCoroutines",
-            "org.jsoup:jsoup:$versionJsoup",
-            "org.slf4j:slf4j-api:$versionSlf4J",
-            "org.redundent:kotlin-xml-builder:$versionKotlinXmlBuilder",
             "com.squareup.okhttp3:okhttp:$versionOkHttp",
-            "com.fasterxml.jackson.module:jackson-module-kotlin:$versionJackson"
+            "org.slf4j:slf4j-api:$versionSlf4J",
+            "org.redundent:kotlin-xml-builder:$versionKotlinXmlBuilder"
     )
     testCompile(
             "org.testng:testng:$versionTestNG",

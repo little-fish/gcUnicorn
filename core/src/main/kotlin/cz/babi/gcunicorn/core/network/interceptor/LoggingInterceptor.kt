@@ -18,7 +18,7 @@
 
 package cz.babi.gcunicorn.core.network.interceptor
 
-import cz.babi.gcunicorn.`fun`.loggerFor
+import cz.babi.gcunicorn.`fun`.logger
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.slf4j.Logger
@@ -35,7 +35,7 @@ import java.util.regex.Pattern
 class LoggingInterceptor : Interceptor {
 
     companion object {
-        private val LOG: Logger = loggerFor<LoggingInterceptor>()
+        private val LOG: Logger = logger<LoggingInterceptor>()
         private val PATTERN_PASSWORD = Pattern.compile("(?<=[?&])[Pp]ass(w(or)?d)?=[^&#$]+")
     }
 
