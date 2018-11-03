@@ -1170,7 +1170,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
  * @since 1.0.0
  */
 enum class Parameter(val parameterName: String) {
-    USERNAME("Username"),
+    USERNAME("UsernameOrEmail"),
     PASSWORD("Password"),
     REQUEST_VERIFICATION_TOKEN("__RequestVerificationToken"),
     LATITUDE("lat"),
