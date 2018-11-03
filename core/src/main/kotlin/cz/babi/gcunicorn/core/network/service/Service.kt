@@ -25,7 +25,7 @@ import cz.babi.gcunicorn.core.location.Coordinates
 import cz.babi.gcunicorn.core.network.model.Credentials
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheFilter
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Geocache
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.Job
 
 /**
  * Service interface providing basic set of methods required for grabbing geocaches.

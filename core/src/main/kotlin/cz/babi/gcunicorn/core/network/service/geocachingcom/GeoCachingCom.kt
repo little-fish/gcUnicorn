@@ -50,13 +50,12 @@ import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Trackable
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.TrackableBrand
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Waypoint
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.WaypointType
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.CoroutineStart
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.jsoup.Jsoup
 import org.redundent.kotlin.xml.xml
 import org.slf4j.Logger
@@ -65,9 +64,10 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.regex.Pattern
-import kotlin.coroutines.experimental.EmptyCoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Service implementation for Groundspeak's geocaching.com web page.

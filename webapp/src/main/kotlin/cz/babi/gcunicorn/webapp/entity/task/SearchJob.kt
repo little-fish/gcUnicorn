@@ -19,8 +19,8 @@
 package cz.babi.gcunicorn.webapp.entity.task
 
 import cz.babi.gcunicorn.`fun`.dateFormat
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 
 /**
  * Search job.
@@ -43,7 +43,7 @@ data class SearchJob(val id: Int, val start: Long = System.currentTimeMillis(), 
     fun getStatus(): Status {
         return if (job.isCancelled) Status.CANCELED
         else if (job.isActive) Status.ACTIVE
-        else if (job.isCompleted && !job.isCompletedExceptionally) Status.RESOLVED
+        else if (job.isCompleted) Status.RESOLVED
         else Status.UNKNOWN
     }
 

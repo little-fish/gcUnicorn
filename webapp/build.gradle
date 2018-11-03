@@ -23,9 +23,9 @@ plugins {
     id 'io.spring.dependency-management'
     id 'propdeps'
     id 'propdeps-idea'
-    id 'org.jetbrains.kotlin.jvm' version '1.2.71'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.71'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.71'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.0'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.0'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.0'
 }
 
 ext {
@@ -103,7 +103,7 @@ dependencies {
             'org.springframework:spring-websocket',
             'org.springframework.security:spring-security-messaging',
             "org.jetbrains.kotlin:kotlin-stdlib:$versionKotlin",
-            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versionKotlin",
+//            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versionKotlin",
             "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versionKotlin",
             "org.jetbrains.kotlin:kotlin-reflect:$versionKotlin"
     )

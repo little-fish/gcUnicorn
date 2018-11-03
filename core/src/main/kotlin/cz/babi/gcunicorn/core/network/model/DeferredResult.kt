@@ -19,7 +19,7 @@
 package cz.babi.gcunicorn.core.network.model
 
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Geocache
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 
 /**
  * Deferred result.

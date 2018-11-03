@@ -28,7 +28,7 @@ subprojects {
         maintainer = 'Martin Misiarz'
 
         // Kotlin version.
-        versionKotlin = '1.2.71'
+        versionKotlin = '1.3.0'
         // Version Slf4J.
         versionSlf4J = '1.7.25'
         // Logback

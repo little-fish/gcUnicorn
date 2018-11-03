@@ -37,6 +37,6 @@ package cz.babi.gcunicorn.core.location
 data class Coordinates(val latitude: Double, val longitude: Double) {
 
     init {
-        if(latitude !in -85..85 || longitude !in -180..180) throw IllegalArgumentException("You have provided wrong coordinates. Latitude must be in range <-85, 85>, longitude must be in range <-180, 180>. Provided coordinates are: $latitude:$longitude.")
+        if(latitude !in -85.0..85.0 || longitude !in -180.0..180.0) throw IllegalArgumentException("You have provided wrong coordinates. Latitude must be in range <-85, 85>, longitude must be in range <-180, 180>. Provided coordinates are: $latitude:$longitude.")
     }
 }

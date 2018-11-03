@@ -31,11 +31,12 @@ import cz.babi.gcunicorn.webapp.entity.task.JobsWrapper
 import cz.babi.gcunicorn.webapp.entity.task.SearchJob
 import cz.babi.gcunicorn.webapp.entity.task.Status
 import cz.babi.gcunicorn.webapp.spring.validation.CacheFilterWebValidator
-import kotlinx.coroutines.experimental.CoroutineStart
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -157,6 +158,7 @@ class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheF
         })
     }
 
+    @ExperimentalCoroutinesApi
     @GetMapping(path = ["/queue/{jobId}/gpx"])
     fun gpx(@PathVariable(name = "jobId", required = true) jobId: Int, httpServletResponse: HttpServletResponse, httpSession: HttpSession) {
         jobsWrapper.getSearchJob(httpSession.id, jobId).nullableExecute({

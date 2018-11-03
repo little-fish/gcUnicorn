@@ -21,15 +21,15 @@ import java.text.SimpleDateFormat
 plugins {
 	id 'propdeps'
     id 'propdeps-idea'
-    id 'org.jetbrains.kotlin.jvm' version '1.2.71'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.71'
-    id 'org.jetbrains.kotlin.plugin.allopen' version '1.2.71'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.71'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.0'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.0'
+    id 'org.jetbrains.kotlin.plugin.allopen' version '1.3.0'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.0'
 }
 
 ext {
     // Version Kotlin coroutines.
-    versionKotlinCoroutines = '0.26.1'
+    versionKotlinCoroutines = '1.0.0'
     // Version Jsoup.
     versionJsoup = '1.11.3'
     // Version Jackson.
@@ -63,7 +63,7 @@ compileTestKotlin {
 dependencies {
     compile(
             "org.jetbrains.kotlin:kotlin-stdlib:$versionKotlin",
-            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versionKotlin",
+//            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versionKotlin",
             "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versionKotlin",
             "org.jetbrains.kotlin:kotlin-reflect:$versionKotlin",
             "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versionKotlinCoroutines",
