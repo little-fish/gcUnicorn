@@ -18,6 +18,13 @@ Be sure to read [Groundspeak's terms of use](https://www.geocaching.com/account/
 
 Author of the application is not responsible for any damage caused by using it.
 
+## Modules
+The application contains two modules:
+
+* __core__ - Core functionality.
+* __webapp__ - Web application. UI has been created with simplicity and perfect readability in mind so it works on your desktop and mobile devices with no issues.
+* __android__ - Android application. It allows you to the the very same operations like _webapp_ module.
+
 ## Screenshots
 ### Web application
 ![Login page](https://goo.gl/ZKYxwF) ![Search page](https://goo.gl/6nx6C5) ![Queue page](https://goo.gl/Kf31cL)
@@ -121,13 +128,6 @@ Android version of the tool supports all Android version since Jelly Bean (API 1
 As a bonus, the application interacts with popular Android map application called [Locus Map](http://www.locusmap.eu/). You can find shortcuts to gcUnicorn within main _Geocaching functions_ menu and within _Point view_'s share option. If you open the application from later option, latitude and longitude will be transferred from Locus directly into the gcUnicorn.
 
 All the created GPX files are stored within `<externalStorage>/gcUnicorn`.
-
-## Modules
-The application contains two modules:
-
-* __core__ - Core functionality.
-* __webapp__ - Web application. UI has been created with simplicity and perfect readability in mind so it works on your desktop and mobile devices with no issues.
-* __android__ - Android application. It allows you to the the very same operations like _webapp_ module.
 
 ## How to build
 Clone the repository:
