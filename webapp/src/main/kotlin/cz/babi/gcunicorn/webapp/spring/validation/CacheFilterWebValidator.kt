@@ -34,7 +34,7 @@ import org.springframework.validation.Validator
  * @see [CacheFilterWeb]
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 @Component
@@ -42,7 +42,7 @@ class CacheFilterWebValidator(@Autowired val parser: Parser) : Validator {
 
     companion object {
         private const val DISTANCE_DEFAULT = 10.0
-        private const val COUNT_DEFAULT = 50
+        private const val COUNT_DEFAULT = 100
         private const val COUNT_MAX = 200
     }
 

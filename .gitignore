@@ -1,11 +1,14 @@
 # IntelliJ IDEA
 .idea
 *.iml
+out
+captures
 
 # Gradle
 .gradle
 build
-out
+local.properties
+keystore.properties
 
 # GitHub
 .github

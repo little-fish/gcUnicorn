@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  -->
+
+<resources>
+    <!-- Light application theme. -->
+    <style name="AppTheme" parent="PreferenceFixTheme.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
+        <item name="preferenceTheme">@style/AppTheme.PreferenceStyle</item>
+        <item name="popupMenuStyle">@style/AppTheme.PopupOverlay</item>
+        <item name="android:popupMenuStyle">@style/AppTheme.PopupOverlay</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
+        <item name="floatingActionButtonStyle">@style/Widget.Design.FloatingActionButton</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
+    </style>
+
+    <style name="AppTheme.Widget.Header" parent="android:Widget.TextView">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginLeft">@dimen/indentation_default</item>
+        <item name="android:layout_marginTop">@dimen/indentation_half</item>
+        <item name="android:layout_marginRight">@dimen/indentation_default</item>
+    </style>
+
+    <style name="AppTheme.Widget.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">@dimen/font_size</item>
+    </style>
+
+    <style name="EditTextItem" parent="AppTheme.Widget.EditText">
+        <item name="android:layout_marginRight">@dimen/indentation_default</item>
+    </style>
+
+    <style name="ErrorText" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/error</item>
+    </style>
+
+    <style name="SwitchItem">
+        <item name="android:layout_marginLeft">@dimen/indentation_default</item>
+        <item name="android:layout_marginRight">@dimen/indentation_default</item>
+        <item name="android:paddingLeft">@dimen/indentation_half</item>
+        <item name="android:paddingTop">@dimen/indentation_half</item>
+        <item name="android:paddingBottom">@dimen/indentation_half</item>
+        <item name="android:textSize">@dimen/font_size</item>
+    </style>
+
+    <style name="AppTheme.Widget.Spinner" parent="Widget.AppCompat.Spinner.Underlined">
+        <item name="android:layout_marginLeft">@dimen/indentation_default</item>
+        <item name="android:layout_marginRight">@dimen/indentation_default</item>
+    </style>
+
+    <style name="AppTheme.PreferenceStyle" parent="PreferenceThemeOverlay.v14.Material.Fix">
+        <item name="preferenceCategoryStyle">@style/AppTheme.PreferenceCategory</item>
+    </style>
+
+    <style name="AppTheme.PreferenceCategory" parent="@style/Preference.Category">
+        <item name="android:layout">@layout/custom_preference_category</item>
+    </style>
+
+    <style name="AboutTextView">
+        <item name="android:paddingBottom">@dimen/indentation_half</item>
+        <item name="android:textColor">@color/aboutView</item>
+        <item name="android:textSize">@dimen/font_size</item>
+    </style>
+
+</resources>

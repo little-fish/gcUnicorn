@@ -27,6 +27,7 @@ import cz.babi.gcunicorn.core.exception.location.CoordinateParseException
 import cz.babi.gcunicorn.core.exception.network.LoginException
 import cz.babi.gcunicorn.core.exception.network.LogoutException
 import cz.babi.gcunicorn.core.exception.network.NetworkException
+import cz.babi.gcunicorn.core.exception.network.ServiceException
 import cz.babi.gcunicorn.core.location.Coordinates
 import cz.babi.gcunicorn.core.location.parser.Parser
 import cz.babi.gcunicorn.core.network.Network
@@ -54,6 +55,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonTreeParser
 import kotlinx.serialization.json.content
@@ -145,7 +147,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
 
     override fun isLoggedIn(pageBody: String) = Constant.REGEX_IS_LOGGED_IN.containsMatchIn(pageBody)
 
-    override fun lookForCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, geocacheLoadedListener: GeocacheLoadedListener?, parent: Job?): List<Geocache> {
+    override suspend fun lookForCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, geocacheLoadedListener: GeocacheLoadedListener?, parent: Job?): List<Geocache> {
         LOG.debug("Starting looking for caches..")
 
         val geoCaches = mutableListOf<Geocache>()
@@ -162,81 +164,90 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
             httpParameters.put(Parameter.EXCLUDE_OWN.parameterName, "1")
         }
 
-        // Get page with caches.
-        val response = network.getRequest(Constant.URI_SEARCH, httpParameters, null)
+        try {
+            // Get page with caches.
+            val response = network.getRequest(Constant.URI_SEARCH, httpParameters, null)
 
-        var responseBody = network.getResponseStringBody(response)
+            var responseBody = network.getResponseStringBody(response)
 
-        // Check whether user is logged in.
-        if(!isLoggedIn(responseBody)) throw LoginException("User is not logged in.")
+            // Check whether user is logged in.
+            if (!isLoggedIn(responseBody)) throw ServiceException("User is not logged in.")
 
-        // Save request URL for future search by "next page".
-        val requestUrl = Constant.URI_SEARCH + "?" + response.request().url().encodedQuery()
+            // Save request URL for future search by "next page".
+            val requestUrl = Constant.URI_SEARCH + "?" + response.request().url().encodedQuery()
 
-        var deferredResult: DeferredResult
-        val counter = AtomicInteger(0)
+            var deferredResult: DeferredResult
+            val counter = AtomicInteger(0)
 
-        loading@ while (geoCaches.size<limit) {
-            // Fill given list with loaded caches.
-            deferredResult = getGeocacheLoaders(responseBody, limit, counter, cacheFilter, requestUrl, parent)
+            loading@ while (geoCaches.size < limit) {
+                // Fill given list with loaded caches.
+                deferredResult = getGeocacheLoaders(responseBody, limit, counter, cacheFilter, requestUrl, parent)
 
-            // Start all deferred jobs.
-            deferredResult.defferedJobs.forEach { it.start() }
+                // Start all deferred jobs.
+                deferredResult.defferedJobs.forEach { it.start() }
 
-            LOG.debug("Started {} coroutine jobs.", deferredResult.defferedJobs.size)
+                LOG.debug("Started {} coroutine jobs.", deferredResult.defferedJobs.size)
 
-            runBlocking {
-                deferredResult.defferedJobs.forEach { job ->
-                    try {
-                        val geoCache = job.await()
+                runBlocking {
+                    deferredResult.defferedJobs.forEach { job ->
+                        try {
+                            val geoCache = job.await()
 
-                        if (geoCache.canLoadInfo) {
-                            geoCaches.add(geoCache)
+                            if (geoCache.canLoadInfo) {
+                                geoCaches.add(geoCache)
 
-                            // Notify the listener.
-                            geocacheLoadedListener?.geocacheLoaded(geoCache)
+                                // Notify the listener.
+                                geocacheLoadedListener?.let {
+                                    GlobalScope.launch {
+                                        it.geocacheLoaded(geoCache)
+                                    }
+                                }
 
-                            LOG.debug("#{} cache successfully loaded: '{}'", geoCaches.size, geoCache.url)
-                        } else {
-                            LOG.debug("Could not load details for '{}'.", geoCache.url)
+                                LOG.debug("#{} cache successfully loaded: '{}'", geoCaches.size, geoCache.url)
+                            } else {
+                                LOG.debug("Could not load details for '{}'.", geoCache.url)
+                            }
+                        } catch (e: CancellationException) {
+                            LOG.warn("Coroutine job has been cancelled.", e)
+                        } catch (e: NetworkException) {
+                            LOG.warn("Can not load geocache.", e)
                         }
-                    } catch (e: CancellationException) {
-                        LOG.warn("Coroutine job has been cancelled.", e)
+                    }
+                }
+
+                // No jobs created, get out of here.
+                if (deferredResult.defferedJobs.size == 0) {
+                    break@loading
+                }
+
+                if (geoCaches.size < limit) {
+                    // Set counter to actual count.
+                    counter.set(geoCaches.size)
+
+                    // Load page with next geocaches.
+                    try {
+                        responseBody = network.getResponseStringBody(network.postRequest(requestUrl, deferredResult.nextPageHeaders, null))
                     } catch (e: NetworkException) {
-                        LOG.warn("Can not load geocache.", e)
+                        LOG.warn("Could not load page with next geocaches.", e)
+                        break@loading
                     }
                 }
             }
 
-            // No jobs created, get out of here.
-            if(deferredResult.defferedJobs.size == 0) {
-                break@loading
-            }
+            LOG.debug("{} caches has been found.", geoCaches.size)
 
-            if(geoCaches.size<limit) {
-                // Set counter to actual count.
-                counter.set(geoCaches.size)
-
-                // Load page with next geocaches.
-                try {
-                    responseBody = network.getResponseStringBody(network.postRequest(requestUrl, deferredResult.nextPageHeaders, null))
-                } catch (e: NetworkException) {
-                    LOG.warn("Could not load page with next geocaches.", e)
-                    break@loading
-                }
-            }
+            return geoCaches
+        } catch (networkException: NetworkException) {
+            LOG.error("Can not download caches.", networkException)
+            throw ServiceException("Can not download caches.", networkException)
         }
-
-        LOG.debug("{} caches has been found.", geoCaches.size)
-
-        return geoCaches
     }
 
     override fun createGpx(geocaches: List<Geocache>, formatOutput: Boolean): String {
         val nsGroundspeak = "groundspeak" to "http://www.groundspeak.com/cache/1/0/1"
         val nsGsak = "gsak" to "http://www.gsak.net/xmlv1/6"
 
-        val gpx = xml("gpx", formatOutput) {
+        val gpx = xml("gpx") {
             attributes("version" to "1.1", "creator" to "gcUnicorn")
             xmlns = "http://www.topografix.com/GPX/1/1"
             namespace(nsGroundspeak.first, nsGroundspeak.second)
@@ -486,7 +497,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
             }
         }
 
-        return String(gpx.toString().toByteArray())
+        return String(gpx.toString(formatOutput).toByteArray())
     }
 
     /**
@@ -505,7 +516,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
      * @throws [NetworkException] If anything goes wrong while loading cache details.
      */
     @Throws(NetworkException::class)
-    private fun getGeocacheLoaders(pageBody: String, limit: Int, counter: AtomicInteger, cacheFilter: CacheFilter, requestUrl: String, parent: Job?): DeferredResult {
+    private suspend fun getGeocacheLoaders(pageBody: String, limit: Int, counter: AtomicInteger, cacheFilter: CacheFilter, requestUrl: String, parent: Job?): DeferredResult {
         val deferredResult = DeferredResult(nextPageHeaders = getParamsForSearchByNextPage(pageBody))
 
         // Get inner table containing caches' details.
@@ -1189,7 +1200,6 @@ object Constant {
     const val URI_CACHE_SHORT = "https://coord.info/"
     const val URI_TRACKABLE = "https://www.geocaching.com/track/details.aspx"
     const val URI_IMAGE_LARGE = "https://img.geocaching.com/cache/log/"
-    const val SELECTOR_LANGUAGE = "div.language-dropdown > select > option[selected=\"selected\"]"
     const val NEXT_PAGE_EVENT_TARGET = "ctl00\$ContentBody\$pgrTop\$ctl08"
     const val PATTERN_DATE_PAGE = "MM/dd/yyyy"
     const val PATTERN_DATE_GPX = "yyyy-MM-dd'T'HH:mm:ss'Z'"
@@ -1230,7 +1240,7 @@ object Constant {
     @JvmField val REGEX_CACHE_OWNER_NAME = "<div id=\"ctl00_ContentBody_mcd1\">[^<]+<a href=\"[^\"]+\">([^<]+)</a>".toRegex()
     @JvmField val REGEX_CACHE_OWNER_ID = "<a href=\"/seek/nearest\\.aspx\\?u=(.*?)\">.{1,50}?seek/nearest\\.aspx\\?ul=\\1\">".toRegex()
     @JvmField val REGEX_CACHE_HIDDEN = "ctl00_ContentBody_mcd2[^:]+:\\s*([^<]+?)<".toRegex()
-    @JvmField val REGEX_CACHE_PREMIUM_ONLY = "<section class=\"pmo-upsell\">".toRegex()
+    @JvmField val REGEX_CACHE_PREMIUM_ONLY = "<section class=\"premium-upgrade-widget\">".toRegex()
     @JvmField val REGEX_CACHE_COORDINATES = "<span id=\"uxLatLon\"[^>]*>(.*?)</span>".toRegex()
     @JvmField val REGEX_CACHE_LOCATION = "<span id=\"ctl00_ContentBody_Location\">In (?:<a href=[^>]*>)?(.*?)<".toRegex()
     @JvmField val REGEX_CACHE_HINT = "<div id=\"div_hint\"[^>]*>([\\s\\S]*?)</div>".toRegex()

@@ -23,9 +23,9 @@ plugins {
     id 'io.spring.dependency-management'
     id 'propdeps'
     id 'propdeps-idea'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.0'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.0'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.10'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.10'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.10'
 }
 
 ext {
@@ -57,12 +57,6 @@ bootJar {
                 "Target-Compatibility" : project.targetCompatibility,
                 "License" : "GPL-2.0"
         )
-    }
-}
-
-kotlin {
-    experimental {
-        coroutines 'enable'
     }
 }
 
@@ -121,3 +115,7 @@ dependencies {
 }
 
 compileKotlin.dependsOn(processResources)
+
+test {
+    useTestNG()
+}

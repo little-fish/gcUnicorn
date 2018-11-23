@@ -27,7 +27,6 @@ import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Geocache
  * @version 1.0.0
  * @since 1.0.0
  */
-@FunctionalInterface
 interface GeocacheLoadedListener {
 
     /**

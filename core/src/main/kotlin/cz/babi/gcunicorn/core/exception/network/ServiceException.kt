@@ -25,5 +25,7 @@ package cz.babi.gcunicorn.core.exception.network
  * @version 1.0.0
  * @since 1.0.0
  */
-class ServiceException(message: String, cause: Throwable) : NetworkException(message, cause) {
+class ServiceException : NetworkException {
+    constructor(message: String?) : super(message)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
 }

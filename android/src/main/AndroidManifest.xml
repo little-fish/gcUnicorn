@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="cz.babi.gcunicorn.android">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <uses-feature android:name="android.hardware.location" android:required="false"/>
+    <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
+
+    <application
+            android:name=".dagger.AndroidApplication"
+            android:allowBackup="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/text_app_name"
+            android:roundIcon="@drawable/ic_launcher_round"
+            android:supportsRtl="true"
+            android:largeHeap="true"
+            android:theme="@style/AppTheme">
+
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="@string/google_api_key" />
+
+        <activity
+                android:name=".ui.activity.SearchActivity"
+                android:label="@string/activity_search"
+                android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="locus.api.android.INTENT_ITEM_MAIN_FUNCTION_GC"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+                android:name=".ui.activity.SettingsActivity"
+                android:label="@string/action_settings"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.activity.SearchActivity"/>
+        </activity>
+
+        <activity
+                android:name=".ui.activity.AboutActivity"
+                android:label="@string/action_about"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.activity.SearchActivity"/>
+        </activity>
+
+        <service
+                android:name=".service.UnicornService"
+                android:permission="android.permission.BIND_JOB_SERVICE"
+                android:exported="false"/>
+
+        <receiver
+                android:name=".receiver.ShareBroadcastReceiver"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="cz.babi.gcunicorn.android.ACTION.export.gpx"/>
+            </intent-filter>
+        </receiver>
+
+        <provider
+                android:name="android.support.v4.content.FileProvider"
+                android:authorities="cz.babi.gcunicorn.android"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+</manifest>

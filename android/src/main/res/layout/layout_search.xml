@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  -->
+
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_coordinates_header"
+            android:text="@string/activity_search_coordinates_label"
+            style="@style/AppTheme.Widget.Header"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"/>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_lat_wrapper"
+            app:errorTextAppearance="@style/ErrorText"
+            android:layout_marginLeft="@dimen/indentation_default"
+            android:layout_marginStart="@dimen/indentation_default"
+            app:layout_constraintTop_toBottomOf="@id/search_coordinates_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/search_gps">
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/search_lat"
+                android:hint="@string/activity_search_lat_text"
+                android:inputType="numberDecimal|numberSigned"
+                style="@style/EditTextItem"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.v7.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_gps"
+            android:text="@string/activity_search_gps"
+            android:layout_marginRight="@dimen/indentation_default"
+            android:layout_marginEnd="@dimen/indentation_default"
+            app:layout_constraintTop_toBottomOf="@id/search_coordinates_header"
+            app:layout_constraintStart_toEndOf="@id/search_lat_wrapper"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_lon_wrapper"
+            android:layout_marginLeft="@dimen/indentation_default"
+            android:layout_marginStart="@dimen/indentation_default"
+            app:errorTextAppearance="@style/ErrorText"
+            app:layout_constraintTop_toBottomOf="@id/search_lat_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/search_map">
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/search_lon"
+                android:hint="@string/activity_search_lon_text"
+                android:inputType="numberDecimal|numberSigned"
+                style="@style/EditTextItem"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.v7.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_map"
+            android:text="@string/activity_search_map"
+            android:layout_marginRight="@dimen/indentation_default"
+            android:layout_marginEnd="@dimen/indentation_default"
+            app:layout_constraintTop_toBottomOf="@id/search_gps"
+            app:layout_constraintStart_toEndOf="@id/search_lon_wrapper"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_max_count_header"
+            android:text="@string/activity_search_max_count_label"
+            style="@style/AppTheme.Widget.Header"
+            app:layout_constraintTop_toBottomOf="@id/search_lon_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_max_count_wrapper"
+            android:layout_marginLeft="@dimen/indentation_default"
+            android:layout_marginStart="@dimen/indentation_default"
+            app:errorTextAppearance="@style/ErrorText"
+            app:layout_constraintTop_toBottomOf="@id/search_max_count_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/search_max_count"
+                android:hint="@string/activity_search_max_count_hint"
+                android:inputType="number"
+                style="@style/EditTextItem"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_max_distance_header"
+            android:text="@string/activity_search_max_distance_label"
+            style="@style/AppTheme.Widget.Header"
+            app:layout_constraintTop_toBottomOf="@id/search_max_count_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_max_distance_wrapper"
+            android:layout_marginLeft="@dimen/indentation_default"
+            android:layout_marginStart="@dimen/indentation_default"
+            app:errorTextAppearance="@style/ErrorText"
+            app:layout_constraintTop_toBottomOf="@id/search_max_distance_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/search_max_distance"
+                android:hint="@string/activity_search_max_distance_hint"
+                android:inputType="number"
+                style="@style/EditTextItem"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_cache_type_header"
+            android:text="@string/activity_search_cache_type_label"
+            style="@style/AppTheme.Widget.Header"
+            app:layout_constraintTop_toBottomOf="@id/search_max_distance_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.v7.widget.AppCompatSpinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_cache_type"
+            style="@style/AppTheme.Widget.Spinner"
+            app:layout_constraintTop_toBottomOf="@id/search_cache_type_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_additional_filters_header"
+            android:text="@string/activity_search_additional_filters_label"
+            style="@style/AppTheme.Widget.Header"
+            app:layout_constraintTop_toBottomOf="@id/search_cache_type"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.v7.widget.SwitchCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_allow_disabled"
+            android:text="@string/activity_search_include_disabled"
+            style="@style/SwitchItem"
+            app:layout_constraintTop_toBottomOf="@id/search_additional_filters_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.v7.widget.SwitchCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_include_own"
+            android:text="@string/activity_search_include_own"
+            style="@style/SwitchItem"
+            app:layout_constraintTop_toBottomOf="@id/search_allow_disabled"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.v7.widget.SwitchCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_skip_premium"
+            android:text="@string/activity_search_skip_premium"
+            android:checked="true"
+            style="@style/SwitchItem"
+            app:layout_constraintTop_toBottomOf="@id/search_include_own"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.v7.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_download"
+            android:text="@string/activity_search_download"
+            android:textAllCaps="true"
+            android:layout_marginBottom="@dimen/indentation_half"
+            android:layout_gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/search_skip_premium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

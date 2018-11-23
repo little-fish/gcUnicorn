@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  -->
+
+<resources>
+    <string name="text_app_name" translatable="false">gcUnicorn</string>
+    <string name="empty_string" translatable="false"/>
+    <string name="text_android" translatable="false">android</string>
+    <string name="text_app_core" translatable="false">gcUnicorn-core v2.0.0</string>
+    <string name="text_github">Follow gcUnicorn project @<a href="https://github.com/little-fish/gcUnicorn">GitHub</a>.</string>
+
+    <string name="activity_search">gcUnicorn</string>
+    <string name="activity_search_lat_text">Latitude</string>
+    <string name="activity_search_lon_text">Longitude</string>
+    <string name="activity_search_coordinates_label">coordinates</string>
+    <string name="activity_search_max_count_label">max count</string>
+    <string name="activity_search_max_count_hint">default: 100, max: 200</string>
+    <string name="activity_search_max_distance_label">max distance (km)</string>
+    <string name="activity_search_max_distance_hint">default: 10</string>
+    <string name="activity_search_cache_type_label">cache type</string>
+    <string name="activity_search_additional_filters_label">additional filters</string>
+    <string name="activity_search_include_disabled">Include disabled caches</string>
+    <string name="activity_search_include_own">Include own and found caches</string>
+    <string name="activity_search_skip_premium">Skip premium caches</string>
+    <string name="activity_search_download">download</string>
+    <string name="activity_search_gps">gps</string>
+    <string name="activity_search_map">maps</string>
+
+    <string name="pref_category_geocachingcom" translatable="false">Geocaching.com</string>
+    <string name="pref_username">Username</string>
+    <string name="pref_password">Password</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_about">About</string>
+
+    <string name="text_encrypted">encrypted</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_cancelling">Cancelling..</string>
+    <string name="text_no_location_provider">No location providers available.</string>
+    <string name="text_no_permission_fine_location">No granted permission for access to GPS location.</string>
+    <string name="text_no_permission_coarse_location">No granted permission for access to netwokr location.</string>
+    <string name="text_can_not_obtain_location">Can not acquire location.</string>
+    <string name="text_invalid_gc_credentials">Geocaching.com credentials are not valid.</string>
+
+    <string name="validator_error_max_count">Max count is 200.</string>
+    <string name="validator_error_latitude">Latitude must be within &lt;-85, 85&gt; range.</string>
+    <string name="validator_error_longitude">Longitude must be within &lt;-180, 180&gt; range.</string>
+
+    <string name="notification_channel">gcUnicorn</string>
+    <string name="notification_channel_desc">gcUnicorn channel</string>
+    <string name="notification_logging_in">Logging in..</string>
+    <string name="notification_logging_out">Logging out..</string>
+    <string name="notification_downloading_caches">Downloading caches..</string>
+    <string name="notification_searching_for_caches">Looking for caches..</string>
+    <string name="notification_generating_gpx">Generating GPX..</string>
+    <string name="notification_gpx_exported">GPX has been exported.</string>
+
+    <string name="action_view_gpx">Open GPX</string>
+    <string name="action_send_gpx">Send GPX</string>
+
+    <string name="error_can_not_start_place_picker">Ups. Can\'t display place picker.</string>
+
+    <string name="dialog_location_text">Acquiring location..</string>
+</resources>

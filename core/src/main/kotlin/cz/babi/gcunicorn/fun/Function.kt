@@ -41,4 +41,4 @@ inline fun <T : Any> T?.nullableExecute(notNullCallback: T.() -> Unit, nullCallb
  * @version 1.0.0
  * @since 1.0.0
  */
-inline fun <T : Any, R> T?.nullableReturn(notNullCallback: T.() -> R?, nullCallback: () -> R?): R? = let { if( it!=null) notNullCallback(it) else nullCallback() }
+inline fun <T : Any, R> T?.nullableReturn(notNullCallback: T.() -> R?, nullCallback: () -> R?): R? = let { if (it!=null) notNullCallback(it) else nullCallback() }

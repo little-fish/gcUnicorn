@@ -20,7 +20,6 @@ package cz.babi.gcunicorn.core.network
 
 import okhttp3.Cookie
 import okhttp3.HttpUrl
-import java.util.stream.Collectors
 
 /**
  * In-memory implementation of Cookie policy.
@@ -43,9 +42,17 @@ class InMemoryCookieJar : DefaultCookieJar {
     override fun loadForRequest(url: HttpUrl?): MutableList<Cookie> {
         dumpOldCookies()
 
-        return if(url!=null) storage.values.stream()
-                .filter { cookie -> cookie.matches(url) }
-                .collect(Collectors.toList()) else mutableListOf()
+        val cookies = mutableListOf<Cookie>()
+
+        url?.let {
+            for (cookie: Cookie in storage.values) {
+                if (cookie.matches(url)) {
+                    cookies.add(cookie)
+                }
+            }
+        }
+
+        return cookies
     }
 
     override fun clearCookies() = storage.clear()
@@ -53,5 +60,14 @@ class InMemoryCookieJar : DefaultCookieJar {
     /**
      * Dump old cookies.
      */
-    private fun dumpOldCookies() = storage.values.removeIf { cookie -> cookie.expiresAt() < System.currentTimeMillis() }
+    private fun dumpOldCookies() {
+        val iterator = storage.values.iterator()
+
+        while (iterator.hasNext()) {
+            val cookie = iterator.next()
+            if (cookie.expiresAt() < System.currentTimeMillis()) {
+                iterator.remove()
+            }
+        }
+    }
 }

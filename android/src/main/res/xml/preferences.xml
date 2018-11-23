@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  com.takisoft.fix.support.v7.preference.EditTextPreference
+  -->
+
+<android.support.v7.preference.PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.preference.PreferenceCategory
+            android:title="@string/pref_category_geocachingcom">
+
+        <com.takisoft.fix.support.v7.preference.EditTextPreference
+                android:id="@+id/pref_gc_username"
+                android:key="gc_username"
+                android:title="@string/pref_username"
+                android:inputType="text"
+                app:iconSpaceReserved="false"/>
+
+        <cz.babi.gcunicorn.android.ui.widget.SecureEditTextPreference
+                android:id="@+id/pref_gc_password"
+                android:key="gc_password"
+                android:title="@string/pref_password"
+                android:inputType="textPassword"
+                android:password="true"
+                app:iconSpaceReserved="false"/>
+
+    </android.support.v7.preference.PreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

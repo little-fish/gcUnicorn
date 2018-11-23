@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ gcUnicorn
+  ~ Copyright (C) 2018  Martin Misiarz
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License version 2
+  ~ as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  -->
+
+<resources>
+    <string name="text_github">Více o gcUnicorn projektu na <a href="https://github.com/little-fish/gcUnicorn">GitHubu</a>.</string>
+
+    <string name="activity_search">gcUnicorn</string>
+    <string name="activity_search_lat_text">Zeměpisná šířka</string>
+    <string name="activity_search_lon_text">Zeměpisná délka</string>
+    <string name="activity_search_coordinates_label">souřadnice</string>
+    <string name="activity_search_max_count_label">max počet</string>
+    <string name="activity_search_max_count_hint">default 100, max: 200</string>
+    <string name="activity_search_max_distance_label">max vydálenost (km)</string>
+    <string name="activity_search_max_distance_hint">default 10</string>
+    <string name="activity_search_cache_type_label">typ keší</string>
+    <string name="activity_search_additional_filters_label">další filtry</string>
+    <string name="activity_search_include_disabled">Včetně dočasně nedostupných</string>
+    <string name="activity_search_include_own">Včetně vlastních a nalezených</string>
+    <string name="activity_search_skip_premium">Vynechat premium keše</string>
+    <string name="activity_search_download">stáhnout</string>
+    <string name="activity_search_gps">gps</string>
+    <string name="activity_search_map">mapa</string>
+
+    <string name="pref_username">Uživatelské jméno</string>
+    <string name="pref_password">Heslo</string>
+
+    <string name="action_settings">Nastavení</string>
+    <string name="action_about">O aplikaci</string>
+
+    <string name="text_encrypted">šifrováno</string>
+    <string name="text_cancel">Zrušit</string>
+    <string name="text_cancelling">Ukončování..</string>
+    <string name="text_no_location_provider">Zjišťování polohy není dostupné ,(</string>
+    <string name="text_no_permission_fine_location">Je vyžadováno opravnění pro přístup k GPS.</string>
+    <string name="text_no_permission_coarse_location">je vyžadováno oprávnění pro přístup k síťové poloze.</string>
+    <string name="text_can_not_obtain_location">Nemohu zjistit lokaci.</string>
+    <string name="text_invalid_gc_credentials">Přihlašovací údaje pro Geocaching.com nejsou platné.</string>
+
+    <string name="validator_error_max_count">Maximální počet je 200.</string>
+    <string name="validator_error_latitude">Zeměpisná šířka musí být v rozsahu &lt;-85, 85&gt;.</string>
+    <string name="validator_error_longitude">Zeměpisná délka musí být v rozsahu &lt;-180, 180&gt;.</string>
+
+    <string name="notification_channel">gcUnicorn</string>
+    <string name="notification_channel_desc">gcUnicorn channel</string>
+    <string name="notification_logging_in">Přihlašování..</string>
+    <string name="notification_logging_out">Odhlašování..</string>
+    <string name="notification_downloading_caches">Stahuji keše..</string>
+    <string name="notification_searching_for_caches">Hledám keše..</string>
+    <string name="notification_generating_gpx">Vytvářím GPX..</string>
+    <string name="notification_gpx_exported">GPX exportováno.</string>
+
+    <string name="action_view_gpx">Otevřít GPX</string>
+    <string name="action_send_gpx">Odeslat GPX</string>
+
+    <string name="error_can_not_start_place_picker">Ups. Nemohu zobrazit mapu pro výběr lokace.</string>
+
+    <string name="dialog_location_text">Zjištuji polohu..</string>
+</resources>

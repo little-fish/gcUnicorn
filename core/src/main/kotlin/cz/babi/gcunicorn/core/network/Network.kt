@@ -21,13 +21,13 @@ package cz.babi.gcunicorn.core.network
 import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.core.exception.network.NetworkException
 import cz.babi.gcunicorn.core.network.model.HttpParameters
+import kotlinx.io.IOException
 import okhttp3.FormBody
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.slf4j.Logger
-import java.io.IOException
 import java.io.InputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -130,7 +130,7 @@ class Network(private val okHttpClient: OkHttpClient) {
      * @param parameters HTTP parameters.
      * @param headers HTTP headers.
      * @return Response.
-     * @throws [NetworkException] If given uri can not be parsed.
+     * @throws [NetworkException] If the request has been already executed or if the request can not be executed due timeout, cancellation or network issue or if given uri can not be parsed.
      */
     @Throws(NetworkException::class)
     private fun request(method: Method, uri: String, parameters: HttpParameters?, headers: HttpParameters?): Response {
@@ -167,7 +167,13 @@ class Network(private val okHttpClient: OkHttpClient) {
                 requestBuilder.header(header.first, header.second)
             }
 
-            return okHttpClient.newCall(requestBuilder.build()).execute()
+            try {
+                return okHttpClient.newCall(requestBuilder.build()).execute()
+            } catch (ioException: IOException) {
+                throw NetworkException("The request can not be executed due timeout, cancellation or network issue.", ioException)
+            } catch (illegalStateException: IllegalStateException) {
+                throw NetworkException("The request has been executed already.", illegalStateException)
+            }
         } else {
             throw NetworkException("Can not parse given URL: '$uri'.")
         }
@@ -187,8 +193,8 @@ class Network(private val okHttpClient: OkHttpClient) {
 
         try {
             return response.body()?.string() ?: throw NetworkException("Can't obtain response body.")
-        } catch(ioe: IOException) {
-            throw NetworkException("Can't load response.", ioe)
+        } catch (e: Exception) {
+            throw NetworkException("Can't obtain response body.", e)
         } finally {
             response.body()?.close()
         }
@@ -208,6 +214,10 @@ class Network(private val okHttpClient: OkHttpClient) {
             throw NetworkException("Request was not successful. Returned code is '${response.code()}'.")
         }
 
-        return response.body()?.byteStream() ?: throw NetworkException("Can't obtain response body.")
+        try {
+            return response.body()?.byteStream() ?: throw NetworkException("Can't obtain response body.")
+        } catch (e: Exception) {
+            throw NetworkException("Can't obtain response body.")
+        }
     }
 }

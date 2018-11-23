@@ -45,3 +45,6 @@ project(':webapp').name = 'gcUnicorn-webapp'
 
 include 'core'
 project(':core').name = 'gcUnicorn-core'
+
+include 'android'
+project(':android').name = 'gcUnicorn-android'

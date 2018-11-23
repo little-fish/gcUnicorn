@@ -1,0 +1,169 @@
+/*
+ * gcUnicorn
+ * Copyright (C) 2018  Martin Misiarz
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 2
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+buildscript {
+    ext {
+        versionAndroidTools = '3.2.1'
+    }
+
+    repositories {
+        jcenter()
+        google()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$versionAndroidTools"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versionKotlin"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+ext {
+    versionLocusApi = '0.3.0'
+    versionDagger = '2.19'
+    // https://dl.google.com/dl/android/maven2/index.html
+    versionAndroidSupport = '28.0.0'
+    // https://issuetracker.google.com/issues/37060038
+    // https://github.com/Gericop/Android-Support-Preference-V7-Fix
+    versionFixSupport = '28.0.0.0'
+    // Android constraint library.
+    versionAndroidConstraint = '1.1.3'
+    // Version Google play services Places.
+    // https://developers.google.com/android/guides/setup
+    versionPlayServicesPlaces = '16.0.0'
+    // Version Multidex.
+    versionMultidex = '1.0.3'
+}
+
+dependencies {
+    implementation project(':gcUnicorn-core')
+    implementation(
+            "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versionKotlinCoroutines",
+            "com.android.support:support-core-ui:$versionAndroidSupport",
+            "com.android.support:design:$versionAndroidSupport",
+            "com.android.support:appcompat-v7:$versionAndroidSupport",
+            "com.android.support:preference-v7:$versionAndroidSupport",
+            "com.android.support.constraint:constraint-layout:$versionAndroidConstraint",
+            "com.google.dagger:dagger:$versionDagger",
+            "com.asamm:locus-api-android:$versionLocusApi",
+            "com.takisoft.fix:preference-v7:$versionFixSupport",
+            "com.google.android.gms:play-services-places:$versionPlayServicesPlaces",
+            "com.android.support:multidex:$versionMultidex"
+    )
+    runtimeOnly(
+            "org.slf4j:slf4j-android:$versionSlf4J"
+    )
+    kapt(
+            "com.google.dagger:dagger-compiler:$versionDagger"
+    )
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency { dependencyDetail ->
+            if (dependencyDetail.requested.group == 'org.jetbrains.kotlin' && dependencyDetail.requested.name.startsWith('kotlin-stdlib')) {
+                dependencyDetail.useVersion versionKotlin
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId 'cz.babi.gcunicorn.android'
+        
+        minSdkVersion 16
+        targetSdkVersion 28
+        
+        multiDexEnabled true
+        
+        versionCode 1
+        versionName project.version
+        
+        vectorDrawables.useSupportLibrary = true
+        
+        resConfigs 'en', 'cs'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            crunchPngs false
+
+            proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
+            proguardFiles fileTree(dir: 'proguard-rules', include: '*.pro') as File[]
+        }
+
+        dev {
+            debuggable true
+
+            crunchPngs false
+        }
+    }
+
+    lintOptions {
+        // Lint doesn't take extension function into consideration..
+        abortOnError false
+
+        checkReleaseBuilds true
+    }
+}
+
+// Load keystore properties.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = file(keystoreFile)
+
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(keystorePropertiesFile.newDataInputStream())
+    
+    if (keystoreProperties['keyAlias'] && keystoreProperties['keyPassword'] && keystoreProperties['storeFile'] && keystoreProperties['storePassword']) {
+        android {
+            signingConfigs {
+                release {
+                    keyAlias keystoreProperties['keyAlias']
+                    keyPassword keystoreProperties['keyPassword']
+                    storeFile file(keystoreProperties['storeFile'])
+                    storePassword keystoreProperties['storePassword']
+                }
+            }
+
+            buildTypes {
+                release {
+                    signingConfig signingConfigs.release
+                }
+            }
+        }
+    }
+}

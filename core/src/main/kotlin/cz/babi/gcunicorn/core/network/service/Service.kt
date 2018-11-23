@@ -70,7 +70,7 @@ interface Service {
      * @see [CacheFilter]
      */
     @Throws(ServiceException::class)
-    fun lookForCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, geocacheLoadedListener: GeocacheLoadedListener?, parent: Job?): List<Geocache>
+    suspend fun lookForCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, geocacheLoadedListener: GeocacheLoadedListener?, parent: Job?): List<Geocache>
 
     /**
      * Creates GPX file of given geocaches.
