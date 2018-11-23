@@ -195,12 +195,6 @@ Once the properties are provided, signing will be enabled automatically.
 ## Additional notes
 * __Skip premium caches__ - If enabled the tool will simply skip premium caches __earlier__. If you are a _basic member_ and disable this option, the tool will try to load cache's details anyway and once it discovers that it can not load the cache (because you are a _basic member_), it skips it. (The tool has no idea whether you are a _basic member_ or a _premium_ one.)
 
-## How to contribute
-Any kind of contribution is welcome. If you have any ideas, bug-fxies or improvements, just create a pull request or contact me via email. Thank you.
-
-## Acknowledgment
-Special thanks to [c:geo](https://github.com/cgeo/cgeo) team for inspiring me to create the application.
-
 ## Release notes
 ##### 2018-11-23: core v2.0.0 & webapp v1.0.3 & android v1.0.0
 * __core__
@@ -212,3 +206,13 @@ Special thanks to [c:geo](https://github.com/cgeo/cgeo) team for inspiring me to
   * First release.
 * Added signing options to all modules.
 * Updated dependencies to newer versions.
+
+## How to contribute
+Any kind of contribution is welcome. If you have any ideas, bug-fxies or improvements, just create a pull request or contact me via email. Thank you.
+
+## How to donate
+[![PayPal](https://i1.wp.com/hasutsuki.com/wp-content/uploads/2018/06/buy-me-a-coffee-with-paypal.png?ssl=1)](https://www.paypal.me/gcUnicorn)
+
+## Acknowledgment
+Special thanks to [c:geo](https://github.com/cgeo/cgeo) team for inspiring me to create the application.
+
