@@ -120,6 +120,8 @@ Android version of the tool supports all Android version since Jelly Bean (API 1
 
 As a bonus, the application interacts with popular Android map application called [Locus Map](http://www.locusmap.eu/). You can find shortcuts to gcUnicorn within main _Geocaching functions_ menu and within _Point view_'s share option. If you open the application from later option, latitude and longitude will be transferred from Locus directly into the gcUnicorn.
 
+All the created GPX files are stored within `<externalStorage>/gcUnicorn`.
+
 ## Modules
 The application contains two modules:
 
