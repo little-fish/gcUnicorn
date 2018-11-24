@@ -89,7 +89,7 @@ import kotlinx.android.synthetic.main.layout_search.search_skip_premium as skipP
  * Search activity.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
@@ -260,6 +260,10 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
                 startActivity(Intent(this, AboutActivity::class.java))
                 true
             }
+            android.R.id.home -> {
+                finish()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -292,6 +296,12 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
         setContentView(R.layout.activity_search)
 
         setSupportActionBar(toolbar)
+
+        intent?.let {
+            if (it.action == LocusConst.INTENT_ITEM_POINT_TOOLS || it.action == LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            }
+        }
 
         // Fill the spinner with available cache types.
         cacheTypeSpinner.adapter = ArrayAdapter(this, R.layout.item_spinner, CacheType.values().map { it.pattern })

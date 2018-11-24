@@ -45,6 +45,8 @@
         <activity
                 android:name=".ui.activity.SearchActivity"
                 android:label="@string/activity_search"
+                android:exported="true"
+                android:launchMode="singleTop"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -65,19 +67,15 @@
         <activity
                 android:name=".ui.activity.SettingsActivity"
                 android:label="@string/action_settings"
-                android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.activity.SearchActivity"/>
+                android:theme="@style/AppTheme.NoActionBar"
+                android:parentActivityName=".ui.activity.SearchActivity">
         </activity>
 
         <activity
                 android:name=".ui.activity.AboutActivity"
                 android:label="@string/action_about"
-                android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.activity.SearchActivity"/>
+                android:theme="@style/AppTheme.NoActionBar"
+                android:parentActivityName=".ui.activity.SearchActivity">
         </activity>
 
         <service

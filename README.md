@@ -32,9 +32,9 @@ The application contains two modules:
 See [gcUnicorn-webapp album](https://photos.app.goo.gl/vA4nyUmZSjE3HxUQ8) for full resolution screenshots.
 
 ### Android application
-![Main activity](https://goo.gl/A1jLmC) ![Settings activity](https://goo.gl/oGEHA4) ![About activity](https://goo.gl/xvvdJB)
+![Main activity](https://goo.gl/FPmUJ1) ![Settings activity](https://goo.gl/NLgWMW) ![About activity](https://goo.gl/1mWPo6)
 
-See [gcUnicorn-android album](https://photos.app.goo.gl/rkFMoohCSW3YfsYc8) for full resolution screenshots.
+See [gcUnicorn-android album](https://photos.app.goo.gl/8TUfrMJ5ZF7pc8nLA) for full resolution screenshots.
 
 ## How to run
 ### Web application
@@ -198,6 +198,10 @@ Once the properties are provided, signing will be enabled automatically.
 * __Skip premium caches__ - If enabled the tool will simply skip premium caches __earlier__. If you are a _basic member_ and disable this option, the tool will try to load cache's details anyway and once it discovers that it can not load the cache (because you are a _basic member_), it skips it. (The tool has no idea whether you are a _basic member_ or a _premium_ one.)
 
 ## Release notes
+##### 2018-11-23: android v1.0.1
+* __android__
+  * Changed navigation between activities.
+
 ##### 2018-11-23: core v2.0.0 & webapp v1.0.3 & android v1.0.0
 * __core__
   * Removed Java 8 features not available at Android SDK 16. (See [How to build](#core).)
