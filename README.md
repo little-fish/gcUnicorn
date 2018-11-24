@@ -198,7 +198,7 @@ Once the properties are provided, signing will be enabled automatically.
 * __Skip premium caches__ - If enabled the tool will simply skip premium caches __earlier__. If you are a _basic member_ and disable this option, the tool will try to load cache's details anyway and once it discovers that it can not load the cache (because you are a _basic member_), it skips it. (The tool has no idea whether you are a _basic member_ or a _premium_ one.)
 
 ## Release notes
-##### 2018-11-23: android v1.0.1
+##### 2018-11-24: android v1.0.1
 * __android__
   * Changed navigation between activities.
 
