@@ -1246,7 +1246,7 @@ object Constant {
     @JvmField val REGEX_CACHE_HINT = "<div id=\"div_hint\"[^>]*>([\\s\\S]*?)</div>".toRegex()
     @JvmField val REGEX_CACHE_PERSONAL_NOTE = "<span id=\"cache_note\"[^>]*>([\\s\\S]*?)</span>".toRegex()
     @JvmField val REGEX_CACHE_DESCRIPTION_SHORT = "<span id=\"ctl00_ContentBody_ShortDescription\">([\\s\\S]*?)</span>\\s*</div>".toRegex()
-    @JvmField val REGEX_CACHE_DESCRIPTION = "<span id=\"ctl00_ContentBody_LongDescription\">([\\s\\S]*?)</span>\\s*</div>\\s*<p>\\s*</p>\\s*<(p|div) id=\"ctl00_ContentBody".toRegex()
+    @JvmField val REGEX_CACHE_DESCRIPTION = "<span id=\"ctl00_ContentBody_LongDescription\">([\\s\\S]*?)</span>\\s*</div>\\s*<(p|div) id=\"ctl00_ContentBody".toRegex()
     @JvmField val REGEX_CACHE_DESCRIPTION_RELATED_PAGE = "ctl00_ContentBody_uxCacheUrl.*? href=\"(.*?)\">".toRegex()
     @JvmField val REGEX_CACHE_ALL_ATTRIBUTES = "(<img src=\"/images/attributes.*?)(?:<p).*?".toRegex()
     @JvmField val REGEX_CACHE_ATTRIBUTE = "<img src=\"([^\"]+)\" alt=\"([^\"]+?)\"".toRegex()
