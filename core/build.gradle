@@ -32,10 +32,10 @@ buildscript {
 plugins {
     id 'propdeps'
     id 'propdeps-idea'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.10'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.10'
-    id 'org.jetbrains.kotlin.plugin.allopen' version '1.3.10'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.61'
+    id 'org.jetbrains.kotlin.plugin.allopen' version '1.3.61'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.61'
 }
 
 apply plugin: 'kotlinx-serialization'
@@ -44,11 +44,11 @@ ext {
     // Version OkHttp.
     versionOkHttp = '3.11.0'
     // Version Spring.
-    versionSpring = '5.1.2.RELEASE'
+    versionSpring = '5.2.3.RELEASE'
     // Version Kotlin XML Builder.
     versionKotlinXmlBuilder = '1.4.4'
     // Version Kotlin serialization.
-    versionKotlinSerialization = '0.9.0'
+    versionKotlinSerialization = '0.14.0'
 }
 
 dependencies {

@@ -18,6 +18,25 @@
 
 package cz.babi.gcunicorn.`fun`
 
+object Constant {
+    // XML 1.0
+    // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+    const val XML_10 = "[^" +
+            "\u0009\r\n" +
+            "\u0020-\uD7FF" +
+            "\uE000-\uFFFD" +
+            "\ud800\udc00-\udbff\udfff" +
+            "]"
+
+    // XML 1.1
+    // [#x1-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+    const val XML_11 = "[^" +
+            "\u0001-\uD7FF" +
+            "\uE000-\uFFFD" +
+            "\ud800\udc00-\udbff\udfff" +
+            "]"
+}
+
 /**
  * Checks whether underlying string contains any HTML sequence.
  * @return True if underlying string contains any HTML sequence. Otherwise returns false.
@@ -39,8 +58,8 @@ fun String.containsHtml() = "<[^>]+>|&+".toRegex().containsMatchIn(this)
 fun String.rot13(): String {
     val output = StringBuilder()
 
-    for(i in 0 until this.length) {
-        var c: Char = this[i]
+    for(element in this) {
+        var c: Char = element
 
         when(c) {
             in 'a'..'m' -> c += 13
@@ -53,4 +72,20 @@ fun String.rot13(): String {
     }
 
     return output.toString()
+}
+
+/**
+ * Removes invalid characters and return text compatible with XML 1.0 specification.
+ * @return Text compatible with XML 1.0 specification.
+ */
+fun String.validateXml10(): String {
+    return this.replace(Constant.XML_10, "")
+}
+
+/**
+ * Removes invalid characters and return text compatible with XML 1.1 specification.
+ * @return Text compatible with XML 1.1 specification.
+ */
+fun String.validateXml11(): String {
+    return this.replace(Constant.XML_11, "")
 }

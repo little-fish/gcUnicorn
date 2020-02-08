@@ -28,9 +28,9 @@ subprojects {
         maintainer = 'Martin Misiarz'
 
         // Kotlin version.
-        versionKotlin = '1.3.10'
+        versionKotlin = '1.3.61'
         // Version Kotlin coroutines.
-        versionKotlinCoroutines = '1.0.1'
+        versionKotlinCoroutines = '1.3.3'
         // Version Slf4J.
         versionSlf4J = '1.7.25'
         // Version Logback.

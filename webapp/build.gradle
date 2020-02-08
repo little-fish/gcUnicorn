@@ -23,14 +23,14 @@ plugins {
     id 'io.spring.dependency-management'
     id 'propdeps'
     id 'propdeps-idea'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.10'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.10'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.61'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.61'
 }
 
 ext {
     // Spring Boot.
-    versionSpringBoot = '2.1.0.RELEASE'
+    versionSpringBoot = '2.2.4.RELEASE'
 }
 
 repositories {
@@ -84,7 +84,7 @@ ext {
 }
 
 dependencies {
-    compile project(':gcUnicorn-core')
+    implementation project(':gcUnicorn-core')
     optional(
             'org.springframework.boot:spring-boot-configuration-processor'
     )

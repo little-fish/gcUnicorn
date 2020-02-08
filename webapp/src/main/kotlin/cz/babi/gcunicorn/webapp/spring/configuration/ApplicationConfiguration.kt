@@ -31,6 +31,8 @@ import cz.babi.gcunicorn.core.network.service.geocachingcom.GeoCachingCom
 import cz.babi.gcunicorn.webapp.desktop.Tray
 import cz.babi.gcunicorn.webapp.desktop.TrayCondition
 import cz.babi.gcunicorn.webapp.entity.task.JobsWrapper
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.CookieJar
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -63,7 +65,7 @@ class ApplicationConfiguration {
     fun cookieJar() = InMemoryCookieJar()
 
     @Bean
-    fun okHttpClient(headerInterceptor: Interceptor, loggingInterceptor: Interceptor, cookieJar: CookieJar) = OkHttpClient.Builder()
+    fun okHttpClient(headerInterceptor: Interceptor, loggingInterceptor: Interceptor, cookieJar: CookieJar): OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
@@ -72,7 +74,7 @@ class ApplicationConfiguration {
             .cookieJar(cookieJar)
             .addNetworkInterceptor(headerInterceptor)
             .addNetworkInterceptor(loggingInterceptor)
-            .build()!!
+            .build()
 
     @Bean
     fun network() = Network(okHttpClient(headerInterceptor(), loggingInterceptor(), cookieJar()))
@@ -96,7 +98,10 @@ class ApplicationConfiguration {
 //    fun jsonReader() = jsonMapper().reader()!!
 
     @Bean
-    fun service() = GeoCachingCom(network(), parsers())
+    fun json() = Json(JsonConfiguration.Stable)
+
+    @Bean
+    fun service() = GeoCachingCom(network(), parsers(), json())
 
     /** The bean is a good candidate for session scoped component. But the component is used during WebSocket communication so there is no way to obtain it from the session. */
     @Bean

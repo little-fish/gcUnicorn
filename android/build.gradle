@@ -18,7 +18,7 @@
 
 buildscript {
     ext {
-        versionAndroidTools = '3.2.1'
+        versionAndroidTools = '3.5.2'
     }
 
     repositories {
@@ -123,7 +123,7 @@ android {
             crunchPngs false
 
             proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
-            proguardFiles fileTree(dir: 'proguard-rules', include: '*.pro') as File[]
+            proguardFiles fileTree(dir: 'proguard-rules', include: '*.pro').getFiles() as File[]
         }
 
         dev {

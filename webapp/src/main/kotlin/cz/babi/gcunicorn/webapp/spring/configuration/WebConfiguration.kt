@@ -61,6 +61,7 @@ import org.xnio.ByteBufferSlicePool
 import org.xnio.OptionMap
 import org.xnio.Xnio
 import java.util.Locale
+import java.util.function.Supplier
 import javax.servlet.Filter
 
 /**
@@ -98,7 +99,7 @@ class WebConfiguration : WebMvcConfigurer {
 
         factory.addDeploymentInfoCustomizers(UndertowDeploymentInfoCustomizer { deploymentInfo ->
                 deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, WebSocketDeploymentInfo().apply {
-                        worker = Xnio.getInstance("nio", Undertow::class.java.classLoader).createWorker(OptionMap.builder().map)
+                        worker = Supplier { Xnio.getInstance("nio", Undertow::class.java.classLoader).createWorker(OptionMap.builder().map) }
                         buffers = XnioByteBufferPool(ByteBufferSlicePool(1024, 1024))
                 })
         })

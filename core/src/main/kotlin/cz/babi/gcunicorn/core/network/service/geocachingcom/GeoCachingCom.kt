@@ -18,11 +18,7 @@
 
 package cz.babi.gcunicorn.core.network.service.geocachingcom
 
-import cz.babi.gcunicorn.`fun`.containsHtml
-import cz.babi.gcunicorn.`fun`.format
-import cz.babi.gcunicorn.`fun`.logger
-import cz.babi.gcunicorn.`fun`.nullableExecute
-import cz.babi.gcunicorn.`fun`.rot13
+import cz.babi.gcunicorn.`fun`.*
 import cz.babi.gcunicorn.core.exception.location.CoordinateParseException
 import cz.babi.gcunicorn.core.exception.network.LoginException
 import cz.babi.gcunicorn.core.exception.network.LogoutException
@@ -37,6 +33,7 @@ import cz.babi.gcunicorn.core.network.model.HttpParameters
 import cz.babi.gcunicorn.core.network.model.Image
 import cz.babi.gcunicorn.core.network.service.GeocacheLoadedListener
 import cz.babi.gcunicorn.core.network.service.Service
+import cz.babi.gcunicorn.core.network.service.geocachingcom.Constant.REGEX_KNOWN_INVALID_XML_CHARS
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Attribute
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.AttributeType
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheFilter
@@ -57,7 +54,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.JsonTreeParser
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.content
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.longOrNull
@@ -77,12 +74,13 @@ import kotlin.coroutines.EmptyCoroutineContext
  *
  * @param network Network. It is used for communication with external sites.
  * @param parser Coordination parser. Parse used for parsing geocaches' coordinates.
+ * @param json Json parser.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
  * @version 1.0.0
  * @since 1.0.0
  */
-class GeoCachingCom(private val network: Network, private val parser: Parser) : Service {
+class GeoCachingCom(private val network: Network, private val parser: Parser, private val json: Json) : Service {
 
     companion object {
         private val LOG: Logger = logger<GeoCachingCom>()
@@ -470,7 +468,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
                         if(geocache.code==null) return@waypoint
 
                         element("wpt") {
-                            waypoint.coordinates?.let {
+                            waypoint.coordinates?.let {it ->
                                 attributes("lat" to it.latitude, "lon" to it.longitude)
                             }
                             waypoint.prefix?.let {
@@ -497,7 +495,8 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
             }
         }
 
-        return String(gpx.toString(formatOutput).toByteArray())
+//        return String(gpx.toString(formatOutput).toByteArray())
+        return gpx.toString(formatOutput).replace(REGEX_KNOWN_INVALID_XML_CHARS, "")
     }
 
     /**
@@ -1010,9 +1009,9 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
         val cacheLogs = network.getResponseStringBody(network.getRequest(Constant.URI_CACHE_LOGBOOK, parameters, null))
 
         try {
-            val logEntries = JsonTreeParser.parse(cacheLogs)
+            val logEntries = json.parseJson(cacheLogs).jsonObject
 
-            if(logEntries.getOrNull(Constant.REQUEST_STATUS)?.content=="success") {
+            if(logEntries[Constant.REQUEST_STATUS]?.content=="success") {
                 val cacheLogEntries = mutableListOf<LogEntry>()
 
                 logEntries.getArrayOrNull(Constant.REQUEST_DATA)
@@ -1020,25 +1019,25 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
                             val logEntry = LogEntry()
                             val jsonLogEntry = jsonLogEntryElement.jsonObject
 
-                            jsonLogEntry.getOrNull(Constant.LOG_ID)?.longOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_ID]?.longOrNull.nullableExecute({
                                 logEntry.id = this
                             }, {
                                 LOG.warn("Can not obtain log entry's id.")
                             })
 
-                            jsonLogEntry.getOrNull(Constant.LOG_TYPE)?.contentOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_TYPE]?.contentOrNull.nullableExecute({
                                 logEntry.type = LogType.findByType(this)
                             }, {
                                 LOG.warn("Can not obtain log entry's id.")
                             })
 
-                            jsonLogEntry.getOrNull(Constant.LOG_TEXT)?.contentOrNull?.trim()?.replace("<p>", "")?.replace("</p>", "").nullableExecute({
+                            jsonLogEntry[Constant.LOG_TEXT]?.contentOrNull?.trim()?.replace("<p>", "")?.replace("</p>", "").nullableExecute({
                                 logEntry.text = this
                             }, {
                                 LOG.warn("Can not obtain log entry's text.")
                             })
 
-                            jsonLogEntry.getOrNull(Constant.LOG_VISITED)?.contentOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_VISITED]?.contentOrNull.nullableExecute({
                                 try {
                                     logEntry.visited = SimpleDateFormat(Constant.PATTERN_DATE_PAGE, Locale.ENGLISH).parse(this).time
                                 } catch (e: ParseException) {
@@ -1048,27 +1047,27 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
                                 LOG.warn("Can not obtain log visited.")
                             })
 
-                            jsonLogEntry.getOrNull(Constant.LOG_AUTHOR)?.contentOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_AUTHOR]?.contentOrNull.nullableExecute({
                                 logEntry.author = this
                             }, {
                                 LOG.warn("Can not obtain log author.")
                             })
 
-                            jsonLogEntry.getOrNull(Constant.LOG_AUTHOR_ID)?.longOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_AUTHOR_ID]?.longOrNull.nullableExecute({
                                 logEntry.authorId = this
                             }, {
                                 LOG.warn("Can not obtain log author's id.")
                             })
 
                             val logImages = mutableListOf<Image>()
-                            jsonLogEntry.getOrNull(Constant.LOG_IMAGES)?.jsonArray?.forEach logImageTree@ { logImageTreeElement ->
+                            jsonLogEntry[Constant.LOG_IMAGES]?.jsonArray?.forEach logImageTree@ { logImageTreeElement ->
                                 val logImageTree = logImageTreeElement.jsonObject
-                                val imageFileName = logImageTree.getOrNull(Constant.LOG_IMAGE_FILENAME)?.contentOrNull ?: return@logImageTree
+                                val imageFileName = logImageTree.get(Constant.LOG_IMAGE_FILENAME)?.contentOrNull ?: return@logImageTree
 
                                 val logImage = Image(Constant.URI_IMAGE_LARGE + imageFileName)
                                 logImage.guid = imageFileName.substringBefore(".")
 
-                                logImageTree.getOrNull(Constant.LOG_IMAGE_NAME)?.contentOrNull.nullableExecute({
+                                logImageTree[Constant.LOG_IMAGE_NAME]?.contentOrNull.nullableExecute({
                                     if (isNotEmpty()) {
                                         logImage.title = this
                                     }
@@ -1076,7 +1075,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser) : 
                                     LOG.warn("Can not obtain log image's name.")
                                 })
 
-                                logImageTree.getOrNull(Constant.LOG_IMAGE_DESCRIPTION)?.contentOrNull.nullableExecute({
+                                logImageTree[Constant.LOG_IMAGE_DESCRIPTION]?.contentOrNull.nullableExecute({
                                     if (isNotEmpty()) logImage.description = this
                                 }, {
                                     LOG.warn("Can not obtain log image's description.")
@@ -1275,4 +1274,5 @@ object Constant {
     @JvmField val REGEX_CACHE_WAYPOINTS_ITEM_COORDINATIONS = ">([\\s\\S]*?)&nbsp;[\\s\\S]*?</td>".toRegex()
     @JvmField val REGEX_TRACKABLE_CODE = "CoordInfoCode\">(TB[0-9A-Z]+)<".toRegex()
     @JvmField val REGEX_TRACKABLE_ID = "/my/watchlist\\.aspx\\?b=(\\d+)\"".toRegex()
+    @JvmField val REGEX_KNOWN_INVALID_XML_CHARS = "(&#8;)".toRegex()
 }

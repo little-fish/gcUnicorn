@@ -35,6 +35,8 @@ import cz.babi.gcunicorn.core.network.service.geocachingcom.GeoCachingCom
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
@@ -71,7 +73,7 @@ abstract class ServiceModule {
         @Provides
         @Singleton
         @JvmStatic
-        fun providesService(network: Network, parserWrapper: ParserWrapper) = GeoCachingCom(network, parserWrapper)
+        fun providesService(network: Network, parserWrapper: ParserWrapper, json: Json) = GeoCachingCom(network, parserWrapper, json)
 
         @Provides
         @Singleton
@@ -106,6 +108,11 @@ abstract class ServiceModule {
                 DecimalDegreesParser(),
                 DegreesDecimalMinuteParser()
         )
+
+        @Provides
+        @Singleton
+        @JvmStatic
+        fun providesJson() = Json(JsonConfiguration.Stable)
 
         private fun applyTlsPatch(builder: OkHttpClient.Builder) {
             if (Build.VERSION.SDK_INT in Build.VERSION_CODES.JELLY_BEAN..Build.VERSION_CODES.LOLLIPOP) {
