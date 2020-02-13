@@ -18,6 +18,7 @@
 
 package cz.babi.gcunicorn.core.location.parser.impl
 
+import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.core.exception.location.CoordinateParseException
 import cz.babi.gcunicorn.core.location.Coordinates
 import cz.babi.gcunicorn.core.location.parser.Parser
@@ -26,29 +27,29 @@ import cz.babi.gcunicorn.core.location.parser.Parser
  * Decimal degrees format parser.
  *
  * Parser supports following format:
- * * X DD.DDDDDDD°
+ * * DD.DDDDDDD° X
  *
  * Following are valid examples:
- * * N 18,556°, E 45.555°
- * * N18,W 45.555
- * * N 18,556 , E 45°
- * * s 18.556° , W45°
+ * * 18,556° N, 45.555° E
+ * * 18N,45.555 W
+ * * 18,556 N , 45° E
+ * * 18.556° s , 45° W
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
  * @version 1.0.0
  * @since 1.0.0
  */
-open class DecimalDegreesParser : Parser {
+open class DecimalDegreesRightSideParser : Parser {
 
     companion object {
-        //                               (     2 & 5     )
-        internal const val PATTERN = "\\s?(-?\\d+[.,]?\\d+)°?"
-        //                                    ( 1  )
-        private const val PATTERN_LATITUDE = "([NS])$PATTERN"
-        //                                     ( 4  )
-        private const val PATTERN_LONGITUDE = "([EW])$PATTERN"
+        //                               (     1 & 4     )
+        private const val PATTERN = "\\s?(-?\\d+[.,]?\\d+)°?\\s?"
+        //                                            ( 2  )
+        private const val PATTERN_LATITUDE = "$PATTERN([NS])"
+        //                                             ( 5  )
+        private const val PATTERN_LONGITUDE = "$PATTERN([EW])"
         //                                     (       3        )
-        internal const val PATTERN_SEPARATOR = "(\\s?,?\\s?)"
+        private const val PATTERN_SEPARATOR = "(\\s?,?\\s?)"
 
         @JvmField val REGEX_LATITUDE = PATTERN_LATITUDE.toRegex(RegexOption.IGNORE_CASE)
         @JvmField val REGEX_LONGITUDE = PATTERN_LONGITUDE.toRegex(RegexOption.IGNORE_CASE)
@@ -59,7 +60,7 @@ open class DecimalDegreesParser : Parser {
         val values = REGEX_LATITUDE.find(text.trim())?.groupValues
 
         if(values!=null && values.size==3) {
-            return createCoordinate(values[1], values[2], "", "")
+            return createCoordinate(values[2], values[1], "", "")
         }
 
         throw CoordinateParseException("Can't parse latitude. Given input text '$text' doesn't match the pattern.")
@@ -69,7 +70,7 @@ open class DecimalDegreesParser : Parser {
         val values = REGEX_LONGITUDE.find(text.trim())?.groupValues
 
         if(values!=null && values.size==3) {
-            return createCoordinate(values[1], values[2], "", "")
+            return createCoordinate(values[2], values[1], "", "")
         }
 
         throw CoordinateParseException("Can't parse longitude. Given input text '$text' doesn't match the pattern.")

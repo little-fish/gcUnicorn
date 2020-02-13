@@ -66,7 +66,7 @@ import javax.servlet.http.HttpSession
  * @param simpMessagingTemplate Simple message template.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 @Controller
@@ -164,7 +164,7 @@ class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheF
         jobsWrapper.getSearchJob(httpSession.id, jobId).nullableExecute({
             if(this.job.isCompleted) {
                 httpServletResponse.characterEncoding = Charsets.UTF_8.name()
-                httpServletResponse.setHeader("Content-Type", MediaType.APPLICATION_XML_VALUE)
+                httpServletResponse.setHeader("Content-Type", "application/gpx+xml")
                 httpServletResponse.setHeader("Content-Disposition", "attachment;filename=gcunicorn_${start.dateFormat(Constant.DATETIME_PATTERN_GPX)}.gpx")
 
                 httpServletResponse.writer.use {

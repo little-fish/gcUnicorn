@@ -22,10 +22,7 @@ import android.os.Build
 import android.util.Log
 import cz.babi.gcunicorn.android.network.Tls12SocketFactory
 import cz.babi.gcunicorn.core.location.parser.Parser
-import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreeEmptySidesParser
-import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesParser
-import cz.babi.gcunicorn.core.location.parser.impl.DegreesDecimalMinuteParser
-import cz.babi.gcunicorn.core.location.parser.impl.ParserWrapper
+import cz.babi.gcunicorn.core.location.parser.impl.*
 import cz.babi.gcunicorn.core.network.InMemoryCookieJar
 import cz.babi.gcunicorn.core.network.Network
 import cz.babi.gcunicorn.core.network.interceptor.HeaderInterceptor
@@ -105,6 +102,7 @@ abstract class ServiceModule {
         @JvmStatic
         fun providesParserWrapper() = ParserWrapper(
                 DecimalDegreeEmptySidesParser(),
+                DecimalDegreesRightSideParser(),
                 DecimalDegreesParser(),
                 DegreesDecimalMinuteParser()
         )

@@ -18,11 +18,7 @@
 
 package cz.babi.gcunicorn.webapp.spring.configuration
 
-//import com.fasterxml.jackson.databind.ObjectMapper
-import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreeEmptySidesParser
-import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesParser
-import cz.babi.gcunicorn.core.location.parser.impl.DegreesDecimalMinuteParser
-import cz.babi.gcunicorn.core.location.parser.impl.ParserWrapper
+import cz.babi.gcunicorn.core.location.parser.impl.*
 import cz.babi.gcunicorn.core.network.InMemoryCookieJar
 import cz.babi.gcunicorn.core.network.Network
 import cz.babi.gcunicorn.core.network.interceptor.HeaderInterceptor
@@ -49,7 +45,7 @@ import javax.imageio.ImageIO
  * Application configuration.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.1
+ * @version 1.0.2
  * @since 1.0.0
  */
 @Configuration
@@ -86,16 +82,13 @@ class ApplicationConfiguration {
     fun decimalDegreesParser() = DecimalDegreesParser()
 
     @Bean
+    fun decimalDegreeRightSideParser() = DecimalDegreesRightSideParser()
+
+    @Bean
     fun decimalDegreesEmptySidesParser() = DecimalDegreeEmptySidesParser()
 
     @Bean(name = ["parser"])
-    fun parsers() = ParserWrapper(decimalDegreesParser(), degreesDecimalMinuteParser(), decimalDegreesEmptySidesParser())
-
-//    @Bean
-//    fun jsonMapper() = ObjectMapper()
-//
-//    @Bean
-//    fun jsonReader() = jsonMapper().reader()!!
+    fun parsers() = ParserWrapper(decimalDegreesParser(), degreesDecimalMinuteParser(), decimalDegreesEmptySidesParser(), decimalDegreeRightSideParser())
 
     @Bean
     fun json() = Json(JsonConfiguration.Stable)
