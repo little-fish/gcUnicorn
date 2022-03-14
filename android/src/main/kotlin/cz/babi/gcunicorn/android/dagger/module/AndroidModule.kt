@@ -20,7 +20,8 @@ package cz.babi.gcunicorn.android.dagger.module
 
 import android.app.Application
 import android.content.Context
-import android.preference.PreferenceManager
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import cz.babi.gcunicorn.android.dagger.qualifier.Named
 import cz.babi.gcunicorn.android.preference.PreferenceKey
 import dagger.Module
@@ -45,5 +46,5 @@ class AndroidModule {
     @Provides
     @Singleton
     @Named(Named.PREFERENCES_PRIVATE)
-    fun providesPrivateSharedPreferences(application: Application) = application.getSharedPreferences(PreferenceKey.PRIVATE_PREFS, Context.MODE_PRIVATE)!!
+    fun providesPrivateSharedPreferences(application: Application): SharedPreferences = application.getSharedPreferences(PreferenceKey.PRIVATE_PREFS, Context.MODE_PRIVATE)!!
 }

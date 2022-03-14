@@ -42,6 +42,7 @@ class ShareBroadcastReceiver : BroadcastReceiver() {
         const val EXTRA_MIME_TYPE = "extra_mime_type"
         const val EXTRA_SHARE_TYPE = "extra_share_type"
         const val EXTRA_NOTIFICATION_ID = "extra_notification_id"
+        const val EXTRA_AUTO_CLOSE_NOTIFICATION = "extra_auto_close_notification"
         const val SHARE_TYPE_VIEW = "share_view"
         const val SHARE_TYPE_SEND = "share_send"
     }
@@ -66,11 +67,13 @@ class ShareBroadcastReceiver : BroadcastReceiver() {
             }
 
             val chooseIntent = Intent.createChooser(intentShare, title).apply {
-                flags = FLAG_ACTIVITY_NEW_TASK
+                addFlags(FLAG_ACTIVITY_NEW_TASK)
             }
 
-            intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0).let { id ->
-                context?.dismissNotification(id)
+            if (intent.getBooleanExtra(EXTRA_AUTO_CLOSE_NOTIFICATION, false)) {
+                intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0).let { id ->
+                    context?.dismissNotification(id)
+                }
             }
 
             context?.startActivity(chooseIntent)
@@ -95,5 +98,6 @@ class ShareBroadcastReceiver : BroadcastReceiver() {
     private fun generateSendIntent(uri: Uri, type: String) = Intent(Intent.ACTION_SEND).apply {
         setDataAndType(uri, type)
         putExtra(Intent.EXTRA_STREAM, uri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 }

@@ -39,33 +39,29 @@ class LoggingInterceptor : Interceptor {
         private val PATTERN_PASSWORD = Pattern.compile("(?<=[?&])[Pp]ass(w(or)?d)?=[^&#$]+")
     }
 
-    override fun intercept(chain: Interceptor.Chain?): Response {
-        if(chain!=null) {
-            val request = chain.request()
-            val requestMethod = request.method()
-            val requestUrl = hidePassword(request.url().toString())
-            val now = System.currentTimeMillis()
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val requestMethod = request.method()
+        val requestUrl = hidePassword(request.url().toString())
+        val now = System.currentTimeMillis()
 
-            try {
-                val response = chain.proceed(request)
-                val responseProtocol = "${response.protocol()}"
-                val redirect = if(request.url()==response.request().url()) "" else " redirected to: '${response.request().url()}'"
+        try {
+            val response = chain.proceed(request)
+            val responseProtocol = "${response.protocol()}"
+            val redirect = if(request.url()==response.request().url()) "" else " redirected to: '${response.request().url()}'"
 
-                if(response.isSuccessful || response.code()==302) {
-                    LOG.debug("{} - for request: '{} ({}): {}{}'; duration: {}.", response.code(), requestMethod, responseProtocol, requestUrl, redirect, getDuration(now))
-                } else {
-                    LOG.warn("{} - for request: '{} ({}): {}{}'; with response: '{}'; duration: {}.", response.code(), requestMethod, responseProtocol, requestUrl, redirect, response.message(), getDuration(now))
-                }
-
-                return response
-            } catch (exception: IOException) {
-                LOG.warn("Failure with request: '{}'.", requestUrl, exception)
-
-                throw exception
+            if(response.isSuccessful || response.code()==302) {
+                LOG.debug("{} - for request: '{} ({}): {}{}'; duration: {}.", response.code(), requestMethod, responseProtocol, requestUrl, redirect, getDuration(now))
+            } else {
+                LOG.warn("{} - for request: '{} ({}): {}{}'; with response: '{}'; duration: {}.", response.code(), requestMethod, responseProtocol, requestUrl, redirect, response.message(), getDuration(now))
             }
-        }
 
-        throw IOException("Invalid input chain.")
+            return response
+        } catch (exception: IOException) {
+            LOG.warn("Failure with request: '{}'.", requestUrl, exception)
+
+            throw exception
+        }
     }
 
     /**

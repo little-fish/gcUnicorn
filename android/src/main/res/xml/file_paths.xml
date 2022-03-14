@@ -18,5 +18,7 @@
   -->
 
 <paths>
-    <external-path path="gcUnicorn/" name="gcUnicorn" />
+    <!-- See mapping: https://developer.android.com/reference/androidx/core/content/FileProvider-->
+    <external-path path="gcUnicorn/" name="gcUnicorn-old-api" />
+    <external-files-path path="gcUnicorn/" name="gcUnicorn-new-api" />
 </paths>

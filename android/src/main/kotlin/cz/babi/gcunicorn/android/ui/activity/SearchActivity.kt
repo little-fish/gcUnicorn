@@ -22,20 +22,11 @@ import android.Manifest
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.ActivityNotFoundException
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.JobIntentService
-import android.support.v7.widget.AppCompatEditText
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
@@ -43,47 +34,34 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
-import com.google.android.gms.location.places.ui.PlacePicker
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.app.ActivityCompat
+import androidx.core.app.JobIntentService
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.sucho.placepicker.AddressData
+import com.sucho.placepicker.Constants
+import com.sucho.placepicker.MapType
+import com.sucho.placepicker.PlacePicker
+import cz.babi.gcunicorn.android.BuildConfig
 import cz.babi.gcunicorn.android.R
-import cz.babi.gcunicorn.android.`fun`.ACTION_NOTIFY
-import cz.babi.gcunicorn.android.`fun`.ACTIVITY_PLACE_PICKER
-import cz.babi.gcunicorn.android.`fun`.FILTER_DEFAULT_CACHE_COUNT
-import cz.babi.gcunicorn.android.`fun`.FILTER_MAX_CACHE_COUNT
-import cz.babi.gcunicorn.android.`fun`.FILTER_MAX_DISTANCE
-import cz.babi.gcunicorn.android.`fun`.NOTIFICATION_CHANNEL_ID
-import cz.babi.gcunicorn.android.`fun`.PERMISSION_LOCATION_COARSE
-import cz.babi.gcunicorn.android.`fun`.PERMISSION_LOCATION_FINE
-import cz.babi.gcunicorn.android.`fun`.PERMISSION_WAKE_LOCK
-import cz.babi.gcunicorn.android.`fun`.PERMISSION_WRITE_EXTERNAL_STORAGE
-import cz.babi.gcunicorn.android.`fun`.SERVICE_JOB_ID
-import cz.babi.gcunicorn.android.`fun`.hasPermissions
-import cz.babi.gcunicorn.android.`fun`.localBroadcastManager
-import cz.babi.gcunicorn.android.`fun`.rootView
-import cz.babi.gcunicorn.android.`fun`.snack
-import cz.babi.gcunicorn.android.`fun`.toDoubleOrNull
-import cz.babi.gcunicorn.android.`fun`.toEditable
-import cz.babi.gcunicorn.android.`fun`.toFloatOrNull
-import cz.babi.gcunicorn.android.`fun`.toIntOrNull
+import cz.babi.gcunicorn.android.`fun`.*
+import cz.babi.gcunicorn.android.databinding.ActivitySearchBinding
 import cz.babi.gcunicorn.android.preference.PreferenceKey
 import cz.babi.gcunicorn.android.service.UnicornService
+import cz.babi.gcunicorn.android.storage.useNewStorageApi
 import cz.babi.gcunicorn.android.ui.dialog.Error
 import cz.babi.gcunicorn.android.ui.dialog.LocationAcquiringDialogFragment
 import cz.babi.gcunicorn.android.ui.dialog.OnError
 import cz.babi.gcunicorn.android.ui.dialog.OnLocationAcquired
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheType
+import locus.api.android.utils.IntentHelper
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
 import locus.api.objects.extra.Location
 import java.security.SecureRandom
-import kotlinx.android.synthetic.main.activity_search.search_toolbar as toolbar
-import kotlinx.android.synthetic.main.layout_search.search_allow_disabled as allowDisabledSwitch
-import kotlinx.android.synthetic.main.layout_search.search_cache_type as cacheTypeSpinner
-import kotlinx.android.synthetic.main.layout_search.search_download as downloadBtn
-import kotlinx.android.synthetic.main.layout_search.search_gps as gpsBtn
-import kotlinx.android.synthetic.main.layout_search.search_include_own as includeOwnSwitch
-import kotlinx.android.synthetic.main.layout_search.search_map as mapBtn
-import kotlinx.android.synthetic.main.layout_search.search_max_distance as maxDistanceEditText
-import kotlinx.android.synthetic.main.layout_search.search_skip_premium as skipPremiumSwitch
+
 
 /**
  * Search activity.
@@ -98,28 +76,30 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
         private const val TAG = "SEARCH_ACTIVITY"
     }
 
+    private lateinit var binding: ActivitySearchBinding
+
     private val maxCountEditText: AppCompatEditText by lazy {
-        findViewById<AppCompatEditText>(R.id.search_max_count)
+        binding.layoutSearch.searchMaxCount
     }
 
     private val maxCountLayoutWrapper: TextInputLayout by lazy {
-        findViewById<TextInputLayout>(R.id.search_max_count_wrapper)
+        binding.layoutSearch.searchMaxCountWrapper
     }
 
     private val latitudeEditText: TextInputEditText by lazy {
-        findViewById<TextInputEditText>(R.id.search_lat)
+        binding.layoutSearch.searchLat
     }
 
     private val latitudeLayoutWrapper: TextInputLayout by lazy {
-        findViewById<TextInputLayout>(R.id.search_lat_wrapper)
+        binding.layoutSearch.searchLatWrapper
     }
 
     private val longitudeEditText: AppCompatEditText by lazy {
-        findViewById<AppCompatEditText>(R.id.search_lon)
+        binding.layoutSearch.searchLon
     }
 
     private val longitudeLayoutWrapper: TextInputLayout by lazy {
-        findViewById<TextInputLayout>(R.id.search_lon_wrapper)
+        binding.layoutSearch.searchLonWrapper
     }
 
     private val maxCountTextWatcherListener =
@@ -269,11 +249,17 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == ACTIVITY_PLACE_PICKER) {
-            val place = PlacePicker.getPlace(this, data)
+        super.onActivityResult(requestCode, resultCode, data)
 
-            latitudeEditText.text = place.latLng.latitude.toEditable()
-            longitudeEditText.text = place.latLng.longitude.toEditable()
+        when (requestCode) {
+            ACTIVITY_RESULT_PLACE_PICKER -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.getParcelableExtra<AddressData>(Constants.ADDRESS_INTENT)?.let {
+                        latitudeEditText.text = it.latitude.toEditable()
+                        longitudeEditText.text = it.longitude.toEditable()
+                    }
+                }
+            }
         }
     }
 
@@ -281,9 +267,12 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            PERMISSION_WRITE_EXTERNAL_STORAGE, PERMISSION_WAKE_LOCK -> {
+            PERMISSION_WRITE_EXTERNAL_STORAGE, PERMISSION_WAKE_LOCK, PERMISSION_READ_EXTERNAL_STORAGE -> {
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    finish()
+                    buildNeutralDialog(R.string.dialog_no_required_permission_title, R.string.dialog_no_required_permission_message, R.string.text_bye_bye) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        finish()
+                    }.show()
                 }
             }
         }
@@ -293,9 +282,11 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
      * Binds view to this activity and set-up widgets.
      */
     private fun bindView() {
-        setContentView(R.layout.activity_search)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
 
-        setSupportActionBar(toolbar)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.searchToolbar)
 
         intent?.let {
             if (it.action == LocusConst.INTENT_ITEM_POINT_TOOLS || it.action == LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC) {
@@ -304,20 +295,20 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
         }
 
         // Fill the spinner with available cache types.
-        cacheTypeSpinner.adapter = ArrayAdapter(this, R.layout.item_spinner, CacheType.values().map { it.pattern })
+        binding.layoutSearch.searchCacheType.adapter = ArrayAdapter(this, R.layout.item_spinner, CacheType.values().map { it.pattern })
                 .apply {
                     setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 }
 
-        gpsBtn.setOnClickListener {
+        binding.layoutSearch.searchGps.setOnClickListener {
             acquireLocationFromGpsOrNetwork()
         }
 
-        mapBtn.setOnClickListener {
+        binding.layoutSearch.searchMap.setOnClickListener {
             acquireLocationFromMaps()
         }
 
-        downloadBtn.setOnClickListener {
+        binding.layoutSearch.searchDownload.setOnClickListener {
             startDownloadProcess()
         }
     }
@@ -361,9 +352,12 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
             key.fill(0)
         }
 
-        // Request write permission.
-        if (!this.hasPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_WRITE_EXTERNAL_STORAGE)
+        // Request write permission for SDK < 21.
+        // For SDK >= 21 we will store data in the application's folder.
+        if (!useNewStorageApi()) {
+            if (!this.hasPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_WRITE_EXTERNAL_STORAGE)
+            }
         }
 
         // Request wake lock permission.
@@ -379,8 +373,8 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
         if (LocusUtils.isLocusAvailable(this)) {
             // Obtain location from Locus.
             when {
-                LocusUtils.isIntentMainFunctionGc(intent) -> obtainLocusLocationFromIntent(intent)
-                LocusUtils.isIntentPointTools(intent) -> LocusUtils.handleIntentPointTools(this, intent).location
+                IntentHelper.isIntentMainFunctionGc(intent) -> obtainLocusLocationFromIntent(intent)
+                IntentHelper.isIntentPointTools(intent) -> IntentHelper.getPointFromIntent(this, intent)?.location
                 else -> null
             }?.also {
                 latitudeEditText.text = it.latitude.toEditable()
@@ -390,13 +384,13 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
     }
 
     /**
-     * Activity could be started from different Locus locations. Therefore we need to obtain location comming from different [Intent]s a different way.
+     * Activity could be started from different Locus locations. Therefore, we need to obtain location coming from different [Intent]s a different way.
      * @param intent [Intent] sent from Locus.
      * @return Location if exists, otherwise returns null.
      */
     private fun obtainLocusLocationFromIntent(intent: Intent): Location? = when {
-        intent.hasExtra(LocusConst.INTENT_EXTRA_LOCATION_GPS) -> LocusUtils.getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS)
-        intent.hasExtra(LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER) -> LocusUtils.getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER)
+        intent.hasExtra(LocusConst.INTENT_EXTRA_LOCATION_GPS) -> IntentHelper.getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS)
+        intent.hasExtra(LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER) -> IntentHelper.getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER)
         else -> null
     }
 
@@ -428,11 +422,30 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
     }
 
     /**
-     * Starts new activity with Google maps and let an user to pick the location.
+     * Starts new activity to pick a location.
      */
     private fun acquireLocationFromMaps() {
         try {
-            startActivityForResult(PlacePicker.IntentBuilder().build(this), ACTIVITY_PLACE_PICKER)
+            startActivityForResult(PlacePicker.IntentBuilder()
+                    .setLatLong(49.6279094, 18.6274503)  // Initial Latitude and Longitude the Map will load into
+                    .showLatLong(true)  // Show Coordinates in the Activity
+                    .setMapZoom(12.0f)  // Map Zoom Level. Default: 14.0
+                    .setAddressRequired(false) // Set If return only Coordinates if cannot fetch Address for the coordinates. Default: True
+                    .hideMarkerShadow(true) // Hides the shadow under the map marker. Default: False
+//                    .setMarkerDrawable(R.drawable.ic_map_marker) // Change the default Marker Image
+                    .setMarkerImageImageColor(R.color.colorPrimary)
+                    .setFabColor(R.color.colorPrimary)
+                    .setPrimaryTextColor(R.color.colorPrimaryText) // Change text color of Shortened Address
+                    .setSecondaryTextColor(R.color.colorSecondaryText) // Change text color of full Address
+                    .setBottomViewColor(R.color.colorBackground) // Change Address View Background Color (Default: White)
+                    .setMapRawResourceStyle(R.raw.map_style)  //Set Map Style (https://mapstyle.withgoogle.com/)
+                    .setMapType(MapType.HYBRID)
+                    .setPlaceSearchBar(false, BuildConfig.API_KEY) //Activate GooglePlace Search Bar. Default is false/not activated. SearchBar is a chargeable feature by Google
+                    .onlyCoordinates(true)  //Get only Coordinates from Place Picker
+                    .hideLocationButton(true)   //Hide Location Button (Default: false)
+                    .disableMarkerAnimation(true)   //Disable Marker Animation (Default: false)
+                    .build(this),
+                ACTIVITY_RESULT_PLACE_PICKER)
         } catch (e: ActivityNotFoundException) {
             rootView.snack(getString(R.string.error_can_not_start_place_picker), 3000)
             Log.e(TAG, "Can not create place picker.", e)
@@ -485,14 +498,12 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
             JobIntentService.enqueueWork(this, UnicornService::class.java, SERVICE_JOB_ID, Intent().apply {
                 putExtra(UnicornService.COORDINATION_LAT, latitudeEditText.text.toString())
                 putExtra(UnicornService.COORDINATION_LON, longitudeEditText.text.toString())
-                putExtra(UnicornService.FILTER_CACHE_TYPE, cacheTypeSpinner.selectedItem.toString())
-                putExtra(UnicornService.FILTER_MAX_CACHE_COUNT, maxCountEditText.text.toIntOrNull()
-                        ?: FILTER_DEFAULT_CACHE_COUNT)
-                putExtra(UnicornService.FILTER_MAX_DISTANCE, maxDistanceEditText.text.toDoubleOrNull()
-                        ?: FILTER_MAX_DISTANCE)
-                putExtra(UnicornService.FILTER_ALLOW_DISABLED, allowDisabledSwitch.isChecked)
-                putExtra(UnicornService.FILTER_INCLUDE_OWN_AND_FOUND, includeOwnSwitch.isChecked)
-                putExtra(UnicornService.FILTER_SKIP_PREMIUM, skipPremiumSwitch.isChecked)
+                putExtra(UnicornService.FILTER_CACHE_TYPE, binding.layoutSearch.searchCacheType.selectedItem.toString())
+                putExtra(UnicornService.FILTER_MAX_CACHE_COUNT, maxCountEditText.text.toIntOrNull() ?: FILTER_DEFAULT_CACHE_COUNT)
+                putExtra(UnicornService.FILTER_MAX_DISTANCE, binding.layoutSearch.searchMaxDistance.text.toDoubleOrNull() ?: FILTER_MAX_DISTANCE)
+                putExtra(UnicornService.FILTER_ALLOW_DISABLED, binding.layoutSearch.searchAllowDisabled.isChecked)
+                putExtra(UnicornService.FILTER_INCLUDE_OWN_AND_FOUND, binding.layoutSearch.searchIncludeOwn.isChecked)
+                putExtra(UnicornService.FILTER_SKIP_PREMIUM, binding.layoutSearch.searchSkipPremium.isChecked)
             })
         }
     }
@@ -501,7 +512,7 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
      * Validates all inputs and set enable/disable download button accordingly.
      */
     private fun validateInputs() {
-        downloadBtn.isEnabled = isValidMaxCount() && isValidLatitude() && isValidLongitude()
+        binding.layoutSearch.searchDownload.isEnabled = isValidMaxCount() && isValidLatitude() && isValidLongitude()
     }
 
     /**
@@ -534,5 +545,20 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
         val maxCount = maxCountEditText.text.toIntOrNull()
 
         return maxCount != null && maxCount <= FILTER_MAX_CACHE_COUNT
+    }
+
+    /**
+     * Builds a dialog with single neutral button.
+     * @param title Title.
+     * @param message Message.
+     * @param button Button text.
+     * @param action An action to perform on the button click.
+     */
+    private fun buildNeutralDialog(title: Int, message: Int, button: Int, action: (DialogInterface, Int) -> Unit): AlertDialog {
+        return AlertDialog.Builder(this).also {
+            it.setTitle(title)
+            it.setMessage(message)
+            it.setNeutralButton(button, action)
+        }.create()
     }
 }

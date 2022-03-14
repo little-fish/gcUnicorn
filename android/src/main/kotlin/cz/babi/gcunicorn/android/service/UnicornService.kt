@@ -25,11 +25,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.support.v4.app.JobIntentService
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.content.FileProvider
+import android.os.Build
 import android.util.Log
+import androidx.core.app.JobIntentService
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.FileProvider
 import cz.babi.gcunicorn.`fun`.format
 import cz.babi.gcunicorn.`fun`.nullableExecute
 import cz.babi.gcunicorn.android.R
@@ -150,7 +151,7 @@ class UnicornService : JobIntentService() {
                 .setPriority(NotificationManagerCompat.IMPORTANCE_DEFAULT)
                 .setSmallIcon(R.drawable.notification_downloading)
                 .setOngoing(true)
-                .addAction(0, getString(R.string.text_cancel), PendingIntent.getBroadcast(this, 0, Intent(ACTION_CANCEL_DOWNLOADING), PendingIntent.FLAG_ONE_SHOT))
+                .addAction(0, getString(R.string.text_cancel), PendingIntent.getBroadcast(this, 0, Intent(ACTION_CANCEL_DOWNLOADING), createPendingIntentFlags()))
     }
 
     private val shareNotificationBuilder by lazy {
@@ -204,7 +205,7 @@ class UnicornService : JobIntentService() {
                         service.lookForCaches(
                                 parser.parse("${intent.getStringExtra(COORDINATION_LAT)}, ${intent.getStringExtra(COORDINATION_LON)}"),
                                 CacheFilter(
-                                        listOf(CacheType.findByPattern(intent.getStringExtra(FILTER_CACHE_TYPE))),
+                                        listOf(CacheType.findByPattern(intent.getStringExtra(FILTER_CACHE_TYPE)!!)),
                                         intent.getDoubleExtra(FILTER_MAX_DISTANCE, CONST_FILTER_MAX_DISTANCE),
                                         intent.getBooleanExtra(FILTER_ALLOW_DISABLED, false),
                                         intent.getBooleanExtra(FILTER_INCLUDE_OWN_AND_FOUND, false),
@@ -248,13 +249,13 @@ class UnicornService : JobIntentService() {
 
                         val gpxOutput = service.createGpx(geocaches, false)
 
-                        fileWorker.writeToExternalStorage("${jobStarted.format(DATETIME_PATTERN_GPX, Locale.US)}.gpx", gpxOutput).nullableExecute({
+                        fileWorker.writeToExternalStorage(this@UnicornService, "${jobStarted.format(DATETIME_PATTERN_GPX, Locale.US)}.gpx", gpxOutput).nullableExecute({
                             val notificationId = Random.nextInt()
                             shareNotificationBuilder.apply {
                                 setContentTitle("${jobStarted.format(DATETIME_PATTERN_GPX, Locale.US)}.gpx")
                                 setContentText(getString(R.string.notification_gpx_exported))
-                                addAction(0, getString(R.string.action_view_gpx), PendingIntent.getBroadcast(this@UnicornService, Random.nextInt(), createGpxShareBroadcastIntent(this@nullableExecute, notificationId).apply { putExtra(ShareBroadcastReceiver.EXTRA_SHARE_TYPE, ShareBroadcastReceiver.SHARE_TYPE_VIEW) }, 0))
-                                addAction(0, getString(R.string.action_send_gpx), PendingIntent.getBroadcast(this@UnicornService, Random.nextInt(), createGpxShareBroadcastIntent(this@nullableExecute, notificationId).apply { putExtra(ShareBroadcastReceiver.EXTRA_SHARE_TYPE, ShareBroadcastReceiver.SHARE_TYPE_SEND) }, 0))
+                                addAction(0, getString(R.string.action_view_gpx), PendingIntent.getBroadcast(this@UnicornService, Random.nextInt(), createGpxShareBroadcastIntent(this@nullableExecute, notificationId).apply { putExtra(ShareBroadcastReceiver.EXTRA_SHARE_TYPE, ShareBroadcastReceiver.SHARE_TYPE_VIEW) }, createPendingIntentFlags()))
+                                addAction(0, getString(R.string.action_send_gpx), PendingIntent.getBroadcast(this@UnicornService, Random.nextInt(), createGpxShareBroadcastIntent(this@nullableExecute, notificationId).apply { putExtra(ShareBroadcastReceiver.EXTRA_SHARE_TYPE, ShareBroadcastReceiver.SHARE_TYPE_SEND) }, createPendingIntentFlags()))
                             }
                             showNotification(notificationId, shareNotificationBuilder.build())
                         }, {
@@ -297,6 +298,18 @@ class UnicornService : JobIntentService() {
         }
 
         onPostExecute()
+    }
+
+    /**
+     * Creates pending intents default flags.
+     */
+    private fun createPendingIntentFlags(): Int {
+        var pendingIntentFlags = PendingIntent.FLAG_ONE_SHOT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntentFlags = pendingIntentFlags or PendingIntent.FLAG_IMMUTABLE
+        }
+
+        return pendingIntentFlags
     }
 
     /**
@@ -370,7 +383,9 @@ class UnicornService : JobIntentService() {
         action = ACTION_EXPORT_GPX
         putExtra(ShareBroadcastReceiver.EXTRA_MIME_TYPE, ShareBroadcastReceiver.MIME_TYPE_GPX)
         putExtra(ShareBroadcastReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+        putExtra(ShareBroadcastReceiver.EXTRA_AUTO_CLOSE_NOTIFICATION, sharedPreferences.getBoolean(PreferenceKey.AUTO_CLOSE_NOTIFICATION.key, false))
         data = FileProvider.getUriForFile(applicationContext, applicationContext.packageName, file)
+        flags += Intent.FLAG_GRANT_READ_URI_PERMISSION
     }
 
     /**

@@ -20,13 +20,11 @@ package cz.babi.gcunicorn.android.ui.activity
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.NavUtils
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
+import androidx.core.app.NavUtils
 import cz.babi.gcunicorn.android.R
-import kotlinx.android.synthetic.main.activity_about.about_toolbar as toolbar
-import kotlinx.android.synthetic.main.layout_about.about_app_name as appNameTextView
-import kotlinx.android.synthetic.main.layout_about.about_github as githubTextView
+import cz.babi.gcunicorn.android.databinding.ActivityAboutBinding
 
 /**
  * About activity.
@@ -37,22 +35,26 @@ import kotlinx.android.synthetic.main.layout_about.about_github as githubTextVie
  */
 class AboutActivity : BaseAppCompatActivity() {
 
-    override fun onAfterCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_about)
+    private lateinit var binding: ActivityAboutBinding
 
-        setSupportActionBar(toolbar)
+    override fun onAfterCreate(savedInstanceState: Bundle?) {
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.aboutToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val version: String = try {
             " v${packageManager.getPackageInfo(packageName, 0).versionName}"
         } catch (e: PackageManager.NameNotFoundException) { "" }
 
-        appNameTextView.text = getString(R.string.text_app_name) + "-" + getString(R.string.text_android) + version
-        githubTextView.movementMethod = LinkMovementMethod.getInstance()
+        binding.layoutAbout.aboutAppName.text = getString(R.string.text_app_name) + "-" + getString(R.string.text_android) + version
+        binding.layoutAbout.aboutGithub.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             android.R.id.home -> {
                 NavUtils.navigateUpFromSameTask(this)
 

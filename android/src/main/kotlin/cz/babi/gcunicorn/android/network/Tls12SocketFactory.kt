@@ -18,7 +18,7 @@
 
 package cz.babi.gcunicorn.android.network
 
-import kotlinx.io.IOException
+import java.io.IOException
 import java.net.InetAddress
 import java.net.Socket
 import java.net.UnknownHostException

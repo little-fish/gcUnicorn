@@ -17,16 +17,33 @@
   ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="cz.babi.gcunicorn.android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <!-- https://stackoverflow.com/questions/57116335/environment-getexternalstoragedirectory-deprecated-in-api-level-29-java -->
+    <!-- https://developer.android.com/about/versions/11/privacy/storage -->
+    <!-- https://developer.android.com/training/data-storage/use-cases-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="21" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.location" android:required="false"/>
     <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
+
+    <!-- https://github.com/asamm/locus-api/blob/master/locus-api-android/src/main/java/locus/api/android/utils/LocusUtils.kt#L36 -->
+    <queries>
+        <package android:name="menion.android.locus" />
+        <package android:name="menion.android.locus.free.amazon" />
+        <package android:name="menion.android.locus.free.samsung" />
+        <package android:name="menion.android.locus.pro" />
+        <package android:name="menion.android.locus.pro.amazon" />
+        <package android:name="menion.android.locus.pro.asamm" />
+        <package android:name="menion.android.locus.pro.computerBild" />
+    </queries>
 
     <application
             android:name=".dagger.AndroidApplication"
@@ -40,7 +57,7 @@
 
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="@string/google_api_key" />
+                android:value="${API_KEY}" />
 
         <activity
                 android:name=".ui.activity.SearchActivity"
@@ -78,6 +95,11 @@
                 android:parentActivityName=".ui.activity.SearchActivity">
         </activity>
 
+        <activity
+                android:name="com.sucho.placepicker.PlacePickerActivity"
+                android:theme="@style/AppTheme.NoActionBar"
+                android:parentActivityName=".ui.activity.SearchActivity"/>
+
         <service
                 android:name=".service.UnicornService"
                 android:permission="android.permission.BIND_JOB_SERVICE"
@@ -92,7 +114,7 @@
         </receiver>
 
         <provider
-                android:name="android.support.v4.content.FileProvider"
+                android:name="androidx.core.content.FileProvider"
                 android:authorities="cz.babi.gcunicorn.android"
                 android:exported="false"
                 android:grantUriPermissions="true">

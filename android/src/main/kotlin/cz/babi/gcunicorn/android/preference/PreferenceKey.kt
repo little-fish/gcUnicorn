@@ -33,7 +33,7 @@ enum class PreferenceKey(val key: String) {
     SECURE_KEY("secure_key"),
     GC_USERNAME("gc_username"),
     GC_PASSWORD("gc_password"),
-    FILTER_MAX_COUNT("filter_max_count");
+    AUTO_CLOSE_NOTIFICATION("auto_close_notification");
 
     companion object {
         const val PRIVATE_PREFS = "private_prefs"

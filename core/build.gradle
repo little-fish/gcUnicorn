@@ -17,7 +17,6 @@
  */
 
 import java.text.SimpleDateFormat
-import org.gradle.internal.os.OperatingSystem
 
 buildscript {
     repositories {
@@ -30,29 +29,17 @@ buildscript {
 }
 
 plugins {
-    id 'propdeps'
-    id 'propdeps-idea'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.61'
-    id 'org.jetbrains.kotlin.plugin.allopen' version '1.3.61'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.61'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.6.10'
+    id 'org.jetbrains.kotlin.plugin.allopen' version '1.6.10'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.6.10'
 }
 
 apply plugin: 'kotlinx-serialization'
 
-ext {
-    // Version OkHttp.
-    versionOkHttp = '3.11.0'
-    // Version Spring.
-    versionSpring = '5.2.3.RELEASE'
-    // Version Kotlin XML Builder.
-    versionKotlinXmlBuilder = '1.4.4'
-    // Version Kotlin serialization.
-    versionKotlinSerialization = '0.14.0'
-}
-
 dependencies {
-    compile(
+    // TODO: Use implementation configuration where possible.
+    api(
             "org.jetbrains.kotlin:kotlin-stdlib:$versionKotlin",
             "org.jetbrains.kotlin:kotlin-reflect:$versionKotlin",
             "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$versionKotlinSerialization",
@@ -61,12 +48,12 @@ dependencies {
             "org.slf4j:slf4j-api:$versionSlf4J",
             "org.redundent:kotlin-xml-builder:$versionKotlinXmlBuilder"
     )
-    testCompile(
+    testImplementation(
             "org.testng:testng:$versionTestNG",
             "org.springframework:spring-context:$versionSpring",
             "org.springframework:spring-test:$versionSpring"
     )
-    testRuntime(
+    testRuntimeOnly(
             "ch.qos.logback:logback-classic:$versionLogback"
     )
 }
@@ -92,22 +79,6 @@ test {
     useTestNG()
 }
 
-// Use custom jdk if exists.
-def localProperties = new Properties()
-def localPropertiesFile = file(localPropertiesFile)
-
-if (localPropertiesFile.exists()) {
-    localProperties.load(localPropertiesFile.newDataInputStream())
-
-    if (localProperties['java.home']) {
-        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-            kotlinOptions {
-                jdkHome = localProperties['java.home']
-            }
-        }
-    }
-}
-
 /**
  * Obtain java version. It tries to load java from custom location (if exists).
  * @return Java version used for compilation.
@@ -124,7 +95,7 @@ def getJavaVersion() {
             def outStream = new ByteArrayOutputStream()
             exec {
                 workingDir localProperties['java.home'] + File.separator + 'bin'
-                if (OperatingSystem.current().isWindows()) {
+                if (org.apache.tools.ant.taskdefs.condition.Os.isFamily(org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS)) {
                     commandLine 'cmd', '/c', 'java', '-version', '2>&1'
                 } else {
                     commandLine 'java', '-version', '2>&1'

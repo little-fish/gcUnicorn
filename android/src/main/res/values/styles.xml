@@ -19,7 +19,7 @@
 
 <resources>
     <!-- Light application theme. -->
-    <style name="AppTheme" parent="PreferenceFixTheme.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -79,7 +79,7 @@
         <item name="android:layout_marginRight">@dimen/indentation_default</item>
     </style>
 
-    <style name="AppTheme.PreferenceStyle" parent="PreferenceThemeOverlay.v14.Material.Fix">
+    <style name="AppTheme.PreferenceStyle" parent="PreferenceThemeOverlay.v14.Material">
         <item name="preferenceCategoryStyle">@style/AppTheme.PreferenceCategory</item>
     </style>
 
@@ -91,6 +91,7 @@
         <item name="android:paddingBottom">@dimen/indentation_half</item>
         <item name="android:textColor">@color/aboutView</item>
         <item name="android:textSize">@dimen/font_size</item>
+        <item name="android:textColorLink">@color/aboutLink</item>
     </style>
 
 </resources>

@@ -21,7 +21,8 @@
     <color name="colorPrimary">#b254b8</color>
     <color name="colorPrimaryDark">#85408b</color>
     <color name="colorPrimaryLight">#b073b8</color>
-    <color name="colorAccent">#FF9800</color>
+<!--    <color name="colorAccent">#FF9800</color>-->
+    <color name="colorAccent">#b254b8</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#757575</color>
     <color name="colorBackground">#f4f4f4</color>
@@ -30,4 +31,5 @@
     <color name="darkColorSecondaryText">#9e9e9e</color>
     <color name="error">#d60076</color>
     <color name="aboutView">#F2F2F2</color>
+    <color name="aboutLink">#F5F26D</color>
 </resources>

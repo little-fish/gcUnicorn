@@ -21,13 +21,13 @@ package cz.babi.gcunicorn.core.network
 import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.core.exception.network.NetworkException
 import cz.babi.gcunicorn.core.network.model.HttpParameters
-import kotlinx.io.IOException
 import okhttp3.FormBody
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.slf4j.Logger
+import java.io.IOException
 import java.io.InputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder

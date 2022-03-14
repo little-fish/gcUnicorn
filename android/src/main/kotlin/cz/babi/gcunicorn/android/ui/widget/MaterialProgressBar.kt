@@ -20,9 +20,9 @@ package cz.babi.gcunicorn.android.ui.widget
 
 import android.content.Context
 import android.os.Build
-import android.support.v4.widget.CircularProgressDrawable
 import android.util.AttributeSet
 import android.widget.ProgressBar
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import cz.babi.gcunicorn.android.R
 import cz.babi.gcunicorn.android.`fun`.getPlatformColor
 

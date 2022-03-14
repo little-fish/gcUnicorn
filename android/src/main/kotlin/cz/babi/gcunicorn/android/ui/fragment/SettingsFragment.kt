@@ -19,8 +19,8 @@
 package cz.babi.gcunicorn.android.ui.fragment
 
 import android.os.Bundle
-import android.support.v7.preference.Preference
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat
+import androidx.preference.Preference
+import com.takisoft.preferencex.PreferenceFragmentCompat
 import cz.babi.gcunicorn.android.R
 import cz.babi.gcunicorn.android.preference.PreferenceKey
 
@@ -35,7 +35,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        findPreference(PreferenceKey.GC_USERNAME.key).apply {
+        findPreference<Preference>(PreferenceKey.GC_USERNAME.key)?.apply {
             summary = sharedPreferences.getString(PreferenceKey.GC_USERNAME.key, null)
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
                 summary = newValue?.toString()
@@ -43,7 +43,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        findPreference(PreferenceKey.GC_PASSWORD.key).apply {
+        findPreference<Preference>(PreferenceKey.GC_PASSWORD.key)?.apply {
             summary = generateSecretSummary(sharedPreferences.getString(PreferenceKey.GC_PASSWORD.key, null))
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
                 summary = generateSecretSummary(newValue?.toString())

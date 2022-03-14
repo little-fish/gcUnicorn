@@ -637,7 +637,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
             try {
                 geocache.id = toLong()
             } catch(e: NumberFormatException) {
-                LOG.warn("Can not parse cache'id '{}' to number.", this, e)
+                LOG.warn("Can not parse cache's id '{}' to number.", this, e)
             }
         }, {
             LOG.warn("Can not parse cache's id from cache's page '{}'.", geocache.url)
@@ -791,7 +791,9 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                     val endIndex = attributeImage.lastIndexOf(".")
 
                     if(startIndex>-1 && endIndex>startIndex) {
-                        val attributeString = attributeImage.substring(startIndex+1, endIndex).toLowerCase().replace("-", "_")
+                        val attributeString = attributeImage.substring(startIndex+1, endIndex)
+                            .lowercase(Locale.getDefault())
+                            .replace("-", "_")
                         AttributeType.findByPattern(attributeString.substringBeforeLast("_"))?.let {
                             cacheAttributes.add(Attribute(it, attributeString.substringAfterLast("_")=="yes"))
                         }
@@ -805,7 +807,9 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                 geocache.attributes = cacheAttributes
             }
         }, {
-            LOG.warn("Can not parse cache's attributes from cache's page '{}'.", geocache.url)
+            if (!Constant.REGEX_CACHE_NO_ATTRIBUTES.containsMatchIn(pageBody)) {
+                LOG.warn("Can not parse cache's attributes from cache's page '{}'.", geocache.url)
+            }
         })
 
         // Check whether cache has been found by a user.
@@ -1200,7 +1204,7 @@ object Constant {
     const val URI_TRACKABLE = "https://www.geocaching.com/track/details.aspx"
     const val URI_IMAGE_LARGE = "https://img.geocaching.com/cache/log/"
     const val NEXT_PAGE_EVENT_TARGET = "ctl00\$ContentBody\$pgrTop\$ctl08"
-    const val PATTERN_DATE_PAGE = "MM/dd/yyyy"
+    const val PATTERN_DATE_PAGE = "yyyy-MM-dd"
     const val PATTERN_DATE_GPX = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val DEFAULT_LOGS_COUNT = 35
     const val REQUEST_DATA = "data"
@@ -1230,7 +1234,7 @@ object Constant {
     @JvmField val REGEX_SEARCH_RESULTS_CACHE_PREMIUM = "<img src=\".+premium_only\\.png\".+>".toRegex()
     @JvmField val REGEX_VIEWSTATE_COUNT = "id=\"__VIEWSTATEFIELDCOUNT\".*value=\"(\\d+)\"".toRegex()
     @JvmField val REGEX_VIEWSTATES = "id=\"__VIEWSTATE(\\d+)?\".*value=\"(.*)\"".toRegex()
-    @JvmField val REGEX_CACHE_NAME = "<span id=\"ctl00_ContentBody_CacheName\">(.*)</span>".toRegex()
+    @JvmField val REGEX_CACHE_NAME = "<span id=\"ctl00_ContentBody_CacheName\".*>(.*)</span>".toRegex()
     @JvmField val REGEX_CACHE_CODE = "<span id=\"ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode\".*>(.*)</span>".toRegex()
     @JvmField val REGEX_CACHE_ID = "/seek/log\\.aspx\\?ID=(\\d+)&".toRegex()
     @JvmField val REGEX_CACHE_TERRAIN = "<span id=\"ctl00_ContentBody_Localize12\".*alt=\"(.*) out of 5\"".toRegex()
@@ -1248,12 +1252,13 @@ object Constant {
     @JvmField val REGEX_CACHE_DESCRIPTION = "<span id=\"ctl00_ContentBody_LongDescription\">([\\s\\S]*?)</span>\\s*</div>\\s*<(p|div) id=\"ctl00_ContentBody".toRegex()
     @JvmField val REGEX_CACHE_DESCRIPTION_RELATED_PAGE = "ctl00_ContentBody_uxCacheUrl.*? href=\"(.*?)\">".toRegex()
     @JvmField val REGEX_CACHE_ALL_ATTRIBUTES = "(<img src=\"/images/attributes.*?)(?:<p).*?".toRegex()
+    @JvmField val REGEX_CACHE_NO_ATTRIBUTES = "No attributes available".toRegex()
     @JvmField val REGEX_CACHE_ATTRIBUTE = "<img src=\"([^\"]+)\" alt=\"([^\"]+?)\"".toRegex()
     @JvmField val REGEX_CACHE_IS_LOCKED = "<div id=\"ctl00_ContentBody_archivedMessage\"".toRegex()
     @JvmField val REGEX_CACHE_IS_ARCHIVED = "<div id=\"ctl00_ContentBody_lockedMessage\"".toRegex()
     @JvmField val REGEX_CACHE_IS_FAVORITE = "<div id=\"pnlFavoriteCache\">".toRegex()
     @JvmField val REGEX_CACHE_GUID = Pattern.compile(Pattern.quote("&wid=") + "([0-9a-z\\-]+)" + Pattern.quote("&")).toRegex()
-    @JvmField val REGEX_CACHE_WATCHLIST_COUNT = "watchlist\\.aspx[^(]*\\((\\d+)\\)".toRegex()
+    @JvmField val REGEX_CACHE_WATCHLIST_COUNT = "data-watchcount=\"(\\d+)\"".toRegex()
     @JvmField val REGEX_CACHE_SIZE = "/icons/container/([a-z]+)\\.".toRegex()
     @JvmField val REGEX_CACHE_FOUND = ("logtypes/48/(" + LogType.values().filter { it.isFoundLog }.joinToString("|", "", "") { it.iconId } + ").png\" id=\"ctl00_ContentBody_GeoNav_logTypeImage\"").toRegex()
     @JvmField val REGEX_CACHE_ON_WATCHLIST = Pattern.compile(Pattern.quote("watchlist.aspx") + ".{1,50}" + Pattern.quote("action=rem")).toRegex()
@@ -1261,7 +1266,7 @@ object Constant {
     @JvmField val REGEX_CACHE_SPOILED_IMAGE_GUID = "large/([a-z0-9\\-]+)\\.".toRegex()
     @JvmField val REGEX_CACHE_INVENTORY = "ctl00_ContentBody_uxTravelBugList_uxInventoryLabel\">[\\s\\S]*?WidgetBody([\\s\\S]*?)<div".toRegex()
     @JvmField val REGEX_CACHE_INVENTORY_ITEMS = "[^<]*<li>[^<]*<a href=\"[a-z0-9\\-_.?/:@]*/track/details\\.aspx\\?guid=([0-9a-z\\-]+)[^\"]*\"[^>]*>[^<]*<img src=\"[^\"]+\"[^>]*>[^<]*<span>([^<]+)</span>[^<]*</a>[^<]*</li>".toRegex()
-    @JvmField val REGEX_CACHE_LOGCOUNTS = "<span id=\"ctl00_ContentBody_lblFindCounts\"><p(.+?)</p></span>".toRegex()
+    @JvmField val REGEX_CACHE_LOGCOUNTS = "<span id=\"ctl00_ContentBody_lblFindCounts\"><ul(.+?)</ul></span>".toRegex()
     @JvmField val REGEX_CACHE_LOGCOUNTS_ITEM = "logtypes/([0-9]+)\\.[^>]+>\\s*([0-9,.]+)".toRegex()
     @JvmField val REGEX_CACHE_WAYPOINTS = "id=\"ctl00_ContentBody_Waypoints\"[\\s\\S]*?<tbody>([\\s\\S]*?)</tbody>".toRegex()
     @JvmField val REGEX_CACHE_WAYPOINTS_ITEM = "<tr.+>([\\s\\S]*?)</tr>[\\s\\S]*?(?:</tr>)".toRegex()

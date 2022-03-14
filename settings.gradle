@@ -23,8 +23,6 @@ pluginManagement {
                 useModule('org.springframework.boot:spring-boot-gradle-plugin:2.2.4.RELEASE')
             } else if(requested.id.id=='io.spring.dependency-management') {
                 useModule('io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE')
-            } else if(requested.id.id=='propdeps' || requested.id.id=='propdeps-idea') {
-                useModule('io.spring.gradle:propdeps-plugin:0.0.10.RELEASE')
             }
         }
     }

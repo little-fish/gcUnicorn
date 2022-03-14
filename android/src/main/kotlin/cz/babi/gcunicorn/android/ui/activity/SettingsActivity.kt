@@ -19,10 +19,9 @@
 package cz.babi.gcunicorn.android.ui.activity
 
 import android.os.Bundle
-import android.support.v4.app.NavUtils
 import android.view.MenuItem
-import cz.babi.gcunicorn.android.R
-import kotlinx.android.synthetic.main.activity_settings.settings_toolbar as toolbar
+import androidx.core.app.NavUtils
+import cz.babi.gcunicorn.android.databinding.ActivitySettingsBinding
 
 /**
  * Settings activity.
@@ -33,15 +32,19 @@ import kotlinx.android.synthetic.main.activity_settings.settings_toolbar as tool
  */
 class SettingsActivity : BaseAppCompatActivity() {
 
-    override fun onAfterCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_settings)
+    private lateinit var binding: ActivitySettingsBinding
 
-        setSupportActionBar(toolbar)
+    override fun onAfterCreate(savedInstanceState: Bundle?) {
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.settingsToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             android.R.id.home -> {
                 NavUtils.navigateUpFromSameTask(this)
 

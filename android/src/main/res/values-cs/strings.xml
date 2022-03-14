@@ -37,8 +37,10 @@
     <string name="activity_search_gps">gps</string>
     <string name="activity_search_map">mapa</string>
 
+    <string name="pref_category_misc">Ostatní</string>
     <string name="pref_username">Uživatelské jméno</string>
     <string name="pref_password">Heslo</string>
+    <string name="pref_auto_close_notification">Automaticky zavřít notifikaci</string>
 
     <string name="action_settings">Nastavení</string>
     <string name="action_about">O aplikaci</string>
@@ -51,6 +53,7 @@
     <string name="text_no_permission_coarse_location">je vyžadováno oprávnění pro přístup k síťové poloze.</string>
     <string name="text_can_not_obtain_location">Nemohu zjistit lokaci.</string>
     <string name="text_invalid_gc_credentials">Přihlašovací údaje pro Geocaching.com nejsou platné.</string>
+    <string name="text_bye_bye">Někdy příště</string>
 
     <string name="validator_error_max_count">Maximální počet je 200.</string>
     <string name="validator_error_latitude">Zeměpisná šířka musí být v rozsahu &lt;-85, 85&gt;.</string>
@@ -69,6 +72,9 @@
     <string name="action_send_gpx">Odeslat GPX</string>
 
     <string name="error_can_not_start_place_picker">Ups. Nemohu zobrazit mapu pro výběr lokace.</string>
+    <string name="error_api_key">API klíč není k dispozici. Mapy nebudou k dispozici.</string>
 
     <string name="dialog_location_text">Zjištuji polohu..</string>
+    <string name="dialog_no_required_permission_title">Jednorožec neobdržel požadované oprávnění</string>
+    <string name="dialog_no_required_permission_message">Není nic co by tebe mohl Jednorožec udělat pokud nedostane oprávnění.</string>
 </resources>

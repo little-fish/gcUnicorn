@@ -15,17 +15,16 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program; if not, write to the Free Software
   ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-  com.takisoft.fix.support.v7.preference.EditTextPreference
   -->
 
-<android.support.v7.preference.PreferenceScreen
+<androidx.preference.PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
             android:title="@string/pref_category_geocachingcom">
 
-        <com.takisoft.fix.support.v7.preference.EditTextPreference
+        <com.takisoft.preferencex.EditTextPreference
                 android:id="@+id/pref_gc_username"
                 android:key="gc_username"
                 android:title="@string/pref_username"
@@ -37,8 +36,17 @@
                 android:key="gc_password"
                 android:title="@string/pref_password"
                 android:inputType="textPassword"
-                android:password="true"
+                app:iconSpaceReserved="false"/>
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+            android:title="@string/pref_category_misc">
+
+        <SwitchPreferenceCompat
+                android:id="@+id/pref_auto_close_notification"
+                android:key="auto_close_notification"
+                android:title="@string/pref_auto_close_notification"
                 app:iconSpaceReserved="false"/>
 
-    </android.support.v7.preference.PreferenceCategory>
-</android.support.v7.preference.PreferenceScreen>
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

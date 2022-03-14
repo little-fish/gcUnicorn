@@ -18,7 +18,8 @@
 
 buildscript {
     ext {
-        versionAndroidTools = '3.5.2'
+        versionAndroidTools = '7.0.4'
+        versionSecrets = '2.0.1'
     }
 
     repositories {
@@ -29,45 +30,34 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$versionAndroidTools"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versionKotlin"
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:$versionSecrets"
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jetbrains.kotlin.plugin.parcelize'
 apply plugin: 'kotlin-kapt'
-
-ext {
-    versionLocusApi = '0.3.0'
-    versionDagger = '2.19'
-    // https://dl.google.com/dl/android/maven2/index.html
-    versionAndroidSupport = '28.0.0'
-    // https://issuetracker.google.com/issues/37060038
-    // https://github.com/Gericop/Android-Support-Preference-V7-Fix
-    versionFixSupport = '28.0.0.0'
-    // Android constraint library.
-    versionAndroidConstraint = '1.1.3'
-    // Version Google play services Places.
-    // https://developers.google.com/android/guides/setup
-    versionPlayServicesPlaces = '16.0.0'
-    // Version Multidex.
-    versionMultidex = '1.0.3'
-}
 
 dependencies {
     implementation project(':gcUnicorn-core')
     implementation(
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versionKotlinCoroutines",
-            "com.android.support:support-core-ui:$versionAndroidSupport",
-            "com.android.support:design:$versionAndroidSupport",
-            "com.android.support:appcompat-v7:$versionAndroidSupport",
-            "com.android.support:preference-v7:$versionAndroidSupport",
-            "com.android.support.constraint:constraint-layout:$versionAndroidConstraint",
+            "androidx.legacy:legacy-support-core-ui:$versionAndroidX",
+            "com.google.android.material:material:$versionAndroidX",
+            "androidx.appcompat:appcompat:$versionAndroidX",
+            "androidx.preference:preference:$versionAndroidX",
+            "androidx.constraintlayout:constraintlayout:$versionAndroidConstraint",
             "com.google.dagger:dagger:$versionDagger",
             "com.asamm:locus-api-android:$versionLocusApi",
-            "com.takisoft.fix:preference-v7:$versionFixSupport",
-            "com.google.android.gms:play-services-places:$versionPlayServicesPlaces",
-            "com.android.support:multidex:$versionMultidex"
+            "androidx.preference:preference:$versionAndroidX",
+            "com.takisoft.preferencex:preferencex:$versionFixSupport",
+            "com.google.android.libraries.places:places:$versionPlaces",
+            "androidx.multidex:multidex:$versionMultidex",
+            "com.github.suchoX:PlacePicker:$versionPlacePicker",
+            "com.google.android.material:material:$versionMaterial",
+            "com.google.android.gms:play-services-maps:$versionPlayServicesMaps"
     )
     runtimeOnly(
             "org.slf4j:slf4j-android:$versionSlf4J"
@@ -88,18 +78,22 @@ configurations.all {
 }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    setCompileSdkVersion 32
+    buildToolsVersion '30.0.3'
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     defaultConfig {
         applicationId 'cz.babi.gcunicorn.android'
         
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 32
         
         multiDexEnabled true
         

@@ -30,7 +30,7 @@ import javax.inject.Qualifier
 @Qualifier
 @MustBeDocumented
 @Retention(value = AnnotationRetention.RUNTIME)
-@Target(allowedTargets = [ AnnotationTarget.FIELD, AnnotationTarget.FUNCTION ])
+@Target(allowedTargets = [ AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER ])
 annotation class Named(val name: String) {
 
     companion object {

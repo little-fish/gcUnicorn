@@ -26,13 +26,13 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import cz.babi.gcunicorn.android.R
 import cz.babi.gcunicorn.android.`fun`.hasPermissions
 
 /**
- * Custom dialog requesting an user location.
+ * Custom dialog requesting a user location.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
  * @version 1.0.0
@@ -54,16 +54,16 @@ class LocationAcquiringDialogFragment : DialogFragment() {
 
     private val locationListener: LocationListener by lazy {
         object : LocationListener {
-            override fun onLocationChanged(location: Location?) {
-                if (location?.accuracy!! < 100) {
+            override fun onLocationChanged(location: Location) {
+                if (location.accuracy < 100) {
                     internalCancelWithDismiss()
                     onLocationAcquired.onLocationAcquired(location)
                 }
             }
 
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-            override fun onProviderEnabled(provider: String?) {}
-            override fun onProviderDisabled(provider: String?) {}
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
         }
     }
 
@@ -87,7 +87,7 @@ class LocationAcquiringDialogFragment : DialogFragment() {
                 .create()
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         internalCancel()
 
         super.onDismiss(dialog)
@@ -96,7 +96,7 @@ class LocationAcquiringDialogFragment : DialogFragment() {
     override fun onDestroyView() {
         if (retainInstance) {
             // Handles https://code.google.com/p/android/issues/detail?id=17423.
-            dialog.setDismissMessage(null)
+            dialog?.setDismissMessage(null)
         }
 
         super.onDestroyView()

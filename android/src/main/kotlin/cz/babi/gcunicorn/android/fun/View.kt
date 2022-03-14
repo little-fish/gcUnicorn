@@ -18,8 +18,8 @@
 
 package cz.babi.gcunicorn.android.`fun`
 
-import android.support.design.widget.Snackbar
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * Extension method for showing Snackbar on given view.

@@ -8,6 +8,7 @@
 -keep class kotlin.reflect.jvm.internal.impl.load.java.FieldOverridabilityCondition
 -keep class kotlin.reflect.jvm.internal.impl.load.java.ErasedOverridabilityCondition
 -keep class kotlin.reflect.jvm.internal.impl.load.java.JavaIncompatibilityRulesOverridabilityCondition
+-keep class kotlinx.android.parcel.Parcelize
 
 -keepclassmembers class kotlin.Metadata {
     public <methods>;

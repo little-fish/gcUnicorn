@@ -32,19 +32,19 @@ class InMemoryCookieJar : DefaultCookieJar {
 
     private val storage = mutableMapOf<String, Cookie>()
 
-    override fun saveFromResponse(url: HttpUrl?, cookies: MutableList<Cookie>?) {
-        cookies?.forEach { cookie ->
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        cookies.forEach { cookie ->
             val key = cookie.domain() + ";" + cookie.name()
             storage[key] = cookie
         }
     }
 
-    override fun loadForRequest(url: HttpUrl?): MutableList<Cookie> {
+    override fun loadForRequest(url: HttpUrl): List<Cookie> {
         dumpOldCookies()
 
         val cookies = mutableListOf<Cookie>()
 
-        url?.let {
+        url.let {
             for (cookie: Cookie in storage.values) {
                 if (cookie.matches(url)) {
                     cookies.add(cookie)

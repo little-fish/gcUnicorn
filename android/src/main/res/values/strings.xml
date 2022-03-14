@@ -21,7 +21,7 @@
     <string name="text_app_name" translatable="false">gcUnicorn</string>
     <string name="empty_string" translatable="false"/>
     <string name="text_android" translatable="false">android</string>
-    <string name="text_app_core" translatable="false">gcUnicorn-core v2.0.1</string>
+    <string name="text_app_core" translatable="false">gcUnicorn-core v2.0.5</string>
     <string name="text_github">Follow gcUnicorn project @<a href="https://github.com/little-fish/gcUnicorn">GitHub</a>.</string>
 
     <string name="activity_search">gcUnicorn</string>
@@ -42,8 +42,10 @@
     <string name="activity_search_map">maps</string>
 
     <string name="pref_category_geocachingcom" translatable="false">Geocaching.com</string>
+    <string name="pref_category_misc">Miscellaneous</string>
     <string name="pref_username">Username</string>
     <string name="pref_password">Password</string>
+    <string name="pref_auto_close_notification">Automatically close notification</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
@@ -53,9 +55,10 @@
     <string name="text_cancelling">Cancelling..</string>
     <string name="text_no_location_provider">No location providers available.</string>
     <string name="text_no_permission_fine_location">No granted permission for access to GPS location.</string>
-    <string name="text_no_permission_coarse_location">No granted permission for access to netwokr location.</string>
+    <string name="text_no_permission_coarse_location">No granted permission for access to network location.</string>
     <string name="text_can_not_obtain_location">Can not acquire location.</string>
     <string name="text_invalid_gc_credentials">Geocaching.com credentials are not valid.</string>
+    <string name="text_bye_bye">Bye bye</string>
 
     <string name="validator_error_max_count">Max count is 200.</string>
     <string name="validator_error_latitude">Latitude must be within &lt;-85, 85&gt; range.</string>
@@ -74,6 +77,9 @@
     <string name="action_send_gpx">Send GPX</string>
 
     <string name="error_can_not_start_place_picker">Ups. Can\'t display place picker.</string>
+    <string name="error_api_key">No API key provided. You won\'t be able to interact with Maps.</string>
 
     <string name="dialog_location_text">Acquiring location..</string>
+    <string name="dialog_no_required_permission_title">The Unicorn has no required permission</string>
+    <string name="dialog_no_required_permission_message">Well, there is nothing the Unicorn can do for you without if you don\'t let him actually do it.</string>
 </resources>

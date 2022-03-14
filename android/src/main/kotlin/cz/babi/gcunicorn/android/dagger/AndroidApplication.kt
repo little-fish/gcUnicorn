@@ -18,13 +18,13 @@
 
 package cz.babi.gcunicorn.android.dagger
 
-import android.support.multidex.MultiDexApplication
+import androidx.multidex.MultiDexApplication
 import cz.babi.gcunicorn.android.dagger.component.ApplicationComponent
 import cz.babi.gcunicorn.android.dagger.component.DaggerApplicationComponent
 
 /**
  * Custom application class.
- * It takes care about instantination of Dagger component.
+ * It takes care about instantiation of Dagger component.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
  * @version 1.0.0
@@ -33,7 +33,7 @@ import cz.babi.gcunicorn.android.dagger.component.DaggerApplicationComponent
 class AndroidApplication : MultiDexApplication() {
 
     companion object {
-        // Let's make the component to be a companion to be able to obtain it from outside of the Android world.
+        // Let's make the component to be a companion to be able to obtain it from outside the Android world.
         lateinit var APPLICATION_COMPONENT: ApplicationComponent
     }
 

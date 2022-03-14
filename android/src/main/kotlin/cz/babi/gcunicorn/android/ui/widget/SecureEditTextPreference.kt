@@ -21,7 +21,7 @@ package cz.babi.gcunicorn.android.ui.widget
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.AttributeSet
-import com.takisoft.fix.support.v7.preference.EditTextPreference
+import com.takisoft.preferencex.EditTextPreference
 import cz.babi.gcunicorn.android.dagger.AndroidApplication
 import cz.babi.gcunicorn.android.dagger.qualifier.Named
 import cz.babi.gcunicorn.android.dagger.qualifier.Named.Companion.PREFERENCES_PRIVATE

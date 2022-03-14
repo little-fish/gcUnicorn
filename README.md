@@ -11,7 +11,7 @@ GPX file created by the application is readable by following applications:
 * [Cachly](http://www.cach.ly/)
 * [Locus](http://www.locusmap.eu/)
 
-_If you test the output GPX format with other applications, please, let me know so I can update the list. Thank you._
+_If you test the output GPX format with other applications, please, let me know, so I can update the list. Thank you._
 
 ## Disclaimer
 Be sure to read [Groundspeak's terms of use](https://www.geocaching.com/account/documents/termsofuse). By using the application you may violate some of them and your Geocaching account may be suspended or deleted.
@@ -131,7 +131,7 @@ Android version of the tool supports all Android version since Jelly Bean (API 1
 
 As a bonus, the application interacts with popular Android map application called [Locus Map](http://www.locusmap.eu/). You can find shortcuts to gcUnicorn within main _Geocaching functions_ menu and within _Point view_'s share option. If you open the application from later option, latitude and longitude will be transferred from Locus directly into the gcUnicorn.
 
-All the created GPX files are stored within `<externalStorage>/gcUnicorn`.
+Up until Android Lollipop (API 21), all the created GPX files are stored within `<externalStorage>/gcUnicorn/gpx`. Starting from API 21, all the GPX files are stored within external application folder `<externalStorage>/Android/data/cz.babi.gcunicorn.android/files/gcUnicorn/gpx`.
 
 ## How to build
 Clone the repository:
@@ -161,9 +161,9 @@ java.home=/path/to/proper/jdk
 ### android
 To enable location picking from Google Maps, Google Places API key has to be provided during build time.
 
-To obtain your key, follow the instruction: [Get API Key](https://developers.google.com/places/web-service/get-api-key).
+To obtain your key, follow the instruction: [Get API Key](https://developers.google.com/places/web-service/get-api-key) and [Project setup](https://developers.google.com/maps/documentation/places/android-sdk/config). The application doesn't use Places API.
 
-Once you obtain your key, you have to specify it within `/android/src/main/res/values/google_api_key.xml` file. Otherwise location picking won't work properly.
+Once you obtain your key, you have to specify it within root project's `local.properties` file. Otherwise, location picking won't work properly.
 
 ## Signing
 ### core & webapp
@@ -190,7 +190,7 @@ If you want to use any of the methods mentioned above, you have to create `keyst
 
 ### android
 _Android_ module uses standard signing described on Android [publishing](https://developer.android.com/studio/publish/app-signing) page.
-To enable signing, simply create `keystore.properties` within the module directory and and specify additional (self-explanatory) properties:
+To enable signing, simply create `keystore.properties` within the module directory and specify additional (self-explanatory) properties:
 * `keyAlias` 
 * `keyPassword` 
 * `storeFile` 
@@ -236,6 +236,12 @@ Once the properties are provided, signing will be enabled automatically.
 * Added signing options to all modules.
 * Updated dependencies to newer versions.
 
+##### 2022-03-14: core v2.0.5 & webapp v1.0.8 & android v1.0.6
+* __core__
+  * Fixed parsing of some attributes.
+* __android__
+  * Added support for Android 13.
+
 ## How to contribute
 Any kind of contribution is welcome. If you have any ideas, bug-fxies or improvements, just create a pull request or contact me via email. Thank you.
 
@@ -245,3 +251,6 @@ Any kind of contribution is welcome. If you have any ideas, bug-fxies or improve
 ## Acknowledgment
 Special thanks to [c:geo](https://github.com/cgeo/cgeo) team for inspiring me to create the application.
 
+## Roadmap
+
+* A manager for already created GPX files. ETA depends on users requests..

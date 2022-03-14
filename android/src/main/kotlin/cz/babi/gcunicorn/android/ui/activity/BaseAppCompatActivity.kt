@@ -19,7 +19,7 @@
 package cz.babi.gcunicorn.android.ui.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import cz.babi.gcunicorn.android.`fun`.androidApplication
 import cz.babi.gcunicorn.android.dagger.qualifier.Named
 import cz.babi.gcunicorn.android.dagger.qualifier.Named.Companion.PREFERENCES_NORMAL

@@ -18,6 +18,8 @@
 
 package cz.babi.gcunicorn.core.network.service.geocachingcom.model
 
+import java.util.*
+
 /**
  * Log types.
  *
@@ -76,6 +78,6 @@ enum class LogType(val iconId: String, val isFoundLog: Boolean, val type: String
          * @param type Type.
          * @return Found log type or [UNKNOWN] if there was no match.
          */
-        fun findByType(type: String) = values().find { logType -> logType.type.toLowerCase()==type.toLowerCase() } ?: UNKNOWN
+        fun findByType(type: String) = values().find { logType -> logType.type.lowercase(Locale.getDefault()) == type.lowercase(Locale.getDefault()) } ?: UNKNOWN
     }
 }

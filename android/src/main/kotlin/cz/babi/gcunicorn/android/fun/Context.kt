@@ -21,13 +21,13 @@ package cz.babi.gcunicorn.android.`fun`
 import android.app.Notification
 import android.content.Context
 import android.content.pm.PackageManager
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.content.LocalBroadcastManager
+import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 /**
  * Extension method for checking permissions.
  * @param permissions Permissions to check.
- * @return True if all given permissions are granted. Otherwise returns false.
+ * @return True if all given permissions are granted. Otherwise, returns false.
  *
  * @author Martin Misiarz `<dev.misiarz@gmail.com>`
  * @version 1.0.0
