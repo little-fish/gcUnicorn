@@ -202,6 +202,13 @@ Once the properties are provided, signing will be enabled automatically.
 * __Skip premium caches__ - If enabled the tool will simply skip premium caches __earlier__. If you are a _basic member_ and disable this option, the tool will try to load cache's details anyway and once it discovers that it can not load the cache (because you are a _basic member_), it skips it. (The tool has no idea whether you are a _basic member_ or a _premium_ one.)
 
 ## Release notes
+
+##### 2022-03-14: core v2.0.5 & webapp v1.0.8 & android v1.0.6
+* __core__
+  * Fixed parsing of some attributes.
+* __android__
+  * Added support for Android 13.
+
 ##### 2021-06-19: core v2.0.4 & webapp v1.0.7 & android v1.0.5
 * __core__
   * Updated regular expressions.
@@ -235,12 +242,6 @@ Once the properties are provided, signing will be enabled automatically.
   * First release.
 * Added signing options to all modules.
 * Updated dependencies to newer versions.
-
-##### 2022-03-14: core v2.0.5 & webapp v1.0.8 & android v1.0.6
-* __core__
-  * Fixed parsing of some attributes.
-* __android__
-  * Added support for Android 13.
 
 ## How to contribute
 Any kind of contribution is welcome. If you have any ideas, bug-fxies or improvements, just create a pull request or contact me via email. Thank you.
