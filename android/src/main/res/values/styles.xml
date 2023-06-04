@@ -83,9 +83,7 @@
         <item name="preferenceCategoryStyle">@style/AppTheme.PreferenceCategory</item>
     </style>
 
-    <style name="AppTheme.PreferenceCategory" parent="@style/Preference.Category">
-        <item name="android:layout">@layout/custom_preference_category</item>
-    </style>
+    <style name="AppTheme.PreferenceCategory" parent="@style/Preference.Category" />
 
     <style name="AboutTextView">
         <item name="android:paddingBottom">@dimen/indentation_half</item>

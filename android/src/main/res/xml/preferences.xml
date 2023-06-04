@@ -24,7 +24,7 @@
     <androidx.preference.PreferenceCategory
             android:title="@string/pref_category_geocachingcom">
 
-        <com.takisoft.preferencex.EditTextPreference
+        <androidx.preference.EditTextPreference
                 android:id="@+id/pref_gc_username"
                 android:key="gc_username"
                 android:title="@string/pref_username"

@@ -35,7 +35,6 @@ dependencies {
             libs.androidx.legacy.support.core.ui,
             libs.androidx.multidex,
             libs.android.material,
-            libs.takisoft.preferencex,
             // https://github.com/suchoX/PlacePicker
             libs.suchox.placepicker,
             // https://developers.google.com/maps/documentation/places/android-sdk/config
@@ -54,6 +53,10 @@ dependencies {
             libs.dagger.compiler
     )
 }
+
+// Load keystore properties.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = file(keystoreFile)
 
 // https://developer.android.com/build#module-level
 android {
@@ -95,6 +98,7 @@ android {
 
             proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
             proguardFiles fileTree(dir: 'proguard-rules', include: '*.pro').getFiles() as File[]
+            setProperty('archivesBaseName', "gcUnicorn-${project.name}-${keystorePropertiesFile.exists() ? 'signed-' : ''}v${project.version}")
         }
 
         dev {
@@ -111,10 +115,6 @@ android {
         checkReleaseBuilds true
     }
 }
-
-// Load keystore properties.
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = file(keystoreFile)
 
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(keystorePropertiesFile.newDataInputStream())

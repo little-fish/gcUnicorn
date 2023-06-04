@@ -20,7 +20,4 @@
     public <init>(android.content.Context,android.util.AttributeSet,int);
 }
 
-# Provider is referenced from XML only.
--keep public class android.support.v4.content.FileProvider { *; }
-
 -dontnote com.google.android.gms.**

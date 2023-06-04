@@ -19,8 +19,10 @@
 package cz.babi.gcunicorn.android.ui.fragment
 
 import android.os.Bundle
+import android.text.InputType
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
-import com.takisoft.preferencex.PreferenceFragmentCompat
+import androidx.preference.PreferenceFragmentCompat
 import cz.babi.gcunicorn.android.R
 import cz.babi.gcunicorn.android.preference.PreferenceKey
 
@@ -32,7 +34,7 @@ import cz.babi.gcunicorn.android.preference.PreferenceKey
  */
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         findPreference<Preference>(PreferenceKey.GC_USERNAME.key)?.apply {
@@ -48,6 +50,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
                 summary = generateSecretSummary(newValue?.toString())
                 true
+            }
+
+            if (this is EditTextPreference) {
+                setOnBindEditTextListener { editText ->
+                    editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                }
             }
         }
     }
