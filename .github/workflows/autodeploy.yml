@@ -23,6 +23,10 @@ jobs:
       - name: Install pack CLI via the official buildpack Action https://github.com/buildpacks/github-actions#setup-pack-cli-action
         uses: buildpacks/github-actions/setup-pack@v5.0.0
 
+      - name: Just to prepare an empty file for Gradle build..
+        run: |
+          touch local.properties
+
       # Caching Paketo Build see https://stackoverflow.com/a/66598693/4964553
       # BP_OCI_SOURCE as --env creates the GitHub Container Registry <-> Repository link (https://paketo.io/docs/buildpacks/configuration/#applying-custom-labels)
       # BP_JVM_VERSION 17, because we use Java 17 inside our Gradle build but Paketo defaults to 11
