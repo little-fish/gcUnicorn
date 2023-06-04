@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -19,90 +19,72 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.6.10'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.6.10'
-}
-
-ext {
-    // Spring Boot.
-    versionSpringBoot = '2.2.4.RELEASE'
-}
-
-repositories {
-    maven {
-        url = 'https://repo.spring.io/libs-milestone'
-    }
-}
-
-bootRun {
-    systemProperty 'spring.profiles.active', 'development'
+    alias(libs.plugins.org.jetbrains.kotlin.jvm)
+    alias(libs.plugins.org.springframework.boot)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.spring)
+    // https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html
+    // https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html
+    alias(libs.plugins.org.graalvm.buildtools.native)
 }
 
 bootJar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
     manifest {
         attributes(
-                "Created-By" : project.maintainer,
-                "Created-On" : new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
-                "Implementation-Title" : project.name,
-                "Implementation-Version" : project.version,
-                "Build-JDK" : System.getProperty('java.version'),
-                "Source-Compatibility" : project.sourceCompatibility,
-                "Target-Compatibility" : project.targetCompatibility,
-                "License" : "GPL-2.0"
+                "Created-On": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
+                "Implementation-Title": "gcUnicorn-webapp",
+                "License": "GPL-2.0"
         )
     }
 }
 
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.GRAAL_VM
     }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:$versionSpringBoot"
+graalvmNative {
+    toolchainDetection = true
+
+    binaries {
+        main {
+            imageName = "${project.name} v${project.version}"
+            buildArgs.add("-H:ReflectionConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.0/reflect-config.json")
+            buildArgs.add("-H:ResourceConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.0/resource-config.json")
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                "Created-On": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
+                "Implementation-Title": "gcUnicorn-webapp",
+                "Implementation-Version": project.version,
+                "Build-Jdk-Spec": project.java.toolchain.languageVersion,
+                "License": "GPL-2.0"
+        )
     }
 }
 
 dependencies {
-    implementation project(':gcUnicorn-core')
-    annotationProcessor(
-            'org.springframework.boot:spring-boot-configuration-processor'
-    )
-    implementation('org.springframework.boot:spring-boot-starter') {
-        exclude group: 'org.yaml', module: 'snakeyaml'
-    }
     implementation(
-            'org.springframework.boot:spring-boot-starter-undertow',
-            'org.springframework.boot:spring-boot-starter-thymeleaf',
-            'org.springframework.boot:spring-boot-starter-security',
-            // WAITING: Switch to RELEASE once it is out.
-            'org.springframework.mobile:spring-mobile-device:2.0.0.M3',
-            'org.springframework:spring-webmvc',
-            'org.springframework:spring-messaging',
-            'org.springframework:spring-websocket',
-            'org.springframework.security:spring-security-messaging'
+            platform(libs.spring.boot.dependencies),
+            project(':core'),
+            libs.spring.boot.autoconfigure,
+            libs.spring.security.config,
+            libs.spring.security.web,
+            libs.spring.webmvc,
+            libs.spring.websocket,
+            libs.spring.messaging,
+            libs.thymeleaf.spring6,
+            libs.undertow.websockets.jsr
     )
     runtimeOnly(
-            "com.fasterxml.jackson.module:jackson-module-kotlin:$versionJackson"
+            libs.jackson.module.kotlin,
+            libs.reactive.streams,
+            libs.kotlinx.coroutines.reactor,
+            libs.logback.classic
     )
-    compileOnly(
-            'org.springframework.boot:spring-boot-devtools'
-    )
-    testImplementation(
-            "org.testng:testng:$versionTestNG",
-            'org.springframework:spring-test'
-    )
-}
-
-compileKotlin.dependsOn(processResources)
-
-test {
-    useTestNG()
 }

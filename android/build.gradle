@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -16,74 +16,50 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-buildscript {
-    ext {
-        versionAndroidTools = '7.0.4'
-        versionSecrets = '2.0.1'
-    }
-
-    repositories {
-        jcenter()
-        google()
-    }
-
-    dependencies {
-        classpath "com.android.tools.build:gradle:$versionAndroidTools"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versionKotlin"
-        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:$versionSecrets"
-    }
+plugins {
+    // https://developer.android.com/build
+    alias(libs.plugins.com.android.application)
+    // https://github.com/google/secrets-gradle-plugin
+    alias(libs.plugins.com.google.android.libraries.mapsplatform.secrets.gradle.plugin)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.parcelize)
 }
-
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
-apply plugin: 'kotlin-android'
-apply plugin: 'org.jetbrains.kotlin.plugin.parcelize'
-apply plugin: 'kotlin-kapt'
 
 dependencies {
-    implementation project(':gcUnicorn-core')
     implementation(
-            "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versionKotlinCoroutines",
-            "androidx.legacy:legacy-support-core-ui:$versionAndroidX",
-            "com.google.android.material:material:$versionAndroidX",
-            "androidx.appcompat:appcompat:$versionAndroidX",
-            "androidx.preference:preference:$versionAndroidX",
-            "androidx.constraintlayout:constraintlayout:$versionAndroidConstraint",
-            "com.google.dagger:dagger:$versionDagger",
-            "com.asamm:locus-api-android:$versionLocusApi",
-            "androidx.preference:preference:$versionAndroidX",
-            "com.takisoft.preferencex:preferencex:$versionFixSupport",
-            "com.google.android.libraries.places:places:$versionPlaces",
-            "androidx.multidex:multidex:$versionMultidex",
-            "com.github.suchoX:PlacePicker:$versionPlacePicker",
-            "com.google.android.material:material:$versionMaterial",
-            "com.google.android.gms:play-services-maps:$versionPlayServicesMaps"
+            project(':core'),
+            libs.androidx.preference,
+            libs.androidx.constraintlayout,
+            libs.androidx.appcompat,
+            libs.androidx.legacy.support.core.ui,
+            libs.androidx.multidex,
+            libs.android.material,
+            libs.takisoft.preferencex,
+            // https://github.com/suchoX/PlacePicker
+            libs.suchox.placepicker,
+            // https://developers.google.com/maps/documentation/places/android-sdk/config
+            libs.android.places,
+            libs.locus.api.android,
+            libs.dagger,
     )
+
     runtimeOnly(
-            "org.slf4j:slf4j-android:$versionSlf4J"
+            libs.android.play.services.maps,
+            libs.kotlinx.coroutines.android,
+            // https://github.com/tony19/logback-android
+            libs.logback.android
     )
     kapt(
-            "com.google.dagger:dagger-compiler:$versionDagger"
+            libs.dagger.compiler
     )
 }
 
-configurations.all {
-    resolutionStrategy {
-        eachDependency { dependencyDetail ->
-            if (dependencyDetail.requested.group == 'org.jetbrains.kotlin' && dependencyDetail.requested.name.startsWith('kotlin-stdlib')) {
-                dependencyDetail.useVersion versionKotlin
-            }
-        }
-    }
-}
-
+// https://developer.android.com/build#module-level
 android {
-    setCompileSdkVersion 32
-    buildToolsVersion '30.0.3'
+    namespace 'cz.babi.gcunicorn.android'
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
+    compileSdk 33
 
     buildFeatures {
         viewBinding true
@@ -91,23 +67,24 @@ android {
 
     defaultConfig {
         applicationId 'cz.babi.gcunicorn.android'
-        
-        minSdkVersion 16
-        targetSdkVersion 32
-        
+
+        minSdk 21
+        targetSdk 33
+
         multiDexEnabled true
-        
-        versionCode 2
-        versionName project.version
-        
+
+        versionCode 3
+        versionName "${project.version}"
+
         vectorDrawables.useSupportLibrary = true
-        
+
         resConfigs 'en', 'cs'
     }
 
+    // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     buildTypes {
@@ -141,7 +118,7 @@ def keystorePropertiesFile = file(keystoreFile)
 
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(keystorePropertiesFile.newDataInputStream())
-    
+
     if (keystoreProperties['keyAlias'] && keystoreProperties['keyPassword'] && keystoreProperties['storeFile'] && keystoreProperties['storePassword']) {
         android {
             signingConfigs {

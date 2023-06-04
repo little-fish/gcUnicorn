@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -21,23 +21,44 @@ package cz.babi.gcunicorn.core.network.service.geocachingcom.model
 /**
  * Geocache lite class.
  *
+ * @param id ID.
+ * @param name Name.
+ * @param code Code.
  * @param url Cache's url.
- * @param type Cache's type.
- * @param isDisabled Whether the cache is disabled or not.
  * @param isPremiumOnly Whether the cache is marked as premium only.
- * @param distance Distance from search coordinates.
- * @param canLoadInfo Flag determining whether additional info can be loaded.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 open class GeocacheLite(
+        var id: Long? = null,
+        var name: String? = null,
+        var code: String? = null,
         var url: String = "",
-        var type: CacheType? = null,
-        var isDisabled: Boolean? = null,
-        var isPremiumOnly: Boolean? = null,
-        /** Used for filtering only. */
-        var distance: Double? = null,
-        var canLoadInfo: Boolean = true
-)
+        var isPremiumOnly: Boolean? = null
+) {
+        override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (javaClass != other?.javaClass) return false
+
+                other as GeocacheLite
+
+                if (id != other.id) return false
+                if (name != other.name) return false
+                if (code != other.code) return false
+                if (url != other.url) return false
+                return isPremiumOnly == other.isPremiumOnly
+        }
+
+        override fun hashCode(): Int {
+                var result = id?.hashCode() ?: 0
+                result = 31 * result + (name?.hashCode() ?: 0)
+                result = 31 * result + (code?.hashCode() ?: 0)
+                result = 31 * result + url.hashCode()
+                result = 31 * result + (isPremiumOnly?.hashCode() ?: 0)
+                return result
+        }
+
+        override fun toString(): String {
+                return "GeocacheLite(id=$id, name=$name, code=$code, url='$url', isPremiumOnly=$isPremiumOnly)"
+        }
+}

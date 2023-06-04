@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -24,8 +24,6 @@ package cz.babi.gcunicorn.`fun`
  * @param notNullCallback Callback to be executed if the receiver is not null.
  * @param nullCallback Callback to be executed if the receiver is null.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 inline fun <T : Any> T?.nullableExecute(notNullCallback: T.() -> Unit, nullCallback: () -> Unit) { also { if (it!=null) notNullCallback(it) else nullCallback() } }
@@ -37,8 +35,6 @@ inline fun <T : Any> T?.nullableExecute(notNullCallback: T.() -> Unit, nullCallb
  * @param nullCallback Callback to be executed if the receiver is null.
  * @return Result of one of the given callbacks.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 inline fun <T : Any, R> T?.nullableReturn(notNullCallback: T.() -> R?, nullCallback: () -> R?): R? = let { if (it!=null) notNullCallback(it) else nullCallback() }

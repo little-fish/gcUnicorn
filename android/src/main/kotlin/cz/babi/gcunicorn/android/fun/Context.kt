@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -29,8 +29,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
  * @param permissions Permissions to check.
  * @return True if all given permissions are granted. Otherwise, returns false.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 fun Context.hasPermissions(vararg permissions: String): Boolean {
@@ -46,8 +44,6 @@ fun Context.hasPermissions(vararg permissions: String): Boolean {
  * @param id Notification id.
  * @param notification Notification to show.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 fun Context.showNotification(id: Int, notification: Notification) {
@@ -58,8 +54,6 @@ fun Context.showNotification(id: Int, notification: Notification) {
  * Extension method for dismissing notification.
  * @param id Id of the notification to be dismissed.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 fun Context.dismissNotification(id: Int) {
@@ -69,8 +63,6 @@ fun Context.dismissNotification(id: Int) {
 /**
  * Extension property for easy access to underlying notification manager.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 val Context.notificationManager: NotificationManagerCompat
@@ -79,8 +71,6 @@ val Context.notificationManager: NotificationManagerCompat
 /**
  * Extension property for easy access to underlying local broadcast manager.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 val Context.localBroadcastManager: LocalBroadcastManager

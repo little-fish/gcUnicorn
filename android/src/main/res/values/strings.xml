@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ gcUnicorn
-  ~ Copyright (C) 2018  Martin Misiarz
+  ~ Copyright (C) 2023  Martin Misiarz
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License version 2
@@ -21,7 +21,7 @@
     <string name="text_app_name" translatable="false">gcUnicorn</string>
     <string name="empty_string" translatable="false"/>
     <string name="text_android" translatable="false">android</string>
-    <string name="text_app_core" translatable="false">gcUnicorn-core v2.0.5</string>
+    <string name="text_app_core" translatable="false">gcUnicorn-core v3.0.0</string>
     <string name="text_github">Follow gcUnicorn project @<a href="https://github.com/little-fish/gcUnicorn">GitHub</a>.</string>
 
     <string name="activity_search">gcUnicorn</string>
@@ -35,7 +35,8 @@
     <string name="activity_search_cache_type_label">cache type</string>
     <string name="activity_search_additional_filters_label">additional filters</string>
     <string name="activity_search_include_disabled">Include disabled caches</string>
-    <string name="activity_search_include_own">Include own and found caches</string>
+    <string name="activity_search_include_own">Include own caches</string>
+    <string name="activity_search_include_found">Include found caches</string>
     <string name="activity_search_skip_premium">Skip premium caches</string>
     <string name="activity_search_download">download</string>
     <string name="activity_search_gps">gps</string>

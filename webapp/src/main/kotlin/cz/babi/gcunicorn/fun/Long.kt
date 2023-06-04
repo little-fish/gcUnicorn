@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,15 +18,12 @@
 
 package cz.babi.gcunicorn.`fun`
 
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /**
  * Return string representation of a date constructed from underlying long object.
  *
  * @see [Date.format]
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 fun Long.dateFormat(pattern: String, locale: Locale = Locale.US) = Date(this).format(pattern, locale)

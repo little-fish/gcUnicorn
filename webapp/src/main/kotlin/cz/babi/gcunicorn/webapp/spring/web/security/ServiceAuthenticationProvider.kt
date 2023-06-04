@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,10 +18,11 @@
 
 package cz.babi.gcunicorn.webapp.spring.web.security
 
-import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.core.exception.network.LoginException
 import cz.babi.gcunicorn.core.network.model.Credentials
 import cz.babi.gcunicorn.core.network.service.Service
+import cz.babi.gcunicorn.`fun`.logger
+import kotlinx.coroutines.runBlocking
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -33,8 +34,6 @@ import org.springframework.stereotype.Component
  *
  * @param service Service to log in with.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 @Component
@@ -48,7 +47,9 @@ class ServiceAuthenticationProvider(private val service: Service) : Authenticati
     override fun authenticate(authentication: Authentication?): Authentication? {
         authentication?.let {
             try {
-                service.login(Credentials(it.name, it.credentials.toString()))
+                runBlocking {
+                    service.login(Credentials(it.name, it.credentials.toString()))
+                }
 
                 return UsernamePasswordAuthenticationToken(it.name, it.credentials, listOf(SimpleGrantedAuthority(ROLE)))
             } catch(e: LoginException) {

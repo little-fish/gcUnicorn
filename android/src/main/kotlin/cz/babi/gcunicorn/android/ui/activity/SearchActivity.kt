@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -38,6 +38,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.app.ActivityCompat
 import androidx.core.app.JobIntentService
+import com.google.android.libraries.places.api.Places
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.sucho.placepicker.AddressData
@@ -502,7 +503,8 @@ class SearchActivity : BaseAppCompatActivity(), ActivityCompat.OnRequestPermissi
                 putExtra(UnicornService.FILTER_MAX_CACHE_COUNT, maxCountEditText.text.toIntOrNull() ?: FILTER_DEFAULT_CACHE_COUNT)
                 putExtra(UnicornService.FILTER_MAX_DISTANCE, binding.layoutSearch.searchMaxDistance.text.toDoubleOrNull() ?: FILTER_MAX_DISTANCE)
                 putExtra(UnicornService.FILTER_ALLOW_DISABLED, binding.layoutSearch.searchAllowDisabled.isChecked)
-                putExtra(UnicornService.FILTER_INCLUDE_OWN_AND_FOUND, binding.layoutSearch.searchIncludeOwn.isChecked)
+                putExtra(UnicornService.FILTER_EXCLUDE_OWN, !binding.layoutSearch.searchIncludeOwn.isChecked)
+                putExtra(UnicornService.FILTER_EXCLUDE_FOUND, !binding.layoutSearch.searchIncludeFound.isChecked)
                 putExtra(UnicornService.FILTER_SKIP_PREMIUM, binding.layoutSearch.searchSkipPremium.isChecked)
             })
         }

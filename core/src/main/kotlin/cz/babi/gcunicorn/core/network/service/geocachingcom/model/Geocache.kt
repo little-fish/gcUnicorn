@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -24,14 +24,13 @@ import cz.babi.gcunicorn.core.network.model.Image
 /**
  * Geocache data class.
  *
- * @param name Name.
- * @param code Code.
- * @param id ID.
  * @param guid GUID.
+ * @param type Cache's type.
+ * @param isDisabled Whether the cache is disabled or not.
  * @param ownerName Owner name.
  * @param ownerId Owner ID.
  * @param isArchived Is geocache archived.
- * @param isFavorite Is geocache marked as favorite for logged in user.
+ * @param isFavorite Is geocache marked as favorite for logged-in user.
  * @param watchlistCount Watchlist count.
  * @param terrain Terrain.
  * @param difficulty Difficulty.
@@ -45,7 +44,7 @@ import cz.babi.gcunicorn.core.network.model.Image
  * @param longDescription Long description.
  * @param shortDescription Short description.
  * @param attributes List of attributes.
- * @param found Is cache already found by logged in user.
+ * @param found Is cache already found by logged-in user.
  * @param onWatchList Is cache on logged in user's watchlist.
  * @param spoilers List of spoilers.
  * @param inventory Cache inventory.
@@ -53,15 +52,12 @@ import cz.babi.gcunicorn.core.network.model.Image
  * @param waypoints Cache's waypoints.
  * @param logEntries Log entries.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 data class Geocache(
-        var name: String? = null,
-        var code: String? = null,
-        var id: Long? = null,
         var guid: String? = null,
+        var type: CacheType? = null,
+        var isDisabled: Boolean? = null,
         var ownerName: String? = null,
         var ownerId: String? = null,
         var isArchived: Boolean? = null,
@@ -89,9 +85,6 @@ data class Geocache(
 ) : GeocacheLite() {
         constructor(geocacheLite: GeocacheLite) : this() {
                 url = geocacheLite.url
-                distance = geocacheLite.distance
-                type = geocacheLite.type
-                isDisabled = geocacheLite.isDisabled
                 isPremiumOnly = geocacheLite.isPremiumOnly
         }
 

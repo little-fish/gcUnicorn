@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,20 +18,27 @@
 
 package cz.babi.gcunicorn.webapp.spring.configuration
 
-import cz.babi.gcunicorn.core.location.parser.impl.*
+import cz.babi.gcunicorn.core.location.parser.Parser
+import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreeEmptySidesParser
+import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesParser
+import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesRightSideParser
+import cz.babi.gcunicorn.core.location.parser.impl.DegreesDecimalMinuteParser
+import cz.babi.gcunicorn.core.location.parser.impl.ParserWrapper
 import cz.babi.gcunicorn.core.network.InMemoryCookieJar
 import cz.babi.gcunicorn.core.network.Network
 import cz.babi.gcunicorn.core.network.interceptor.HeaderInterceptor
 import cz.babi.gcunicorn.core.network.interceptor.LoggingInterceptor
+import cz.babi.gcunicorn.core.network.service.geocachingcom.GCWebApi
 import cz.babi.gcunicorn.core.network.service.geocachingcom.GeoCachingCom
 import cz.babi.gcunicorn.webapp.desktop.Tray
 import cz.babi.gcunicorn.webapp.desktop.TrayCondition
 import cz.babi.gcunicorn.webapp.entity.task.JobsWrapper
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.CookieJar
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationContext
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
@@ -73,7 +80,10 @@ class ApplicationConfiguration {
             .build()
 
     @Bean
-    fun network() = Network(okHttpClient(headerInterceptor(), loggingInterceptor(), cookieJar()))
+    fun gCWebApi(network: Network) = GCWebApi(network)
+
+    @Bean
+    fun network(okHttpClient: OkHttpClient, json: Json) = Network(okHttpClient, json)
 
     @Bean
     fun degreesDecimalMinuteParser() = DegreesDecimalMinuteParser()
@@ -90,11 +100,15 @@ class ApplicationConfiguration {
     @Bean(name = ["parser"])
     fun parsers() = ParserWrapper(decimalDegreesParser(), degreesDecimalMinuteParser(), decimalDegreesEmptySidesParser(), decimalDegreeRightSideParser())
 
+    @OptIn(ExperimentalSerializationApi::class)
     @Bean
-    fun json() = Json(JsonConfiguration.Stable)
+    fun json() = Json {
+        explicitNulls = false
+        ignoreUnknownKeys = true
+    }
 
     @Bean
-    fun service() = GeoCachingCom(network(), parsers(), json())
+    fun service(network: Network,@Qualifier("parser") parser: Parser, json: Json, gcWebApi: GCWebApi) = GeoCachingCom(network, parser, json, gcWebApi)
 
     /** The bean is a good candidate for session scoped component. But the component is used during WebSocket communication so there is no way to obtain it from the session. */
     @Bean

@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -26,8 +26,6 @@ import cz.babi.gcunicorn.android.dagger.component.DaggerApplicationComponent
  * Custom application class.
  * It takes care about instantiation of Dagger component.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 class AndroidApplication : MultiDexApplication() {

@@ -16,3 +16,6 @@ keystore.properties
 # Common
 .tmp
 .log
+
+# webapp
+/webapp/resources/docker/*.jar

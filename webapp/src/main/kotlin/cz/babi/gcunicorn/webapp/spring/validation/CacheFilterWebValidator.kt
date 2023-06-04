@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -46,7 +46,7 @@ class CacheFilterWebValidator(@Autowired val parser: Parser) : Validator {
         private const val COUNT_MAX = 200
     }
 
-    override fun validate(target: Any?, errors: Errors) {
+    override fun validate(target: Any, errors: Errors) {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cacheType", "field.required")
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "coordinates", "field.required")
 
@@ -71,5 +71,5 @@ class CacheFilterWebValidator(@Autowired val parser: Parser) : Validator {
         }
     }
 
-    override fun supports(clazz: Class<*>?) = CacheFilterWeb::class.java.isAssignableFrom(clazz)
+    override fun supports(clazz: Class<*>): Boolean = CacheFilterWeb::class.java.isAssignableFrom(clazz)
 }

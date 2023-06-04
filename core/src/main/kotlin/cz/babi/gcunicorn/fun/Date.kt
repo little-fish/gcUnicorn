@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -19,8 +19,7 @@
 package cz.babi.gcunicorn.`fun`
 
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /**
  * Formats underlying date with given pattern and locale.
@@ -32,8 +31,6 @@ import java.util.Locale
  * @throws [NullPointerException] If the given pattern of locale is null.
  * @throws [IllegalArgumentException] If the given pattern is invalid.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 @Throws(NullPointerException::class, IllegalArgumentException::class)

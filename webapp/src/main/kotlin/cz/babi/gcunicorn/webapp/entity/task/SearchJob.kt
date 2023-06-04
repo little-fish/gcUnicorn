@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -30,8 +30,6 @@ import kotlinx.coroutines.Job
  * @param parent Parent job. Default value is new Job.
  * @param job Deferred job.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 data class SearchJob(val id: Int, val start: Long = System.currentTimeMillis(), val parent: Job = Job(), val job: Deferred<String>) {

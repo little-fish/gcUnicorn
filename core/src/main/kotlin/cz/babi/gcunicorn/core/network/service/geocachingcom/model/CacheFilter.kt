@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -25,24 +25,25 @@ package cz.babi.gcunicorn.core.network.service.geocachingcom.model
  * * list of [CacheType]s to search for,
  * * max distance (in km),
  * * include disabled caches,
- * * exclude own and found caches,
+ * * exclude own caches,
+ * * exclude found caches,
  * * skip premium caches.
  *
  * @param allowedCacheTypes List of allowed cache types. Default value is empty list.
  * @param maxDistance Max distance in km. Default value is [DISABLED_DISTANCE].
- * @param allowDisabled Whether disabled caches are allowed or not. Default value is true.
- * @param includeOwnAndFound Whether own or already found caches are allowed or not. Default value is true.
- * @param skipPremium Whether premium caches should bi skipper. Default value is tru.
+ * @param allowDisabled Whether disabled caches are allowed or not. Default value is true. Note: works for premium members only.
+ * @param excludeOwn Whether own caches should be excluded or not. Default value is true.
+ * @param excludeFound Whether already found caches should be excluded or not. Default value is true.
+ * @param skipPremium Whether premium caches should be skipped. Default value is true.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 data class CacheFilter(
         val allowedCacheTypes: List<CacheType> = emptyList(),
         val maxDistance: Double = DISABLED_DISTANCE,
-        val allowDisabled: Boolean = true,
-        val includeOwnAndFound: Boolean = true,
+        val allowDisabled: Boolean = false,
+        val excludeOwn: Boolean = true,
+        val excludeFound: Boolean = true,
         val skipPremium: Boolean = true
 ) {
     companion object {

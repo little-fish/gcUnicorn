@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -22,23 +22,27 @@ import android.os.Build
 import android.util.Log
 import cz.babi.gcunicorn.android.network.Tls12SocketFactory
 import cz.babi.gcunicorn.core.location.parser.Parser
-import cz.babi.gcunicorn.core.location.parser.impl.*
+import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreeEmptySidesParser
+import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesParser
+import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesRightSideParser
+import cz.babi.gcunicorn.core.location.parser.impl.DegreesDecimalMinuteParser
+import cz.babi.gcunicorn.core.location.parser.impl.ParserWrapper
 import cz.babi.gcunicorn.core.network.InMemoryCookieJar
 import cz.babi.gcunicorn.core.network.Network
 import cz.babi.gcunicorn.core.network.interceptor.HeaderInterceptor
 import cz.babi.gcunicorn.core.network.interceptor.LoggingInterceptor
 import cz.babi.gcunicorn.core.network.service.Service
+import cz.babi.gcunicorn.core.network.service.geocachingcom.GCWebApi
 import cz.babi.gcunicorn.core.network.service.geocachingcom.GeoCachingCom
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
 import java.security.KeyStore
-import java.util.Arrays
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import javax.net.ssl.SSLContext
@@ -51,8 +55,6 @@ import javax.net.ssl.X509TrustManager
  * @see [Service]
  * @see [GeoCachingCom]
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 @Module
@@ -70,7 +72,7 @@ abstract class ServiceModule {
         @Provides
         @Singleton
         @JvmStatic
-        fun providesService(network: Network, parserWrapper: ParserWrapper, json: Json) = GeoCachingCom(network, parserWrapper, json)
+        fun providesService(network: Network, parserWrapper: ParserWrapper, json: Json, gcWebApi: GCWebApi) = GeoCachingCom(network, parserWrapper, json, gcWebApi)
 
         @Provides
         @Singleton
@@ -95,7 +97,7 @@ abstract class ServiceModule {
         @Provides
         @Singleton
         @JvmStatic
-        fun providesNetwork(okHttpClient: OkHttpClient) = Network(okHttpClient)
+        fun providesNetwork(okHttpClient: OkHttpClient, json: Json) = Network(okHttpClient, json)
 
         @Provides
         @Singleton
@@ -110,7 +112,15 @@ abstract class ServiceModule {
         @Provides
         @Singleton
         @JvmStatic
-        fun providesJson() = Json(JsonConfiguration.Stable)
+        fun providesJson() = Json {
+            explicitNulls = false
+            ignoreUnknownKeys = true
+        }
+
+        @Provides
+        @Singleton
+        @JvmStatic
+        fun providesGcWebApi(network: Network) = GCWebApi(network)
 
         private fun applyTlsPatch(builder: OkHttpClient.Builder) {
             if (Build.VERSION.SDK_INT in Build.VERSION_CODES.JELLY_BEAN..Build.VERSION_CODES.LOLLIPOP) {

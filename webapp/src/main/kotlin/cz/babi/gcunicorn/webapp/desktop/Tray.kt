@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -27,7 +27,7 @@ import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.SystemTray
 import java.awt.TrayIcon
-import java.util.Locale
+import java.util.*
 
 /**
  * Tray icon.
@@ -37,8 +37,6 @@ import java.util.Locale
  * @param applicationContext Application context used for closing the application properly.
  * @param messageSource Message source for obtaining localized messages.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 class Tray(image: Image, tooltip: String, private val applicationContext: ApplicationContext, private val messageSource: MessageSource) : TrayIcon(image, tooltip) {
