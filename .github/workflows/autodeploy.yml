@@ -41,7 +41,7 @@ jobs:
             --path . \
             --env "BP_JVM_VERSION=17" \
             --env "BP_GRADLE_BUILD_ARGUMENTS=--no-daemon :webapp:bootJar" \
-            --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/*signed.jar" \
+            --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/*.jar" \
             --env "BP_INCLUDE_FILES=webapp/src/graalvm/config/v1.1.0/*.json" \
             --env "BP_NATIVE_IMAGE=true" \
             --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=-H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.0/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.0/resource-config.json" \
