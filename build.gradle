@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -16,82 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-plugins {
-    id 'idea'
-    id 'base'
-}
-
-group 'cz.babi'
-
-subprojects {
-    ext {
-        maintainer = 'Martin Misiarz'
-
-        // Kotlin version.
-        versionKotlin = '1.6.10'
-        // Version Kotlin coroutines.
-        versionKotlinCoroutines = '1.3.3'
-        // Version Slf4J.
-        versionSlf4J = '1.7.35'
-        // Version Logback.
-        versionLogback = "1.2.10"
-        // Version OkHttp. There are still some troubles with old version of Android. See https://github.com/oppia/oppia-android/issues/3954. Keep this version as it is until they fix it..
-        versionOkHttp = '3.12.11'
-        // Version Spring.
-        versionSpring = '5.2.3.RELEASE'
-        // Version Kotlin XML Builder.
-        versionKotlinXmlBuilder = '1.7.3'
-        // Version Kotlin serialization.
-        versionKotlinSerialization = '0.20.0'
-        // Version Jackson.
-        versionJackson = '2.13.1'
-
-        versionLocusApi = '0.9.9'
-        versionDagger = '2.40.5'
-        // https://dl.google.com/dl/android/maven2/index.html
-        versionAndroidX = '1.0.0'
-        versionMultidex = '2.0.1'
-        // https://issuetracker.google.com/issues/37060038
-        // https://github.com/Gericop/Android-Support-Preference-V7-Fix
-        versionFixSupport = '1.1.0'
-        // Android constraint library.
-        versionAndroidConstraint = '2.0.4'
-        // Google Places.
-        // https://developers.google.com/maps/documentation/places/android-sdk/config
-        versionPlaces = '2.5.0'
-        // https://github.com/suchoX/PlacePicker
-        versionPlacePicker = '1.1.2'
-        // Because of the PlacePicker..
-        versionMaterial = '1.4.0'
-        versionPlayServicesMaps = '17.0.1'
-
-        // Version TestNG.
-        versionTestNG = '7.5'
-
-        // Keystore file.
-        keystoreFile = 'keystore.properties'
-
-        // Local properties file.
-        localPropertiesFile = 'local.properties'
-    }
-
-    repositories {
-        mavenCentral()
-        google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
-    }
-}
-
-// FIXME
-//allprojects { subproject ->
-//    clean {
-//        delete "${subproject.projectDir}/build"
-//        delete "${subproject.projectDir}/out"
-//    }
-//}
-
-configure([ project(':gcUnicorn-core'), project(':gcUnicorn-webapp') ]) {
+configure([ project(':core'), project(':webapp') ]) {
     def keystorePropertiesFile = project.file(keystoreFile)
 
     if (keystorePropertiesFile.exists()) {
@@ -114,57 +39,74 @@ configure([ project(':gcUnicorn-core'), project(':gcUnicorn-webapp') ]) {
 
         // Custom JAR signing.
         if (keystoreProperties['jarsigning.keystore'] && keystoreProperties['jarsigning.keystoreType'] && keystoreProperties['jarsigning.keystorePassword'] && keystoreProperties['jarsigning.alias'] && keystoreProperties['jarsigning.keyPassword']) {
-            if (project.name == 'gcUnicorn-core') {
-                project.tasks.create('signedJar') {
+            if (project.name == 'core') {
+                def task = project.tasks.register('signedJar', Sign) {
                     group = 'build'
-                    dependsOn = [ 'jar' ]
-
-                    doLast {
-                        String libsDir = file("$buildDir").absolutePath + File.separator + 'libs' + File.separator
-                        ant.signjar(
-                                jar: libsDir + project.tasks.jar.archiveName,
-                                signedjar: libsDir + generateSignedArtifactName(project.tasks.jar.archiveName),
-                                alias: keystoreProperties['jarsigning.alias'],
-                                storetype: keystoreProperties['jarsigning.keystoreType'],
-                                keystore: file(keystoreProperties['jarsigning.keystore']).absolutePath,
-                                storepass: keystoreProperties['jarsigning.keystorePassword'],
-                                keypass: keystoreProperties['jarsigning.keyPassword']
-                        )
-                    }
+                    dependsOn = [ project.tasks.named('signArchives'), project.tasks.named('test') ]
+                    buildDir = project.buildDir.absolutePath
+                    archiveName = project.tasks.jar.archiveFileName
+                    alias = keystoreProperties['jarsigning.alias']
+                    keyStoreType = keystoreProperties['jarsigning.keystoreType']
+                    keyStoreLocation = file(keystoreProperties['jarsigning.keystore']).absolutePath
+                    keyStorePassword = keystoreProperties['jarsigning.keystorePassword']
+                    keyPassword = keystoreProperties['jarsigning.keyPassword']
                 }
 
-                project.tasks.getByName('build').dependsOn += [ 'signedJar' ]
-            } else if (project.name == 'gcUnicorn-webapp') {
-                project.tasks.create('signedBootJar') {
+                project.tasks.named('build').configure {
+                    dependsOn += task
+                }
+            } else if (project.name == 'webapp') {
+                def task = project.tasks.register('signedBootJar', Sign) {
                     group = 'build'
-                    dependsOn = [ 'bootJar' ]
-
-                    doLast {
-                        String libsDir = file("$buildDir").absolutePath + File.separator + 'libs' + File.separator
-                        ant.signjar(
-                                jar: libsDir + project.tasks.jar.archiveName,
-                                signedjar: libsDir + generateSignedArtifactName(project.tasks.bootJar.archiveName),
-                                alias: keystoreProperties['jarsigning.alias'],
-                                storetype: keystoreProperties['jarsigning.keystoreType'],
-                                keystore: file(keystoreProperties['jarsigning.keystore']).absolutePath,
-                                storepass: keystoreProperties['jarsigning.keystorePassword'],
-                                keypass: keystoreProperties['jarsigning.keyPassword']
-                        )
-                    }
+                    dependsOn = [ project.tasks.named('bootJar') ]
+                    buildDir = project.buildDir.absolutePath
+                    archiveName = project.tasks.bootJar.archiveFileName
+                    alias = keystoreProperties['jarsigning.alias']
+                    keyStoreType = keystoreProperties['jarsigning.keystoreType']
+                    keyStoreLocation = file(keystoreProperties['jarsigning.keystore']).absolutePath
+                    keyStorePassword = keystoreProperties['jarsigning.keystorePassword']
+                    keyPassword = keystoreProperties['jarsigning.keyPassword']
                 }
 
-                project.tasks.getByName('build').dependsOn += [ 'signedBootJar' ]
+                project.tasks.named('build').configure {
+                    dependsOn += task
+                }
             }
         }
     }
 }
 
-/**
- * Generates name with '-signed' suffix added to given artifact's name.
- * @param artifactName Original artifact's name.
- * @return Artifact's name with '-signed' suffix.
- */
-private static def generateSignedArtifactName(String artifactName) {
-    def lastDot = artifactName.lastIndexOf('.')
-    return artifactName.substring(0, lastDot) + '-signed' + artifactName.substring(lastDot)
+abstract class Sign extends DefaultTask {
+
+    @Input abstract Property<String> getBuildDir()
+    @Input abstract Property<String> getArchiveName()
+    @Input abstract Property<String> getAlias()
+    @Input abstract Property<String> getKeyStoreType()
+    @Input abstract Property<String> getKeyStoreLocation()
+    @Input abstract Property<String> getKeyStorePassword()
+    @Input abstract Property<String> getKeyPassword()
+
+    @TaskAction
+    void action() {
+        final String libsDir = buildDir.get() + File.separator + 'libs' + File.separator
+        ant.signjar(
+                jar: libsDir + archiveName.get(),
+                signedjar: libsDir + generateSignedArtifactName(archiveName.get()),
+                alias: alias.get(),
+                storetype: keyStoreType.get(),
+                keystore: keyStoreLocation.get(),
+                storepass: keyStorePassword.get(),
+                keypass: keyPassword.get()
+        )
+    }
+
+    /**
+     * Generates name with '-signed' suffix added to given artifact's name.
+     * @param artifactName Original artifact's name.
+     * @return Artifact's name with '-signed' suffix.
+     */
+    private static String generateSignedArtifactName(String artifactName) {
+        final int lastDot = artifactName.lastIndexOf('.')
+        return artifactName.substring(0, lastDot) + '-signed' + artifactName.substring(lastDot)
+    }
 }

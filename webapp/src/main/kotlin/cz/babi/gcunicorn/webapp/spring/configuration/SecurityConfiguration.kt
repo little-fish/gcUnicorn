@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -21,16 +21,16 @@ package cz.babi.gcunicorn.webapp.spring.configuration
 import cz.babi.gcunicorn.webapp.spring.web.security.Securities
 import cz.babi.gcunicorn.webapp.spring.web.security.ServiceAuthenticationProvider
 import cz.babi.gcunicorn.webapp.spring.web.security.ServiceLogoutHandler
+import jakarta.servlet.Filter
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import javax.servlet.Filter
 
 /**
  * Security configuration.
@@ -39,8 +39,6 @@ import javax.servlet.Filter
  * @param serviceLogoutHandler Service logout handler.
  * @param characterEncodingFilter Character encoding filter.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 @Configuration
@@ -48,33 +46,33 @@ import javax.servlet.Filter
 @ComponentScan(basePackageClasses = [Securities::class])
 class SecurityConfiguration(@Autowired private val serviceAuthenticationProvider: ServiceAuthenticationProvider,
                             @Autowired private val serviceLogoutHandler: ServiceLogoutHandler,
-                            @Autowired private val characterEncodingFilter: Filter) : WebSecurityConfigurerAdapter() {
+                            @Autowired private val characterEncodingFilter: Filter) {
 
-    override fun configure(auth: AuthenticationManagerBuilder?) {
-        auth
-                ?.authenticationProvider(serviceAuthenticationProvider)
-    }
-
-    override fun configure(http: HttpSecurity?) {
-        http
-                ?.headers()
-                    ?.frameOptions()
-                        ?.sameOrigin()
-                        ?.and()
-                ?.addFilterBefore(characterEncodingFilter, CsrfFilter::class.java)
-                ?.authorizeRequests()
-                    ?.antMatchers("/gcUnicorn/**")?.hasAuthority(ServiceAuthenticationProvider.ROLE)
-                    ?.antMatchers("/login", "/logout", "/error/**", "/resources/**")?.permitAll()
-                    ?.anyRequest()?.authenticated()
-                    ?.and()
-                ?.formLogin()
-                    ?.loginPage("/login")
-                    ?.defaultSuccessUrl("/gcUnicorn/search", true)
-                    ?.failureUrl("/login?error")
-                    ?.and()
-                ?.logout()
-                    ?.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
-                    ?.addLogoutHandler(serviceLogoutHandler)
-                    ?.logoutSuccessUrl("/")
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain? {
+        return http
+            .headers { headers ->
+                headers.frameOptions {
+                    it.sameOrigin()
+                }
+            }
+            .addFilterBefore(characterEncodingFilter, CsrfFilter::class.java)
+            .authorizeHttpRequests {
+                it.requestMatchers("/gcUnicorn/**").hasAuthority(ServiceAuthenticationProvider.ROLE)
+                    .requestMatchers("/login", "/logout", "/error/**", "/resources/**").permitAll()
+                    .anyRequest().authenticated()
+            }
+            .formLogin {
+                it.loginPage("/login")
+                    .defaultSuccessUrl("/gcUnicorn/search", true)
+                    .failureUrl("/login?error")
+            }
+            .logout {
+                it.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
+                    .addLogoutHandler(serviceLogoutHandler)
+                    .logoutSuccessUrl("/")
+            }
+            .authenticationProvider(serviceAuthenticationProvider)
+            .build()
     }
 }

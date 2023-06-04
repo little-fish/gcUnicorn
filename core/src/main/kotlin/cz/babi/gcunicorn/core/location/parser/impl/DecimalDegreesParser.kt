@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -34,8 +34,6 @@ import cz.babi.gcunicorn.core.location.parser.Parser
  * * N 18,556 , E 45°
  * * s 18.556° , W45°
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 open class DecimalDegreesParser : Parser {

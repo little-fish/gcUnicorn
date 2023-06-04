@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -20,19 +20,18 @@ package cz.babi.gcunicorn.webapp.spring.web.security
 
 import cz.babi.gcunicorn.core.exception.network.LogoutException
 import cz.babi.gcunicorn.core.network.service.Service
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import kotlinx.coroutines.runBlocking
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.logout.LogoutHandler
 import org.springframework.stereotype.Component
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 /**
  * Logout handler.
  *
  * @param service Service to log out with.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 @Component
@@ -40,7 +39,9 @@ class ServiceLogoutHandler(private val service: Service) : LogoutHandler {
 
     override fun logout(request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication?) {
         try {
-            service.logout()
+            runBlocking {
+                service.logout()
+            }
         } catch(e: LogoutException) { /* Swallow the exception. */ }
     }
 }

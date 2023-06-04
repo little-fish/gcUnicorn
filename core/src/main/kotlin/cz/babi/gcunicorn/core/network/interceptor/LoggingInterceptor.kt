@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -28,8 +28,6 @@ import java.util.regex.Pattern
 /**
  * Interceptors which logs oncoming requests.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 class LoggingInterceptor : Interceptor {
@@ -41,19 +39,21 @@ class LoggingInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val requestMethod = request.method()
-        val requestUrl = hidePassword(request.url().toString())
+        val requestMethod = request.method
+        val requestUrl = hidePassword(request.url.toString())
         val now = System.currentTimeMillis()
 
         try {
             val response = chain.proceed(request)
-            val responseProtocol = "${response.protocol()}"
-            val redirect = if(request.url()==response.request().url()) "" else " redirected to: '${response.request().url()}'"
+            val responseProtocol = "${response.protocol}"
+            val redirect = if(request.url == response.request.url) "" else " redirected to: '${response.request.url}'"
 
-            if(response.isSuccessful || response.code()==302) {
-                LOG.debug("{} - for request: '{} ({}): {}{}'; duration: {}.", response.code(), requestMethod, responseProtocol, requestUrl, redirect, getDuration(now))
+            if(response.isSuccessful || response.code ==302) {
+                LOG.debug("{} - for request: '{} ({}): {}{}'; duration: {}.",
+                    response.code, requestMethod, responseProtocol, requestUrl, redirect, getDuration(now))
             } else {
-                LOG.warn("{} - for request: '{} ({}): {}{}'; with response: '{}'; duration: {}.", response.code(), requestMethod, responseProtocol, requestUrl, redirect, response.message(), getDuration(now))
+                LOG.warn("{} - for request: '{} ({}): {}{}'; with response: '{}'; duration: {}.",
+                    response.code, requestMethod, responseProtocol, requestUrl, redirect, response.message, getDuration(now))
             }
 
             return response

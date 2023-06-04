@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes"?>
 <!--
   ~ gcUnicorn
-  ~ Copyright (C) 2018  Martin Misiarz
+  ~ Copyright (C) 2023  Martin Misiarz
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License version 2
@@ -18,7 +18,10 @@
   -->
 
 <!--  cache.xsd version 1.0: Private GPX extensions used for Geocaching pages on Geocaching.com -->
-<xs:schema id="NewDataSet" targetNamespace="http://www.groundspeak.com/cache/1/0/1" xmlns:mstns="http://www.topografix.com/GPX/1/0" xmlns="http://www.groundspeak.com/cache/1/0/1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app1="http://www.groundspeak.com/cache/1/0/1">
+<xs:schema id="NewDataSet" targetNamespace="http://www.groundspeak.com/cache/1/0/1"
+           xmlns="http://www.groundspeak.com/cache/1/0/1" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified"
+           elementFormDefault="qualified">
   <xs:element name="cache" msdata:Prefix="groundspeak">
     <xs:complexType>
       <xs:sequence>

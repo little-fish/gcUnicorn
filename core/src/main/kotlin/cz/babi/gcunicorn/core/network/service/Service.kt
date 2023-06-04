@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -25,13 +25,10 @@ import cz.babi.gcunicorn.core.location.Coordinates
 import cz.babi.gcunicorn.core.network.model.Credentials
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheFilter
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Geocache
-import kotlinx.coroutines.Job
 
 /**
  * Service interface providing basic set of methods required for grabbing geocaches.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 interface Service {
@@ -42,19 +39,19 @@ interface Service {
      * @throws [LoginException] If anything goes wrong.
      */
     @Throws(LoginException::class)
-    fun login(credentials: Credentials)
+    suspend fun login(credentials: Credentials)
 
     /**
-     * Log out currently logged in user. If logout was successful, it returns nothing. Otherwise it throws an exception.
+     * Log out currently logged-in user. If logout was successful, it returns nothing. Otherwise it throws an exception.
      * @throws [LogoutException] If anything goes wrong.
      */
     @Throws(LogoutException::class)
-    fun logout()
+    suspend fun logout()
 
     /**
-     * Checks whether an user is logged in within given page body.
+     * Checks whether a user is logged in within given page body.
      * @param pageBody Page body to check.
-     * @return True if an user is logged in, otherwise returns false.
+     * @return True if a user is logged in, otherwise returns false.
      */
     fun isLoggedIn(pageBody: String): Boolean
 
@@ -64,13 +61,12 @@ interface Service {
      * @param cacheFilter Filter used while looking for caches.
      * @param limit Max count of caches to look for.
      * @param geocacheLoadedListener Listener that will be notified every time a geocache is fully loaded.
-     * @param parent Parent job which can cancel all subsequent coroutine jobs.
      * @return List of found caches.
      * @throws [ServiceException] If anything goes wrong.
      * @see [CacheFilter]
      */
     @Throws(ServiceException::class)
-    suspend fun lookForCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, geocacheLoadedListener: GeocacheLoadedListener?, parent: Job?): List<Geocache>
+    suspend fun lookForCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, geocacheLoadedListener: GeocacheLoadedListener?): List<Geocache>
 
     /**
      * Creates GPX file of given geocaches.
@@ -83,5 +79,5 @@ interface Service {
      * @param formatOutput Pass true if the GPX output should be formatted. Otherwise pass false.
      * @return String representation of created GPX file.
      */
-    fun createGpx(geocaches: List<Geocache>, formatOutput: Boolean): String
+    suspend fun createGpx(geocaches: List<Geocache>, formatOutput: Boolean): String
 }

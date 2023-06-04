@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -17,32 +17,115 @@
  */
 
 pluginManagement {
-    resolutionStrategy {
-        eachPlugin {
-            if(requested.id.id=='org.springframework.boot') {
-                useModule('org.springframework.boot:spring-boot-gradle-plugin:2.2.4.RELEASE')
-            } else if(requested.id.id=='io.spring.dependency-management') {
-                useModule('io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE')
-            }
-        }
-    }
-
     repositories {
         gradlePluginPortal()
-        
-        maven {
-            url = 'https://repo.spring.io/plugins-release/'
+        google()
+    }
+}
+
+plugins {
+    // https://github.com/gradle/foojay-toolchains
+    id('org.gradle.toolchains.foojay-resolver') version('0.5.0')
+}
+
+toolchainManagement {
+    jvm {
+        javaRepositories {
+            repository('foojay') {
+                resolverClass = org.gradle.toolchains.foojay.FoojayToolchainResolver
+            }
         }
     }
 }
 
 rootProject.name = 'gcUnicorn'
 
-include 'webapp'
-project(':webapp').name = 'gcUnicorn-webapp'
-
 include 'core'
-project(':core').name = 'gcUnicorn-core'
-
+include 'webapp'
 include 'android'
-project(':android').name = 'gcUnicorn-android'
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        google()
+        maven { url 'https://jitpack.io' }
+    }
+
+    versionCatalogs {
+        libs {
+            version('kotlin', '1.8.21')
+            version('kotlinx-coroutines', '1.7.1')
+            version('kotlinx-serialization', '1.5.1')
+            version('spring-boot', '3.1.0')
+            version('spring-mobile-device', '2.0.0.M3')
+            version('redundent', '1.9.0')
+            // https://developer.android.com/build/releases/gradle-plugin
+            // Personally, I am using IntelliJ IDEA and the latest version available doesn't support the latest version of Android Gradle Plugin..
+            version('android-application', '7.4.2')
+            version('android-secrets', '2.0.1')
+            version('androidx-preference', '1.2.0')
+            version('androidx-constraintlayout', '2.1.4')
+            version('androidx-appcompat', '1.6.1')
+            version('androidx-legacy', '1.0.0')
+            version('androidx-multidex', '2.0.1')
+            version('android-material', '1.9.0')
+            version('android-places', '3.1.0')
+            version('android-play-services-maps', '18.1.0')
+            version('takisoft-preferencex', '1.1.0')
+            version('dagger', '2.46.1')
+            version('suchox-placepicker', '1.1.2')
+            version('locus', '0.9.50')
+            version('logback-android', '2.0.1')
+            version('graalvm-native', '0.9.22')
+
+            // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
+            library('spring-boot-dependencies', 'org.springframework.boot', 'spring-boot-dependencies').versionRef('spring-boot')
+            library('spring-boot-autoconfigure', 'org.springframework.boot', 'spring-boot-autoconfigure').withoutVersion()
+            library('spring-security-config', 'org.springframework.security', 'spring-security-config').withoutVersion()
+            library('spring-security-web', 'org.springframework.security', 'spring-security-web').withoutVersion()
+            library('spring-webmvc', 'org.springframework', 'spring-webmvc').withoutVersion()
+            library('spring-websocket', 'org.springframework', 'spring-websocket').withoutVersion()
+            library('spring-messaging', 'org.springframework', 'spring-messaging').withoutVersion()
+            library('tomcat-embed-el', 'org.apache.tomcat.embed', 'tomcat-embed-el').withoutVersion()
+            library('thymeleaf-spring6', 'org.thymeleaf', 'thymeleaf-spring6').withoutVersion()
+            library('undertow-websockets-jsr', 'io.undertow', 'undertow-websockets-jsr').withoutVersion()
+            library('okhttp', 'com.squareup.okhttp3', 'okhttp').withoutVersion()
+            library('jackson-module-kotlin', 'com.fasterxml.jackson.module', 'jackson-module-kotlin').withoutVersion()
+            library('reactive-streams', 'org.reactivestreams', 'reactive-streams').withoutVersion()
+            library('slf4j-api', 'org.slf4j', 'slf4j-api').withoutVersion()
+            library('logback-classic', 'ch.qos.logback', 'logback-classic').withoutVersion()
+
+            library('kotlinx-coroutines-core', 'org.jetbrains.kotlinx', 'kotlinx-coroutines-core').versionRef('kotlinx-coroutines')
+            library('kotlinx-coroutines-reactor', 'org.jetbrains.kotlinx', 'kotlinx-coroutines-reactor').versionRef('kotlinx-coroutines')
+            library('kotlinx-coroutines-android', 'org.jetbrains.kotlinx', 'kotlinx-coroutines-android').versionRef('kotlinx-coroutines')
+            library('kotlinx-serialization-json', 'org.jetbrains.kotlinx', 'kotlinx-serialization-json').versionRef('kotlinx-serialization')
+            library('kotlin-xml-builder', 'org.redundent', 'kotlin-xml-builder').versionRef('redundent')
+            library('dagger-compiler', 'com.google.dagger', 'dagger-compiler').versionRef('dagger')
+            library('dagger', 'com.google.dagger', 'dagger').versionRef('dagger')
+            library('androidx.preference', 'androidx.preference', 'preference').versionRef('androidx-preference')
+            library('androidx.constraintlayout', 'androidx.constraintlayout', 'constraintlayout').versionRef('androidx-constraintlayout')
+            library('androidx.appcompat', 'androidx.appcompat', 'appcompat').versionRef('androidx-appcompat')
+            library('androidx.legacy-support-core-ui', 'androidx.legacy', 'legacy-support-core-ui').versionRef('androidx-legacy')
+            library('androidx.multidex', 'androidx.multidex', 'multidex').versionRef('androidx-multidex')
+            library('android.material', 'com.google.android.material', 'material').versionRef('android.material')
+            library('android.places', 'com.google.android.libraries.places', 'places').versionRef('android-places')
+            library('android.play-services-maps', 'com.google.android.gms', 'play-services-maps').versionRef('android-play-services-maps')
+            library('takisoft.preferencex', 'com.takisoft.preferencex', 'preferencex').versionRef('takisoft-preferencex')
+            library('suchox.placepicker', 'com.github.suchoX', 'PlacePicker').versionRef('suchox-placepicker')
+            library('locus-api-android', 'com.asamm', 'locus-api-android').versionRef('locus')
+            library('logback-android', 'com.github.tony19', 'logback-android').versionRef('logback-android')
+
+            plugin('org.jetbrains.kotlin.jvm', 'org.jetbrains.kotlin.jvm').versionRef('kotlin')
+            plugin('org.jetbrains.kotlin.plugin.spring', 'org.jetbrains.kotlin.plugin.spring').versionRef('kotlin')
+            plugin('org.jetbrains.kotlin.plugin.serialization', 'org.jetbrains.kotlin.plugin.serialization').versionRef('kotlin')
+            plugin('org-springframework-boot', 'org.springframework.boot').versionRef('spring-boot')
+            plugin('com.android.application', 'com.android.application').versionRef('android-application')
+            plugin('com.google.android.libraries.mapsplatform.secrets-gradle-plugin', 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin').versionRef('android-secrets')
+            plugin('org.jetbrains.kotlin.android', 'org.jetbrains.kotlin.android').versionRef('kotlin')
+            plugin('org.jetbrains.kotlin.kapt', 'org.jetbrains.kotlin.kapt').versionRef('kotlin')
+            plugin('org.jetbrains.kotlin.plugin.parcelize', 'org.jetbrains.kotlin.plugin.parcelize').versionRef('kotlin')
+            plugin('org.graalvm.buildtools.native', 'org.graalvm.buildtools.native').versionRef('graalvm-native')
+        }
+    }
+}
+

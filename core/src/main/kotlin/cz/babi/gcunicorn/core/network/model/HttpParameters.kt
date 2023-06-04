@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,15 +18,13 @@
 
 package cz.babi.gcunicorn.core.network.model
 
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 /**
  * Class representing HTTP parameters.
  *
  * @throws [IllegalArgumentException] If given parameters contains odd number of items.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 class HttpParameters(vararg items: String) {
@@ -73,11 +71,11 @@ class HttpParameters(vararg items: String) {
      * @return String of encoded parameters.
      */
     fun toQueryParam(): String {
-        val queryBuilder = HttpUrl.parse("http://gcunicorn.com/")?.newBuilder()
+        val queryBuilder = "http://gcunicorn.com/".toHttpUrlOrNull()?.newBuilder()
         for(parameter in parameters) {
             queryBuilder?.addQueryParameter(parameter.first, parameter.second)
         }
 
-        return queryBuilder?.build()?.encodedQuery() ?: ""
+        return queryBuilder?.build()?.encodedQuery ?: ""
     }
 }

@@ -1,6 +1,6 @@
 <!--
   ~ gcUnicorn
-  ~ Copyright (C) 2018  Martin Misiarz
+  ~ Copyright (C) 2023  Martin Misiarz
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License version 2
@@ -58,7 +58,10 @@
                             <input type="checkbox" id="allowDisabled" name="allowDisabled"/><label for="allowDisabled" th:text="#{label.allowDisabled.text}"></label>
                         </div>
                         <div class="form-input-checkbox">
-                            <input type="checkbox" id="includeOwnAndFound" name="includeOwnAndFound"/><label for="includeOwnAndFound" th:text="#{label.includeOwn.text}"></label>
+                            <input type="checkbox" id="includeOwn" name="includeOwn"/><label for="includeOwn" th:text="#{label.includeOwn.text}"></label>
+                        </div>
+                        <div class="form-input-checkbox">
+                            <input type="checkbox" id="includeFound" name="includeFound"/><label for="includeFound" th:text="#{label.includeFound.text}"></label>
                         </div>
                         <div class="form-input-checkbox">
                             <input type="checkbox" id="skipPremium" name="skipPremium" checked/><label for="skipPremium" th:text="#{label.skipPremium.text}"></label>

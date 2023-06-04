@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,11 +18,15 @@
 
 package cz.babi.gcunicorn.core.network
 
-import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.core.exception.network.NetworkException
 import cz.babi.gcunicorn.core.network.model.HttpParameters
+import cz.babi.gcunicorn.`fun`.logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import okhttp3.FormBody
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -36,12 +40,10 @@ import java.net.URLDecoder
  * Implementation making any HTTP requests.
  *
  * @param okHttpClient Underlying http client.
- *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
+ * @param json Json for deserialization.
  * @since 1.0.0
  */
-class Network(private val okHttpClient: OkHttpClient) {
+class Network(private val okHttpClient: OkHttpClient, val json: Json) {
 
     /**
      * Represents HTTP methods.
@@ -56,7 +58,7 @@ class Network(private val okHttpClient: OkHttpClient) {
      * Clears cookies.
      */
     fun clearCookies() {
-        val cookieJar = okHttpClient.cookieJar()
+        val cookieJar = okHttpClient.cookieJar
 
         if(cookieJar is DefaultCookieJar) {
             cookieJar.clearCookies()
@@ -76,7 +78,7 @@ class Network(private val okHttpClient: OkHttpClient) {
      * @throws [NetworkException] If anything goes wrong.
      */
     @Throws(NetworkException::class)
-    fun postRequest(uri: String): Response = postRequest(uri, null, null)
+    suspend fun postRequest(uri: String): Response = postRequest(uri, null, null)
 
     /**
      * Makes new [Method.POST] request to given uri.
@@ -87,7 +89,7 @@ class Network(private val okHttpClient: OkHttpClient) {
      * @throws [NetworkException] If anything goes wrong.
      */
     @Throws(NetworkException::class)
-    fun postRequest(uri: String, parameters: HttpParameters?, headers: HttpParameters?) = request(Method.POST, uri, parameters, headers)
+    suspend fun postRequest(uri: String, parameters: HttpParameters?, headers: HttpParameters?) = request(Method.POST, uri, parameters, headers)
 
     /**
      * Makes new [Method.GET] request to given uri.
@@ -96,7 +98,7 @@ class Network(private val okHttpClient: OkHttpClient) {
      * @throws [NetworkException] If anything goes wrong.
      */
     @Throws(NetworkException::class)
-    fun getRequest(uri: String): Response = getRequest(uri, null, null)
+    suspend fun getRequest(uri: String): Response = getRequest(uri, null, null)
 
     /**
      * Makes new [Method.GET] request to given uri.
@@ -107,7 +109,21 @@ class Network(private val okHttpClient: OkHttpClient) {
      * @throws [NetworkException] If anything goes wrong.
      */
     @Throws(NetworkException::class)
-    fun getRequest(uri: String, parameters: HttpParameters?, headers: HttpParameters?) = request(Method.GET, uri, parameters, headers)
+    suspend fun getRequest(uri: String, parameters: HttpParameters?, headers: HttpParameters?) = request(Method.GET, uri, parameters, headers)
+
+    /**
+     * Makes new [Method.GET] request to given uri.
+     * @param T Target class.
+     * @param uri URI to make new [Method.GET] request to.
+     * @param parameters HTTP parameters.
+     * @param headers HTTP headers.
+     * @return An HTTP response.
+     * @throws [NetworkException] If anything goes wrong.
+     */
+    @Throws(NetworkException::class)
+    suspend inline fun <reified T> getRequestFor(uri: String, parameters: HttpParameters?, headers: HttpParameters?): T {
+        return requestFor<T>(Method.GET, uri, parameters, headers)
+    }
 
     /**
      * Decode given text with [Charsets.UTF_8] encoding.
@@ -133,8 +149,8 @@ class Network(private val okHttpClient: OkHttpClient) {
      * @throws [NetworkException] If the request has been already executed or if the request can not be executed due timeout, cancellation or network issue or if given uri can not be parsed.
      */
     @Throws(NetworkException::class)
-    private fun request(method: Method, uri: String, parameters: HttpParameters?, headers: HttpParameters?): Response {
-        val httpUrl = HttpUrl.parse(uri)
+    suspend fun request(method: Method, uri: String, parameters: HttpParameters?, headers: HttpParameters?): Response = coroutineScope {
+        val httpUrl = uri.toHttpUrlOrNull()
 
         if(httpUrl!=null) {
             val requestBuilder = createBuilder()
@@ -168,7 +184,9 @@ class Network(private val okHttpClient: OkHttpClient) {
             }
 
             try {
-                return okHttpClient.newCall(requestBuilder.build()).execute()
+                withContext(Dispatchers.IO) {
+                    okHttpClient.newCall(requestBuilder.build()).execute()
+                }
             } catch (ioException: IOException) {
                 throw NetworkException("The request can not be executed due timeout, cancellation or network issue.", ioException)
             } catch (illegalStateException: IllegalStateException) {
@@ -180,6 +198,21 @@ class Network(private val okHttpClient: OkHttpClient) {
     }
 
     /**
+     * Returns deserialized request.
+     * @param T Target class.
+     * @param method [Network.Method] method.
+     * @param uri URI.
+     * @param parameters HTTP parameters.
+     * @param headers HTTP headers.
+     * @return Response.
+     * @throws [NetworkException] If the request has been already executed or if the request can not be executed due timeout, cancellation or network issue or if given uri can not be parsed.
+     */
+    @Throws(NetworkException::class)
+    suspend inline fun <reified T> requestFor(method: Method, uri: String, parameters: HttpParameters?, headers: HttpParameters?): T {
+        return json.decodeFromString<T>(getResponseStringBody(request(method, uri, parameters, headers)))
+    }
+
+    /**
      * Tries to obtain response body from given [Response].
      * @param response Response obtained from http call.
      * @return Response body as plain string.
@@ -188,15 +221,15 @@ class Network(private val okHttpClient: OkHttpClient) {
     @Throws(NetworkException::class)
     fun getResponseStringBody(response: Response): String {
         if(!response.isSuccessful) {
-            throw NetworkException("Request was not successful. Returned code is '${response.code()}'.")
+            throw NetworkException("Request was not successful. Returned code is '${response.code}'.")
         }
 
         try {
-            return response.body()?.string() ?: throw NetworkException("Can't obtain response body.")
+            return response.body?.string() ?: throw NetworkException("Can't obtain response body.")
         } catch (e: Exception) {
             throw NetworkException("Can't obtain response body.", e)
         } finally {
-            response.body()?.close()
+            response.body?.close()
         }
     }
 
@@ -211,11 +244,11 @@ class Network(private val okHttpClient: OkHttpClient) {
     @Throws(NetworkException::class)
     fun getResponseByteStreamBody(response: Response): InputStream {
         if(!response.isSuccessful) {
-            throw NetworkException("Request was not successful. Returned code is '${response.code()}'.")
+            throw NetworkException("Request was not successful. Returned code is '${response.code}'.")
         }
 
         try {
-            return response.body()?.byteStream() ?: throw NetworkException("Can't obtain response body.")
+            return response.body?.byteStream() ?: throw NetworkException("Can't obtain response body.")
         } catch (e: Exception) {
             throw NetworkException("Can't obtain response body.")
         }

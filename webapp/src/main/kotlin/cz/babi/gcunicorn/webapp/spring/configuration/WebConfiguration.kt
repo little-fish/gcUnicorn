@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -24,8 +24,8 @@ import cz.babi.gcunicorn.webapp.spring.web.controller.Controllers
 import io.undertow.Undertow
 import io.undertow.server.XnioByteBufferPool
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo
+import jakarta.servlet.Filter
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.embedded.undertow.UndertowDeploymentInfoCustomizer
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory
 import org.springframework.boot.web.server.ErrorPage
@@ -50,41 +50,27 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
-import org.thymeleaf.spring5.ISpringTemplateEngine
-import org.thymeleaf.spring5.SpringTemplateEngine
-import org.thymeleaf.spring5.view.ThymeleafViewResolver
+import org.thymeleaf.spring6.ISpringTemplateEngine
+import org.thymeleaf.spring6.SpringTemplateEngine
+import org.thymeleaf.spring6.view.ThymeleafViewResolver
 import org.thymeleaf.templatemode.TemplateMode
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import org.thymeleaf.templateresolver.ITemplateResolver
 import org.xnio.ByteBufferSlicePool
 import org.xnio.OptionMap
 import org.xnio.Xnio
-import java.util.Locale
+import java.util.*
 import java.util.function.Supplier
-import javax.servlet.Filter
 
 /**
  * Web configuration.
  *
- * [https://github.com/spring-projects/spring-boot/issues/8762](https://github.com/spring-projects/spring-boot/issues/8762).
- *
- * @see [EnableConfigurationProperties]
- *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 @Configuration
 @EnableWebMvc
-@EnableConfigurationProperties
 @ComponentScan(basePackageClasses = [Controllers::class, Advices::class, Validators::class])
 class WebConfiguration : WebMvcConfigurer {
-
-    @Bean
-    fun requestMappingHandlerAdapter() = RequestMappingHandlerAdapter().apply {
-            setIgnoreDefaultModelOnRedirect(true)
-        }
 
     @Bean
     fun dispatcherServlet() = DispatcherServlet()
@@ -178,18 +164,18 @@ class WebConfiguration : WebMvcConfigurer {
         }
     }
 
-    override fun configureViewResolvers(registry: ViewResolverRegistry?) {
-        registry?.viewResolver(liteDeviceDelegatingViewResolver(thymeleafViewResolver()))
+    override fun configureViewResolvers(registry: ViewResolverRegistry) {
+        registry.viewResolver(liteDeviceDelegatingViewResolver(thymeleafViewResolver()))
     }
 
-    override fun addInterceptors(registry: InterceptorRegistry?) {
-        registry?.addInterceptor(localeChangeInterceptor())
-        registry?.addInterceptor(deviceResolverInterceptor())
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        registry.addInterceptor(localeChangeInterceptor())
+        registry.addInterceptor(deviceResolverInterceptor())
     }
 
-    override fun addResourceHandlers(registry: ResourceHandlerRegistry?) {
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry
-                ?.addResourceHandler("/resources/**")
-                ?.addResourceLocations("classpath:static/")
+                .addResourceHandler("/resources/**")
+                .addResourceLocations("classpath:static/")
     }
 }

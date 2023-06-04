@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -41,8 +41,6 @@ object Constant {
  * Checks whether underlying string contains any HTML sequence.
  * @return True if underlying string contains any HTML sequence. Otherwise returns false.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 fun String.containsHtml() = "<[^>]+>|&+".toRegex().containsMatchIn(this)
@@ -51,8 +49,6 @@ fun String.containsHtml() = "<[^>]+>|&+".toRegex().containsMatchIn(this)
  * Decode/encode underlying string with ROT13 algorithm.
  * @return Decoded/encoded underlying string.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 fun String.rot13(): String {

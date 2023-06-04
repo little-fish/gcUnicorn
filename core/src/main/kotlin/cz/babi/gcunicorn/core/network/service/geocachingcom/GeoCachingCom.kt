@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,7 +18,6 @@
 
 package cz.babi.gcunicorn.core.network.service.geocachingcom
 
-import cz.babi.gcunicorn.`fun`.*
 import cz.babi.gcunicorn.core.exception.location.CoordinateParseException
 import cz.babi.gcunicorn.core.exception.network.LoginException
 import cz.babi.gcunicorn.core.exception.network.LogoutException
@@ -28,11 +27,12 @@ import cz.babi.gcunicorn.core.location.Coordinates
 import cz.babi.gcunicorn.core.location.parser.Parser
 import cz.babi.gcunicorn.core.network.Network
 import cz.babi.gcunicorn.core.network.model.Credentials
-import cz.babi.gcunicorn.core.network.model.DeferredResult
 import cz.babi.gcunicorn.core.network.model.HttpParameters
 import cz.babi.gcunicorn.core.network.model.Image
 import cz.babi.gcunicorn.core.network.service.GeocacheLoadedListener
 import cz.babi.gcunicorn.core.network.service.Service
+import cz.babi.gcunicorn.core.network.service.geocachingcom.Constant.PATTERN_DATE_ISO
+import cz.babi.gcunicorn.core.network.service.geocachingcom.Constant.PATTERN_DATE_PAGE
 import cz.babi.gcunicorn.core.network.service.geocachingcom.Constant.REGEX_KNOWN_INVALID_XML_CHARS
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Attribute
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.AttributeType
@@ -47,27 +47,28 @@ import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Trackable
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.TrackableBrand
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Waypoint
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.WaypointType
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import cz.babi.gcunicorn.`fun`.*
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.content
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 import org.redundent.kotlin.xml.xml
 import org.slf4j.Logger
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.CancellationException
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.*
 import java.util.regex.Pattern
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Service implementation for Groundspeak's geocaching.com web page.
@@ -75,12 +76,10 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @param network Network. It is used for communication with external sites.
  * @param parser Coordination parser. Parse used for parsing geocaches' coordinates.
  * @param json Json parser.
- *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
+ * @param gcWebApi Groundspeak's WEB API.
  * @since 1.0.0
  */
-class GeoCachingCom(private val network: Network, private val parser: Parser, private val json: Json) : Service {
+class GeoCachingCom(private val network: Network, private val parser: Parser, private val json: Json, private val gcWebApi: GCWebApi) : Service {
 
     companion object {
         private val LOG: Logger = logger<GeoCachingCom>()
@@ -92,7 +91,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
      * @throws [LoginException] If login failed because of network problem.
      * @see Service.login
      */
-    override fun login(credentials: Credentials) {
+    override suspend fun login(credentials: Credentials) {
         LOG.debug("Starting log-in process..")
 
         try {
@@ -122,14 +121,18 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
 
             LOG.debug("User has been logged in successfully.")
 
-            if(!isLanguageEnglish(loginPageBody)) switchToEnglish()
+            if(!isLanguageEnglish(loginPageBody)) {
+                switchToEnglish()
+            } else {
+                LOG.debug("English version of Geocaching page is already loaded.")
+            }
         } catch(e: NetworkException) {
             LOG.error("Can not finish log in process.", e)
             throw LoginException("Can not finish log in process.", e)
         }
     }
 
-    override fun logout() {
+    override suspend fun logout() {
         LOG.debug("Starting log-out process..")
 
         try {
@@ -145,103 +148,15 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
 
     override fun isLoggedIn(pageBody: String) = Constant.REGEX_IS_LOGGED_IN.containsMatchIn(pageBody)
 
-    override suspend fun lookForCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, geocacheLoadedListener: GeocacheLoadedListener?, parent: Job?): List<Geocache> {
+    override suspend fun lookForCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, geocacheLoadedListener: GeocacheLoadedListener?): List<Geocache> = coroutineScope {
         LOG.debug("Starting looking for caches..")
+        // In case disabled caches are not allowed and the next loaded batch contains disabled ones only, we need to stop the recursion. By this parameter we say how many empty recursions are allowed.
+        val maxRecursionCount = 3
 
-        val geoCaches = mutableListOf<Geocache>()
-
-        // Prepare basic set of parameters.
-        val httpParameters = HttpParameters(
-                Parameter.LATITUDE.parameterName, coordinates.latitude.toString(),
-                Parameter.LONGITUDE.parameterName, coordinates.longitude.toString(),
-                Parameter.CACHE_FILTER.parameterName, if(cacheFilter.allowedCacheTypes.isEmpty() || cacheFilter.allowedCacheTypes.size>1) CacheType.ALL.code else cacheFilter.allowedCacheTypes[0].code
-        )
-
-        // Exclude own or found caches if required.
-        if(!cacheFilter.includeOwnAndFound) {
-            httpParameters.put(Parameter.EXCLUDE_OWN.parameterName, "1")
-        }
-
-        try {
-            // Get page with caches.
-            val response = network.getRequest(Constant.URI_SEARCH, httpParameters, null)
-
-            var responseBody = network.getResponseStringBody(response)
-
-            // Check whether user is logged in.
-            if (!isLoggedIn(responseBody)) throw ServiceException("User is not logged in.")
-
-            // Save request URL for future search by "next page".
-            val requestUrl = Constant.URI_SEARCH + "?" + response.request().url().encodedQuery()
-
-            var deferredResult: DeferredResult
-            val counter = AtomicInteger(0)
-
-            loading@ while (geoCaches.size < limit) {
-                // Fill given list with loaded caches.
-                deferredResult = getGeocacheLoaders(responseBody, limit, counter, cacheFilter, requestUrl, parent)
-
-                // Start all deferred jobs.
-                deferredResult.defferedJobs.forEach { it.start() }
-
-                LOG.debug("Started {} coroutine jobs.", deferredResult.defferedJobs.size)
-
-                runBlocking {
-                    deferredResult.defferedJobs.forEach { job ->
-                        try {
-                            val geoCache = job.await()
-
-                            if (geoCache.canLoadInfo) {
-                                geoCaches.add(geoCache)
-
-                                // Notify the listener.
-                                geocacheLoadedListener?.let {
-                                    GlobalScope.launch {
-                                        it.geocacheLoaded(geoCache)
-                                    }
-                                }
-
-                                LOG.debug("#{} cache successfully loaded: '{}'", geoCaches.size, geoCache.url)
-                            } else {
-                                LOG.debug("Could not load details for '{}'.", geoCache.url)
-                            }
-                        } catch (e: CancellationException) {
-                            LOG.warn("Coroutine job has been cancelled.", e)
-                        } catch (e: NetworkException) {
-                            LOG.warn("Can not load geocache.", e)
-                        }
-                    }
-                }
-
-                // No jobs created, get out of here.
-                if (deferredResult.defferedJobs.size == 0) {
-                    break@loading
-                }
-
-                if (geoCaches.size < limit) {
-                    // Set counter to actual count.
-                    counter.set(geoCaches.size)
-
-                    // Load page with next geocaches.
-                    try {
-                        responseBody = network.getResponseStringBody(network.postRequest(requestUrl, deferredResult.nextPageHeaders, null))
-                    } catch (e: NetworkException) {
-                        LOG.warn("Could not load page with next geocaches.", e)
-                        break@loading
-                    }
-                }
-            }
-
-            LOG.debug("{} caches has been found.", geoCaches.size)
-
-            return geoCaches
-        } catch (networkException: NetworkException) {
-            LOG.error("Can not download caches.", networkException)
-            throw ServiceException("Can not download caches.", networkException)
-        }
+        lookForFullCaches(coordinates, cacheFilter, limit, 0,  geocacheLoadedListener, maxRecursionCount, 0)
     }
 
-    override fun createGpx(geocaches: List<Geocache>, formatOutput: Boolean): String {
+    override suspend fun createGpx(geocaches: List<Geocache>, formatOutput: Boolean): String {
         val nsGroundspeak = "groundspeak" to "http://www.groundspeak.com/cache/1/0/1"
         val nsGsak = "gsak" to "http://www.gsak.net/xmlv1/6"
 
@@ -431,10 +346,10 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                                 }
                             }
                         }
-                        geocache.logEntries?.let {
-                            if(it.filter { logEntry -> logEntry.images!=null }.count()>0) {
+                        geocache.logEntries?.let { logEntries ->
+                            if(logEntries.any { logEntry -> logEntry.images != null }) {
                                 element("${nsGsak.first}:LogImages") {
-                                    it.forEach logEntry@ { logEntry ->
+                                    logEntries.forEach logEntry@ { logEntry ->
                                         if (logEntry.id == null) return@logEntry
                                         logEntry.images?.let {
                                             it.forEach { logImage ->
@@ -495,91 +410,137 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
             }
         }
 
-//        return String(gpx.toString(formatOutput).toByteArray())
         return gpx.toString(formatOutput).replace(REGEX_KNOWN_INVALID_XML_CHARS, "")
     }
 
-    /**
-     * Fills given list with caches.
-     *
-     * If given page doesn't contain any caches, the method returns.
-     *
-     * Once the list reaches given limit, the method returns.
-     * @param pageBody Page body to parse.
-     * @param limit Geocache list limit.
-     * @param counter Actual counter of already created loaders.
-     * @param cacheFilter Cache filter.
-     * @param requestUrl Request URL. It is used as a POST url for loading next caches.
-     * @param parent Parent job.
-     * @return Deferred result containing deferred jobs for loading caches and next page headers.
-     * @throws [NetworkException] If anything goes wrong while loading cache details.
-     */
-    @Throws(NetworkException::class)
-    private suspend fun getGeocacheLoaders(pageBody: String, limit: Int, counter: AtomicInteger, cacheFilter: CacheFilter, requestUrl: String, parent: Job?): DeferredResult {
-        val deferredResult = DeferredResult(nextPageHeaders = getParamsForSearchByNextPage(pageBody))
+    private suspend fun lookForFullCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, skip: Int, geocacheLoadedListener: GeocacheLoadedListener?, maxRecursionCount: Int, currentEmptyRecursionCount: Int): List<Geocache> = coroutineScope {
+        val jobStartTime = System.currentTimeMillis()
 
-        // Get inner table containing caches' details.
-        val resultTable = Constant.REGEX_SEARCH_RESULTS_TABLE.find(pageBody)?.value?.trim() ?: return deferredResult
-        var foundAnyResult = false
+        LOG.debug("Start looking for full caches with following parameters: limit={}, skip={}, maxRecursionCount={}, currentEmptyRecursionCount={}.", limit, skip, maxRecursionCount, currentEmptyRecursionCount)
 
-        // POSTPONED: Could it be rewritten so the very first match returns correct data?
-        // Get all rows containing caches' details.
-        resultTable@ for(cacheMatch in Constant.REGEX_SEARCH_RESULTS_CACHE.findAll(resultTable)) {
-            if(counter.get()<limit) {
-                // If there is no URL, we can consider there will be no other fields as well, so skip this match.
-                val cacheUrl = Constant.REGEX_SEARCH_RESULTS_CACHE_URL.find(cacheMatch.value)?.groupValues?.get(1)
-                        ?: continue
+        val geoCaches = mutableListOf<Geocache>()
 
-                if (!foundAnyResult) foundAnyResult = true
+        val parentJob = Job()
+        try {
+            val liteCaches = lookForLiteCaches(coordinates, cacheFilter, limit, skip)
 
-                // Once the cache has greater distance than allowed, stop looking for next caches.
-                val cacheDistance = Constant.REGEX_SEARCH_RESULTS_CACHE_DISTANCE_KM.find(cacheMatch.value)?.groupValues?.get(1)?.toDouble()
-                        ?: Constant.REGEX_SEARCH_RESULTS_CACHE_DISTANCE_MI.find(cacheMatch.value)?.groupValues?.get(1)?.toDouble()?.times(1.609344)
-                        ?: CacheFilter.DISABLED_DISTANCE
-                if (cacheFilter.maxDistance != CacheFilter.DISABLED_DISTANCE && cacheFilter.maxDistance < cacheDistance) return deferredResult
-
-                // Exclude types not in the filter.
-                val cacheType = CacheType.findByPattern(Constant.REGEX_SEARCH_RESULTS_CACHE_TYPE.find(cacheMatch.value)?.groupValues?.get(1)
-                        ?: "")
-                if (!cacheFilter.allowedCacheTypes.contains(CacheType.ALL) && !cacheFilter.allowedCacheTypes.contains(cacheType)) continue
-
-                val isCacheDisabled = Constant.REGEX_SEARCH_RESULTS_CACHE_IS_DISABLED.containsMatchIn(cacheMatch.value)
-
-                // Exclude disabled.
-                if (!cacheFilter.allowDisabled && isCacheDisabled) continue
-
-                val isPremium = Constant.REGEX_SEARCH_RESULTS_CACHE_PREMIUM.containsMatchIn(cacheMatch.value)
-                if (cacheFilter.skipPremium && isPremium) continue
-
-                val geocacheLite = GeocacheLite()
-                geocacheLite.url = cacheUrl
-                geocacheLite.distance = cacheDistance
-                geocacheLite.type = cacheType
-                geocacheLite.isDisabled = isCacheDisabled
-                geocacheLite.isPremiumOnly = isPremium
-
-                // Load geocache's details from geocache's url.
-                deferredResult.defferedJobs.add(
-                    GlobalScope.async(context = Dispatchers.Default + (parent ?: EmptyCoroutineContext), start = CoroutineStart.LAZY) {
-                        loadGeocacheDetails(geocacheLite)
+            val jobs: MutableList<Deferred<Geocache>> = mutableListOf()
+            liteCaches.first.forEach { gcLite ->
+                jobs.add(
+                    async(context = parentJob) {
+                        loadGeocacheDetails(gcLite)
                     }
                 )
+            }
 
-                counter.incrementAndGet()
-            } else break@resultTable
+            jobs.forEach { job ->
+                val geocache = job.await()
+                geoCaches.add(geocache)
+
+                geocacheLoadedListener?.geocacheLoaded(geocache)
+            }
+
+            if (!cacheFilter.allowDisabled) {
+                // At this point we know whether there are any disabled caches or not so we can try to load new ones.
+                val disabledOnes = geoCaches.filter { geocache -> true == geocache.isDisabled }.toList()
+
+                if (disabledOnes.isNotEmpty()) {
+                    LOG.debug("There are '{}' disabled cache(s) from '{}' fully loaded ones.", disabledOnes.size, geoCaches.size)
+
+                    geoCaches.removeAll(disabledOnes)
+
+                    val nextEmptyRecursionCount = if (geoCaches.size == 0) {
+                        currentEmptyRecursionCount + 1
+                    } else {
+                        currentEmptyRecursionCount
+                    }
+
+                    if (nextEmptyRecursionCount < maxRecursionCount) {
+                        geoCaches.addAll(lookForFullCaches(coordinates, cacheFilter, limit - geoCaches.size, liteCaches.second, geocacheLoadedListener, maxRecursionCount, nextEmptyRecursionCount))
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            parentJob.cancel()
+            LOG.error("Can not download caches. The process took: {} ms", System.currentTimeMillis() - jobStartTime, e)
+            throw ServiceException("Can not download caches.", e)
         }
 
-        // Check whether we need to load more caches.
-        if(foundAnyResult && counter.get()<limit) {
-            val nextPage = network.getResponseStringBody(network.postRequest(requestUrl, deferredResult.nextPageHeaders, null))
+        LOG.debug("'{}' caches grabbed in: {} ms.", geoCaches.size, System.currentTimeMillis() - jobStartTime)
 
-            // Load next deferred jobs.
-            val nextDeferredResult = getGeocacheLoaders(nextPage, limit, counter, cacheFilter, requestUrl, parent)
-            deferredResult.defferedJobs.addAll(nextDeferredResult.defferedJobs)
-            deferredResult.nextPageHeaders = nextDeferredResult.nextPageHeaders
+        geoCaches
+    }
+
+    /**
+     * It uses Web Api to look for caches.
+     * @return Lite version of caches.
+     * @since 3.0.0
+     */
+    private suspend fun lookForLiteCaches(coordinates: Coordinates, cacheFilter: CacheFilter, limit: Int, skip: Int): Pair<Set<GeocacheLite>, Int> {
+        val acceptableCaches = mutableSetOf<GeocacheLite>()
+
+        // Prepare basic set of parameters.
+        val httpParameters = HttpParameters(
+            GCWebApi.Parameter.ORIGIN.parameterName, "${coordinates.latitude},${coordinates.longitude}",
+            // Premium members only.
+            GCWebApi.Parameter.STATUS_DISABLED.parameterName, if (cacheFilter.allowDisabled) "1" else "0"
+        )
+
+        if (cacheFilter.allowedCacheTypes.isNotEmpty() && !cacheFilter.allowedCacheTypes.contains(CacheType.ALL)) {
+            httpParameters.put(GCWebApi.Parameter.CACHE_TYPE.parameterName, cacheFilter.allowedCacheTypes[0].wptTypeId)
         }
 
-        return deferredResult
+        if (cacheFilter.excludeOwn) {
+            httpParameters.put(GCWebApi.Parameter.EXCLUDE_OWN.parameterName, "1")
+        }
+        if (cacheFilter.excludeFound) {
+            httpParameters.put(GCWebApi.Parameter.EXCLUDE_FOUND.parameterName, "1")
+        }
+
+        httpParameters.put(GCWebApi.Parameter.TAKE.parameterName, limit.toString())
+        httpParameters.put(GCWebApi.Parameter.SKIP.parameterName, skip.toString())
+        httpParameters.put(GCWebApi.Parameter.SORT.parameterName, "distance")
+        httpParameters.put(GCWebApi.Parameter.ASC.parameterName, true.toString())
+
+        val searchResult = gcWebApi.getRequest(GCWebApi.URL_SEARCH, httpParameters)
+
+        searchResult.geoCaches.forEach { gc ->
+            if (isCacheAcceptable(gc, cacheFilter)) {
+                acceptableCaches.add(GeocacheLite(gc.id.toLong(), gc.name, gc.code, "${GCWebApi.URL_CACHE}${gc.code}", gc.premiumOnly))
+            }
+        }
+
+        if (acceptableCaches.isEmpty() && (searchResult.geoCaches.isEmpty() || isOutOfDistance(searchResult.geoCaches.last().distance, cacheFilter.maxDistance))) {
+            // We are out of the filter.
+            return acceptableCaches to limit + skip
+        }
+
+        var possibleNextSearch = 0
+        if (acceptableCaches.size < limit) {
+            // We can still look for some other caches.
+            val nextSearch = lookForLiteCaches(coordinates, cacheFilter, limit - acceptableCaches.size, limit + skip)
+            acceptableCaches.addAll(nextSearch.first)
+            possibleNextSearch = nextSearch.second
+        }
+
+        return acceptableCaches to limit + skip + possibleNextSearch
+    }
+
+    private fun isCacheAcceptable(gcLite: GCWebApi.GeocacheLite, cacheFilter: CacheFilter): Boolean {
+        if (cacheFilter.skipPremium && gcLite.premiumOnly) {
+            return false
+        }
+
+        return !isOutOfDistance(gcLite.distance, cacheFilter.maxDistance)
+    }
+
+    private fun isOutOfDistance(actualDistance: Distance, maxDistance: Double): Boolean {
+        actualDistance.toKm()?.let {
+            return it > maxDistance
+        }
+
+        // In case we can not parse the distance, just consider it out of range.
+        return true
     }
 
     /**
@@ -593,7 +554,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
      * @throws [NetworkException] If a page with geocache details can't be loaded.
      */
     @Throws(NetworkException::class)
-    private fun loadGeocacheDetails(geocacheLite: GeocacheLite): Geocache {
+    private suspend fun loadGeocacheDetails(geocacheLite: GeocacheLite): Geocache {
         val geocache = Geocache(geocacheLite)
 
         LOG.debug("Start loading details for '{}'..", geocache.url)
@@ -601,16 +562,16 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
         val pageBody = network.getResponseStringBody(network.getRequest(geocache.url))
 
         // WAITING: I have no premium membership active, so I am not able to see Premium cache's source page. If anybody provides it to me, I will be able to change current implementation.
-        // Check whether cache is premium only and logged in user is not.
+        // Check whether cache is premium only and logged-in user is not.
         if(Constant.REGEX_CACHE_PREMIUM_ONLY.containsMatchIn(pageBody)) {
             LOG.debug("Ups, given cache is Premium only, but logged in user is a Basic member. The cache will be skipped.")
 
-            // Don't care about the cache if logged in user is not a Premium member and we can not load additional info.
-            geocache.canLoadInfo = false
+            // Don't care about the cache if logged-in user is not a Premium member.
             return geocache
-        } else {
-            geocache.canLoadInfo = true
         }
+
+        // Check whether cache is disabled.
+        geocache.isDisabled = Constant.REGEX_CACHE_IS_DISABLED.containsMatchIn(pageBody)
 
         // Check whether cache is archived.
         geocache.isArchived = Constant.REGEX_CACHE_IS_ARCHIVED.containsMatchIn(pageBody) || Constant.REGEX_CACHE_IS_LOCKED.containsMatchIn(pageBody)
@@ -641,6 +602,13 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
             }
         }, {
             LOG.warn("Can not parse cache's id from cache's page '{}'.", geocache.url)
+        })
+
+        // Load cache's type.
+        Constant.REGEX_CACHE_TYPE.find(pageBody)?.groupValues?.get(1).nullableExecute({
+            geocache.type = CacheType.findByWptTypeId(this)
+        }, {
+            LOG.warn("Can not parse cache's type from cache's page '{}'.", geocache.url)
         })
 
         // Load cache's GUID.
@@ -717,11 +685,12 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
 
         // Load cache's hidden date.
         Constant.REGEX_CACHE_HIDDEN.find(pageBody)?.groupValues?.get(1)?.trim().nullableExecute({
-            try {
-                geocache.hiddenDate = SimpleDateFormat(Constant.PATTERN_DATE_PAGE, Locale.ENGLISH).parse(this).time
-            } catch(e: ParseException) {
-                LOG.warn("Can not parse cache's hidden date.", e)
-            }
+            val input = this
+            parseDate(input, PATTERN_DATE_ISO, PATTERN_DATE_PAGE).nullableExecute({
+                geocache.hiddenDate = this.time
+            }, {
+                LOG.warn("Can not parse cache's hidden date: '$input'.")
+            })
         }, {
             LOG.warn("Can not parse cache's hidden date from cache's page '{}'.", geocache.url)
         })
@@ -772,8 +741,12 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
         // Load cache's related page. This is OPTIONAL so no LOG message if there is no match.
         val cacheDescriptionRelatedPage = Constant.REGEX_CACHE_DESCRIPTION_RELATED_PAGE.find(pageBody)?.groupValues?.get(1)?.trim()
 
-        if(cacheDescriptionRelatedPage!=null && cacheDescriptionRelatedPage.isNotEmpty()) {
-            geocache.longDescription = cacheDescription ?: "" + String.format("<br/><br/><a href=\"%s\"><b>%s</b></a>", cacheDescriptionRelatedPage, cacheDescriptionRelatedPage)
+        if(!cacheDescriptionRelatedPage.isNullOrEmpty()) {
+            geocache.longDescription = cacheDescription ?: ("" + String.format(
+                "<br/><br/><a href=\"%s\"><b>%s</b></a>",
+                cacheDescriptionRelatedPage,
+                cacheDescriptionRelatedPage
+            ))
         } else if(cacheDescription!=null) {
             geocache.longDescription = cacheDescription
         }
@@ -790,12 +763,12 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                     val startIndex = attributeImage.lastIndexOf("/")
                     val endIndex = attributeImage.lastIndexOf(".")
 
-                    if(startIndex>-1 && endIndex>startIndex) {
+                    if(startIndex > -1 && endIndex>startIndex) {
                         val attributeString = attributeImage.substring(startIndex+1, endIndex)
                             .lowercase(Locale.getDefault())
                             .replace("-", "_")
                         AttributeType.findByPattern(attributeString.substringBeforeLast("_"))?.let {
-                            cacheAttributes.add(Attribute(it, attributeString.substringAfterLast("_")=="yes"))
+                            cacheAttributes.add(Attribute(it, attributeString.substringAfterLast("_") == "yes"))
                         }
                     } else {
                         LOG.warn("Can not parse cache's attribute from '{}'.", attributeImage)
@@ -826,7 +799,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                 val spoilerGuid = Constant.REGEX_CACHE_SPOILED_IMAGE_GUID.find(spoilerUri)?.groupValues?.get(1)
                 val spoilerTitle = matchResult.groupValues[2]
                 var spoilerDescription: String? = matchResult.groupValues[3]
-                if(spoilerDescription!=null && spoilerDescription.isEmpty()) spoilerDescription = null
+                if(spoilerDescription != null && spoilerDescription.isEmpty()) spoilerDescription = null
 
                 cacheSpoilerImages.add(Image(spoilerUri, spoilerGuid, spoilerTitle, spoilerDescription))
             }
@@ -919,7 +892,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
 
                 var waypointCoordinates: Coordinates? = null
                 val waypointCoordinatesBody = Constant.REGEX_CACHE_WAYPOINTS_ITEM_COORDINATIONS.find(columns[6])?.groupValues?.get(1)?.trim()
-                if(waypointCoordinatesBody!=null && waypointCoordinatesBody.isNotEmpty() && waypointCoordinatesBody!="???") {
+                if(!waypointCoordinatesBody.isNullOrEmpty() && waypointCoordinatesBody!="???") {
                     try {
                         waypointCoordinates = parser.parse(waypointCoordinatesBody)
                     } catch(e: CoordinateParseException) {
@@ -950,7 +923,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                 LOG.warn("Can not load log entries for cache '{}'.", geocache.url, e)
             }
 
-            if(cacheLogEntries!=null && cacheLogEntries.isNotEmpty()) {
+            if(!cacheLogEntries.isNullOrEmpty()) {
                 geocache.logEntries = cacheLogEntries
             }
         }, {
@@ -960,11 +933,21 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
         return geocache
     }
 
+    private fun parseDate(input: String, vararg formats: String): Date? {
+        formats.forEach { format ->
+            try {
+                return SimpleDateFormat(format, Locale.ENGLISH).parse(input)
+            } catch (_: ParseException) { }
+        }
+
+        return null
+    }
+
     /**
      * Loads details of given trackable.
      * @param trackable Trackable to load details for.
      */
-    private fun loadTrackableDetails(trackable: Trackable) {
+    private suspend fun loadTrackableDetails(trackable: Trackable) {
         trackable.guid?.let { guid ->
             LOG.debug("Start loading details for trackable: {}.", guid)
 
@@ -1000,7 +983,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
      * @throws [NetworkException] If anything goes wrong.
      */
     @Throws(NetworkException::class)
-    private fun loadLogEntries(userToken: String, geocacheUrl: String): List<LogEntry>? {
+    private suspend fun loadLogEntries(userToken: String, geocacheUrl: String): List<LogEntry>? {
         LOG.debug("Start loading log entries for '{}'.", geocacheUrl)
 
         val parameters = HttpParameters(
@@ -1013,51 +996,52 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
         val cacheLogs = network.getResponseStringBody(network.getRequest(Constant.URI_CACHE_LOGBOOK, parameters, null))
 
         try {
-            val logEntries = json.parseJson(cacheLogs).jsonObject
-
-            if(logEntries[Constant.REQUEST_STATUS]?.content=="success") {
+            // TODO: Refactor to data class!!!
+            val logEntries: JsonObject = json.parseToJsonElement(cacheLogs).jsonObject
+            if(logEntries[Constant.REQUEST_STATUS]?.jsonPrimitive?.content=="success") {
                 val cacheLogEntries = mutableListOf<LogEntry>()
 
-                logEntries.getArrayOrNull(Constant.REQUEST_DATA)
+                logEntries[Constant.REQUEST_DATA]?.jsonArray
                         ?.forEach { jsonLogEntryElement ->
                             val logEntry = LogEntry()
                             val jsonLogEntry = jsonLogEntryElement.jsonObject
 
-                            jsonLogEntry[Constant.LOG_ID]?.longOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_ID]?.jsonPrimitive?.longOrNull.nullableExecute({
                                 logEntry.id = this
                             }, {
                                 LOG.warn("Can not obtain log entry's id.")
                             })
 
-                            jsonLogEntry[Constant.LOG_TYPE]?.contentOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_TYPE]?.jsonPrimitive?.content.nullableExecute({
                                 logEntry.type = LogType.findByType(this)
                             }, {
                                 LOG.warn("Can not obtain log entry's id.")
                             })
 
-                            jsonLogEntry[Constant.LOG_TEXT]?.contentOrNull?.trim()?.replace("<p>", "")?.replace("</p>", "").nullableExecute({
+                            jsonLogEntry[Constant.LOG_TEXT]?.jsonPrimitive?.content?.trim()?.replace("<p>", "")?.replace("</p>", "").nullableExecute({
                                 logEntry.text = this
                             }, {
                                 LOG.warn("Can not obtain log entry's text.")
                             })
 
-                            jsonLogEntry[Constant.LOG_VISITED]?.contentOrNull.nullableExecute({
-                                try {
-                                    logEntry.visited = SimpleDateFormat(Constant.PATTERN_DATE_PAGE, Locale.ENGLISH).parse(this).time
-                                } catch (e: ParseException) {
-                                    LOG.warn("Can not parse log visited date.", e)
-                                }
+                            jsonLogEntry[Constant.LOG_VISITED]?.jsonPrimitive?.contentOrNull.nullableExecute({
+                                val input = this
+                                parseDate(input, PATTERN_DATE_ISO, PATTERN_DATE_PAGE).nullableExecute({
+                                    logEntry.visited = this.time
+                                }, {
+                                    LOG.warn("Can not parse log visited date: '$input'.")
+                                })
                             }, {
                                 LOG.warn("Can not obtain log visited.")
                             })
 
-                            jsonLogEntry[Constant.LOG_AUTHOR]?.contentOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_AUTHOR]?.jsonPrimitive?.contentOrNull.nullableExecute({
                                 logEntry.author = this
                             }, {
                                 LOG.warn("Can not obtain log author.")
                             })
 
-                            jsonLogEntry[Constant.LOG_AUTHOR_ID]?.longOrNull.nullableExecute({
+                            jsonLogEntry[Constant.LOG_AUTHOR_ID]?.jsonPrimitive?.longOrNull.nullableExecute({
                                 logEntry.authorId = this
                             }, {
                                 LOG.warn("Can not obtain log author's id.")
@@ -1066,12 +1050,12 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                             val logImages = mutableListOf<Image>()
                             jsonLogEntry[Constant.LOG_IMAGES]?.jsonArray?.forEach logImageTree@ { logImageTreeElement ->
                                 val logImageTree = logImageTreeElement.jsonObject
-                                val imageFileName = logImageTree.get(Constant.LOG_IMAGE_FILENAME)?.contentOrNull ?: return@logImageTree
+                                val imageFileName = logImageTree[Constant.LOG_IMAGE_FILENAME]?.jsonPrimitive?.contentOrNull ?: return@logImageTree
 
                                 val logImage = Image(Constant.URI_IMAGE_LARGE + imageFileName)
                                 logImage.guid = imageFileName.substringBefore(".")
 
-                                logImageTree[Constant.LOG_IMAGE_NAME]?.contentOrNull.nullableExecute({
+                                logImageTree[Constant.LOG_IMAGE_NAME]?.jsonPrimitive?.contentOrNull.nullableExecute({
                                     if (isNotEmpty()) {
                                         logImage.title = this
                                     }
@@ -1079,7 +1063,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
                                     LOG.warn("Can not obtain log image's name.")
                                 })
 
-                                logImageTree[Constant.LOG_IMAGE_DESCRIPTION]?.contentOrNull.nullableExecute({
+                                logImageTree[Constant.LOG_IMAGE_DESCRIPTION]?.jsonPrimitive?.contentOrNull.nullableExecute({
                                     if (isNotEmpty()) logImage.description = this
                                 }, {
                                     LOG.warn("Can not obtain log image's description.")
@@ -1100,32 +1084,9 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
 
             return null
         } catch (e: Exception) {
-            LOG.warn("Can not parse log entries for cache '{}'.", geocacheUrl)
+            LOG.warn("Can not parse log entries for cache '{}': '{}'.", geocacheUrl, e.message)
             return null
         }
-    }
-
-    /**
-     * Returns parameters necessary for loading next bunch of caches.
-     * @param pageBody Page body to extract necessary parameters from.
-     * @return Parameters necessary for loading next bunch of caches.
-     */
-    private fun getParamsForSearchByNextPage(pageBody: String): HttpParameters {
-        val nextPageParameters = HttpParameters()
-
-        nextPageParameters.put(Parameter.NEXT_PAGE_EVENT_TARGET.parameterName, Constant.NEXT_PAGE_EVENT_TARGET)
-        nextPageParameters.put(Parameter.NEXT_PAGE_EVENT_ARGUMENT.parameterName, "")
-        nextPageParameters.put(Parameter.NEXT_PAGE_VIEWSTATE_COUNT.parameterName, Constant.REGEX_VIEWSTATE_COUNT.find(pageBody)?.groupValues?.get(1) ?: "")
-
-        // There could be more view states parameters.
-        Constant.REGEX_VIEWSTATES.findAll(pageBody).forEach { viewState ->
-            val index = viewState.groupValues[1]
-            val value = viewState.groupValues[2]
-
-            nextPageParameters.put(Parameter.NEXT_PAGE_VIEWSTATE.parameterName + index, value)
-        }
-
-        return nextPageParameters
     }
 
     /**
@@ -1133,7 +1094,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
      * @throws [NetworkException] If anything goes wrong.
      */
     @Throws(NetworkException::class)
-    private fun switchToEnglish() {
+    private suspend fun switchToEnglish() {
         LOG.debug("Switching to English version of Geocaching page..")
 
         network.getResponseStringBody(network.getRequest(Constant.URI_SWITCH_TO_ENGLISH))
@@ -1158,28 +1119,178 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
     }
 }
 
+typealias Distance = String
+const val ftToKmRatio = 0.0003048
+const val miToKmRation = 1.60934
+
+/**
+ * To parse distance to metric unit.
+ * @since 3.0.0
+ */
+fun Distance.toKm(): Double? {
+    return try {
+        if (contains("ft")) {
+            substringBefore("ft").toDouble() * ftToKmRatio
+        } else if (contains("mi")) {
+            substringBefore("mi").toDouble() * miToKmRation
+        } else {
+            null
+        }
+    } catch (_: NumberFormatException) {
+        null
+    }
+}
+
+/**
+ * WebApi for loading caches.
+ *
+ * [CGEO-13698](https://github.com/cgeo/cgeo/issues/13698) prevents from searching the old "parsed" way.
+ * @since 3.0.0
+ */
+class GCWebApi(private val network: Network) {
+
+    companion object {
+        private const val URL_BASE = "https://www.geocaching.com"
+        private const val URL_API = "$URL_BASE/api/proxy"
+        private const val URL_TOKEN = "$URL_BASE/account/oauth/token"
+        const val URL_SEARCH = "$URL_API/web/search/v2"
+        const val URL_CACHE = "$URL_BASE/geocache/"
+    }
+
+    private val mutex = Mutex()
+    private lateinit var authorization: Authorization
+    private var authorizationExpires: Long = -1
+
+    suspend fun getRequest(uri: String, parameters: HttpParameters?): SearchResultLite {
+        return network.getRequestFor<SearchResultLite>(uri, parameters, constructAuthorizationHeader())
+    }
+
+    private suspend fun constructAuthorizationHeader(): HttpParameters {
+        val authorization = getCachedAuthorization()
+        return HttpParameters(Header.AUTHORIZATION.headerName, "${authorization.tokenType} ${authorization.accessToken}")
+    }
+    private suspend fun getCachedAuthorization(): Authorization {
+        mutex.withLock {
+            if (System.currentTimeMillis() > authorizationExpires) {
+                authorization = network.getRequestFor<Authorization>(URL_TOKEN, null, null)
+                authorizationExpires = System.currentTimeMillis() + (authorization.expiresIn * 1000 - 2000)
+            }
+
+            return authorization
+        }
+    }
+
+    @Serializable
+    data class Authorization(@SerialName("access_token") val accessToken: String, @SerialName("token_type") val tokenType: String, /** In seconds. */ @SerialName("expires_in") val expiresIn: Long)
+
+    // Complete example:
+    // {
+    //     "result": [
+    //         {...}
+    //     ],
+    //     "total": 2
+    // }
+    @Serializable
+    data class SearchResultLite(@SerialName("results") val geoCaches: List<GeocacheLite>)
+
+    // Complete example:
+    //    {
+    //      "id": 3866836,
+    //      "name": "Ness Bridge",
+    //      "code": "GC4KJHJ",
+    //      "premiumOnly": true,
+    //      "favoritePoints": 847,
+    //      "geocacheType": 2,
+    //      "containerType": 6,
+    //      "difficulty": 2,
+    //      "terrain": 1.5,
+    //      "userFound": false,
+    //      "userDidNotFind": false,
+    //      "cacheStatus": 0,
+    //      "postedCoordinates": {
+    //        "latitude": 57.476967,
+    //        "longitude": -4.2278
+    //      },
+    //      "detailsUrl": "/geocache/GC4KJHJ",
+    //      "hasGeotour": false,
+    //      "hasLogDraft": false,
+    //      "placedDate": "2013-08-22T00:00:00",
+    //      "owner": {
+    //        "code": "PR1ZE74",
+    //        "username": "Ah!"
+    //      },
+    //      "lastFoundDate": "2022-06-22T18:00:49",
+    //      "trackableCount": 0,
+    //      "region": "Northern Scotland",
+    //      "country": "United Kingdom",
+    //      "attributes": [
+    //        {
+    //          "id": 24,
+    //          "name": "Wheelchair accessible",
+    //          "isApplicable": false
+    //        },
+    //        {
+    //          "id": 8,
+    //          "name": "Scenic view",
+    //          "isApplicable": true
+    //        }
+    //      ],
+    //      "distance": "441ft",
+    //      "bearing": "E"
+    //    }
+    @Serializable
+    data class GeocacheLite(val id: Int, val name: String, val code: String, val premiumOnly: Boolean, val geocacheType: Int, /** In miles. */val distance: String)
+
+
+    /**
+     * WebApi parameters.
+     * @since 3.0.0
+     */
+    enum class Parameter(val parameterName: String) {
+        ORIGIN("origin"),
+        CACHE_TYPE("ct"),
+        /** Possible values are:
+         * * `0` - Only caches hidden by the user.
+         * * `1` - Only caches which are not hidden by the user.
+         * * _parameter omitted_ - All caches (0 plus 1).
+         */
+        EXCLUDE_OWN("ho"),
+        /** Possible values are:
+         * * `0` - Only caches found by the user.
+         * * `1` - Only caches which are not found by the user.
+         * * _parameter omitted_ - All caches (0 plus 1).
+         */
+        EXCLUDE_FOUND("hf"),
+        /** Possible values are: [1, 0]. Premium only. */
+        STATUS_DISABLED("sd"),
+        TAKE("take"),
+        SKIP("skip"),
+        SORT("sort"),
+        ASC("asc")
+    }
+
+    /**
+     * WebApi headers.
+     * @since 3.0.0
+     */
+    enum class Header(val headerName: String) {
+        AUTHORIZATION("Authorization")
+    }
+}
+
+
+
 /**
  * Parameters' names.
  *
  * @param parameterName Parameter name.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 enum class Parameter(val parameterName: String) {
     USERNAME("UsernameOrEmail"),
     PASSWORD("Password"),
     REQUEST_VERIFICATION_TOKEN("__RequestVerificationToken"),
-    LATITUDE("lat"),
-    LONGITUDE("lng"),
-    CACHE_FILTER("cFilter"),
-    /** Possible values are: [1, 0]. */
-    EXCLUDE_OWN("ex"),
-    NEXT_PAGE_VIEWSTATE("__VIEWSTATE"),
-    NEXT_PAGE_VIEWSTATE_COUNT("__VIEWSTATEFIELDCOUNT"),
-    NEXT_PAGE_EVENT_TARGET("__EVENTTARGET"),
-    NEXT_PAGE_EVENT_ARGUMENT("__EVENTARGUMENT"),
     LOG_USER_TOKEN("tkn"),
     LOG_IDX("idx"),
     LOG_COUNT("num"),
@@ -1190,21 +1301,18 @@ enum class Parameter(val parameterName: String) {
 /**
  * Set of used constants.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 object Constant {
     const val URI_LOGIN = "https://www.geocaching.com/account/signin"
     const val URI_LOGOUT = "https://www.geocaching.com/account/logout"
-    const val URI_SEARCH = "https://www.geocaching.com/seek/nearest.aspx"
     const val URI_SWITCH_TO_ENGLISH = "https://www.geocaching.com/play/culture/set?model.SelectedCultureCode=en-US"
     const val URI_CACHE_LOGBOOK = "https://www.geocaching.com/seek/geocache.logbook"
     const val URI_CACHE_SHORT = "https://coord.info/"
     const val URI_TRACKABLE = "https://www.geocaching.com/track/details.aspx"
     const val URI_IMAGE_LARGE = "https://img.geocaching.com/cache/log/"
-    const val NEXT_PAGE_EVENT_TARGET = "ctl00\$ContentBody\$pgrTop\$ctl08"
-    const val PATTERN_DATE_PAGE = "yyyy-MM-dd"
+    const val PATTERN_DATE_PAGE = "MM/dd/yyyy"
+    const val PATTERN_DATE_ISO = "yyyy-MM-dd"
     const val PATTERN_DATE_GPX = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val DEFAULT_LOGS_COUNT = 35
     const val REQUEST_DATA = "data"
@@ -1224,19 +1332,10 @@ object Constant {
     @JvmField val REGEX_REQUEST_VERIFICATION_TOKEN = "<input name=\"__RequestVerificationToken\" type=\"hidden\" value=\"([^\"]*)\"[^/>]*".toRegex()
     @JvmField val REGEX_IS_LOGGED_IN = "\"(isLoggedIn|isAuthenticated)\":\\s?true".toRegex(RegexOption.DOT_MATCHES_ALL)
     @JvmField val REGEX_USER_TOKEN = "userToken\\s*=\\s*'([^']+)'".toRegex()
-    @JvmField val REGEX_SEARCH_RESULTS_TABLE = "<table.+class=\".*SearchResultsTable.*\">([\\s\\S]*?)</table>".toRegex()
-    @JvmField val REGEX_SEARCH_RESULTS_CACHE = "<tr.+class=\".*\">([\\s\\S]*?)</tr>".toRegex()
-    @JvmField val REGEX_SEARCH_RESULTS_CACHE_URL = "<td class=\"Merge\">[\\s\\S]*?<a href=\"(.*)\" class=\"lnk\">".toRegex()
-    @JvmField val REGEX_SEARCH_RESULTS_CACHE_TYPE = "<a href=\".*\".*><img.*title=\"(.*)\".*class=\"SearchResultsWptType\".*?</a>".toRegex()
-    @JvmField val REGEX_SEARCH_RESULTS_CACHE_IS_DISABLED = "<a href=\".*\".*class=\"lnk.*Strike\".*>.*</a>".toRegex()
-    @JvmField val REGEX_SEARCH_RESULTS_CACHE_DISTANCE_MI = "<span.*<img src=\"/images/icons/compass/.*\".*>(.*)mi</span>".toRegex()
-    @JvmField val REGEX_SEARCH_RESULTS_CACHE_DISTANCE_KM = "<span.*<img src=\"/images/icons/compass/.*\".*>(.*)km</span>".toRegex()
-    @JvmField val REGEX_SEARCH_RESULTS_CACHE_PREMIUM = "<img src=\".+premium_only\\.png\".+>".toRegex()
-    @JvmField val REGEX_VIEWSTATE_COUNT = "id=\"__VIEWSTATEFIELDCOUNT\".*value=\"(\\d+)\"".toRegex()
-    @JvmField val REGEX_VIEWSTATES = "id=\"__VIEWSTATE(\\d+)?\".*value=\"(.*)\"".toRegex()
     @JvmField val REGEX_CACHE_NAME = "<span id=\"ctl00_ContentBody_CacheName\".*>(.*)</span>".toRegex()
     @JvmField val REGEX_CACHE_CODE = "<span id=\"ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode\".*>(.*)</span>".toRegex()
     @JvmField val REGEX_CACHE_ID = "/seek/log\\.aspx\\?ID=(\\d+)&".toRegex()
+    @JvmField val REGEX_CACHE_TYPE = "<use xlink:href=\"/app/ui-icons/sprites/cache-types.svg#icon-([0-9a-f]+)".toRegex()
     @JvmField val REGEX_CACHE_TERRAIN = "<span id=\"ctl00_ContentBody_Localize12\".*alt=\"(.*) out of 5\"".toRegex()
     @JvmField val REGEX_CACHE_DIFFICULTY = "<span id=\"ctl00_ContentBody_uxLegendScale\".*alt=\"(.*) out of 5\"".toRegex()
     @JvmField val REGEX_CACHE_FAVORITE_COUNT = "<span class=\"favorite-value\">([\\s\\S]*?)</span>".toRegex()
@@ -1254,8 +1353,9 @@ object Constant {
     @JvmField val REGEX_CACHE_ALL_ATTRIBUTES = "(<img src=\"/images/attributes.*?)(?:<p).*?".toRegex()
     @JvmField val REGEX_CACHE_NO_ATTRIBUTES = "No attributes available".toRegex()
     @JvmField val REGEX_CACHE_ATTRIBUTE = "<img src=\"([^\"]+)\" alt=\"([^\"]+?)\"".toRegex()
-    @JvmField val REGEX_CACHE_IS_LOCKED = "<div id=\"ctl00_ContentBody_archivedMessage\"".toRegex()
-    @JvmField val REGEX_CACHE_IS_ARCHIVED = "<div id=\"ctl00_ContentBody_lockedMessage\"".toRegex()
+    @JvmField val REGEX_CACHE_IS_DISABLED = "<div id=\"ctl00_ContentBody_uxDisabledMessageBody\"".toRegex()
+    @JvmField val REGEX_CACHE_IS_ARCHIVED = "<div id=\"ctl00_ContentBody_archivedMessage\"".toRegex()
+    @JvmField val REGEX_CACHE_IS_LOCKED = "<div id=\"ctl00_ContentBody_lockedMessage\"".toRegex()
     @JvmField val REGEX_CACHE_IS_FAVORITE = "<div id=\"pnlFavoriteCache\">".toRegex()
     @JvmField val REGEX_CACHE_GUID = Pattern.compile(Pattern.quote("&wid=") + "([0-9a-z\\-]+)" + Pattern.quote("&")).toRegex()
     @JvmField val REGEX_CACHE_WATCHLIST_COUNT = "data-watchcount=\"(\\d+)\"".toRegex()

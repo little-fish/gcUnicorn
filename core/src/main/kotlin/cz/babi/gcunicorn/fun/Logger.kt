@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -24,8 +24,6 @@ import org.slf4j.LoggerFactory
  * Inline function which allows all Class to obtain instance of [org.slf4j.Logger] the easy way.
  * @return [org.slf4j.Logger] for underlying class.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 inline fun <reified T: Any> logger() = LoggerFactory.getLogger(T::class.java)!!

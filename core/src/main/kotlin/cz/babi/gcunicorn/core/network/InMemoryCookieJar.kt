@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -24,8 +24,6 @@ import okhttp3.HttpUrl
 /**
  * In-memory implementation of Cookie policy.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 class InMemoryCookieJar : DefaultCookieJar {
@@ -34,7 +32,7 @@ class InMemoryCookieJar : DefaultCookieJar {
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
         cookies.forEach { cookie ->
-            val key = cookie.domain() + ";" + cookie.name()
+            val key = cookie.domain + ";" + cookie.name
             storage[key] = cookie
         }
     }
@@ -65,7 +63,7 @@ class InMemoryCookieJar : DefaultCookieJar {
 
         while (iterator.hasNext()) {
             val cookie = iterator.next()
-            if (cookie.expiresAt() < System.currentTimeMillis()) {
+            if (cookie.expiresAt < System.currentTimeMillis()) {
                 iterator.remove()
             }
         }

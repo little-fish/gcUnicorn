@@ -127,7 +127,7 @@ tray
 ### Android application
 To install the application, you have to enable _Unknown Sources_ first.
 
-Android version of the tool supports all Android version since Jelly Bean (API 16) onwards.
+Android version of the tool supports all Android version since Lollipop (API 21) onwards.
 
 As a bonus, the application interacts with popular Android map application called [Locus Map](http://www.locusmap.eu/). You can find shortcuts to gcUnicorn within main _Geocaching functions_ menu and within _Point view_'s share option. If you open the application from later option, latitude and longitude will be transferred from Locus directly into the gcUnicorn.
 
@@ -147,16 +147,6 @@ Build the applications:
 ./gradlew build
 ```
 Created artifacts for _core_ and _webapp_ modules are located within `<module>/build/libs` folder. For _android_ module the artifact is located within `<module>/build/outputs/apk`.
-
-### core
-__Core__ module is now shared with an __android__ module and because its minimal API is 16, core module doesn't have tu use any Java 8 fancy features which are not available in Android SDK 18. To catch the exception earlier, the module should be compiled with Java 7 compiler.
-
-To compile the module with proper JDK, you should create `local.properties` file directly within _core_ module and specify `java.home` property pointing to proper JDK. Once the property is set, all Kotlin compile tasks will use this JDK.
-
-Possible content of _local.properties_:
-```bash
-java.home=/path/to/proper/jdk
-```
 
 ### android
 To enable location picking from Google Maps, Google Places API key has to be provided during build time.
@@ -202,6 +192,18 @@ Once the properties are provided, signing will be enabled automatically.
 * __Skip premium caches__ - If enabled the tool will simply skip premium caches __earlier__. If you are a _basic member_ and disable this option, the tool will try to load cache's details anyway and once it discovers that it can not load the cache (because you are a _basic member_), it skips it. (The tool has no idea whether you are a _basic member_ or a _premium_ one.)
 
 ## Release notes
+
+##### 2023-06-03: core v3.0.0 webapp v1.1.0 & android v1.1.0
+* Updated to the latest Gradle with all the related improvements (configuration and build caches, version library, ...)
+* Updated all the dependencies to the latest versions available.
+
+
+* __core__
+  * Used different method for cache searching.
+* __android__
+  * Minimal Android version required is Android 5.0 (SDK 21). 
+* __webapp__
+  * Spring Boot 3 is used.
 
 ##### 2022-03-14: core v2.0.5 & webapp v1.0.8 & android v1.0.6
 * __core__

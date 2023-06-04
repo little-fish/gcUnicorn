@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -20,11 +20,10 @@ package test.cz.babi.gcunicorn.core.location.parser.impl
 
 import cz.babi.gcunicorn.core.exception.location.CoordinateParseException
 import cz.babi.gcunicorn.core.location.parser.Parser
-import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesParser
 import cz.babi.gcunicorn.core.location.parser.impl.DecimalDegreesRightSideParser
-import org.testng.Assert
-import org.testng.annotations.BeforeTest
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 /**
  * Test class for [TestDecimalDegreesRightSideParser].
@@ -38,7 +37,7 @@ class TestDecimalDegreesRightSideParser {
     lateinit var validCoordinates: List<String>
     lateinit var invalidCoordinates: List<String>
 
-    @BeforeTest
+    @BeforeEach
     fun init() {
         parser = DecimalDegreesRightSideParser()
         validCoordinates = listOf(
@@ -60,14 +59,14 @@ class TestDecimalDegreesRightSideParser {
     @Test
     fun parse_provideValidInputText_returnsCoordinates() {
         for(coordinate in validCoordinates) {
-            Assert.assertNotNull(parser.parse(coordinate))
+            Assertions.assertNotNull(parser.parse(coordinate))
         }
     }
 
     @Test
     fun parse_provideInvalidInputText_exceptionIsThrown() {
         for(coordinate in invalidCoordinates) {
-            Assert.expectThrows(CoordinateParseException::class.java) { parser.parse(coordinate) }
+            Assertions.assertThrowsExactly(CoordinateParseException::class.java) { parser.parse(coordinate) }
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -19,8 +19,8 @@
 package test.cz.babi.gcunicorn.core.location
 
 import cz.babi.gcunicorn.core.location.Coordinates
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 /**
  * Test class for [Coordinates].
@@ -32,11 +32,11 @@ class TestCoordinates {
 
     @Test
     fun constructor_provideValidCoordinates_objectIsCreated() {
-        Assert.assertNotNull(Coordinates(15.555, 179.115))
+        Assertions.assertNotNull(Coordinates(15.555, 179.115))
     }
 
-    @Test(expectedExceptions = [ IllegalArgumentException::class ])
+    @Test
     fun constructor_provideInvalidCoordinates_exceptionIsThrown() {
-        Coordinates(86.156, 15.55)
+        Assertions.assertThrows(IllegalArgumentException::class.java) { Coordinates(86.156, 15.55) }
     }
 }

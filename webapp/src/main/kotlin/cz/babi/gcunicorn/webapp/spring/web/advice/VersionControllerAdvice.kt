@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.ModelAttribute
  * * __versionCore__ - core version (loaded from core's manifest file)
  * * __versionServer__ - webapp version (loaded from webapp's manifest file)
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 @ControllerAdvice

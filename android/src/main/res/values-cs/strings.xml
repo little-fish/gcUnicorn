@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ gcUnicorn
-  ~ Copyright (C) 2018  Martin Misiarz
+  ~ Copyright (C) 2023  Martin Misiarz
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License version 2
@@ -31,7 +31,8 @@
     <string name="activity_search_cache_type_label">typ keší</string>
     <string name="activity_search_additional_filters_label">další filtry</string>
     <string name="activity_search_include_disabled">Včetně dočasně nedostupných</string>
-    <string name="activity_search_include_own">Včetně vlastních a nalezených</string>
+    <string name="activity_search_include_own">Včetně vlastních keší</string>
+    <string name="activity_search_include_found">Včetně nalezených keší</string>
     <string name="activity_search_skip_premium">Vynechat premium keše</string>
     <string name="activity_search_download">stáhnout</string>
     <string name="activity_search_gps">gps</string>

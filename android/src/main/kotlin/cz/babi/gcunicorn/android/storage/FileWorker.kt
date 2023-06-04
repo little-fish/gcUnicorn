@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,9 +18,7 @@
 
 package cz.babi.gcunicorn.android.storage
 
-import android.content.ContentResolver
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Environment
 import android.util.Log
@@ -32,8 +30,7 @@ import java.io.IOException
 /**
  * Utility class handling files.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
+
  * @since 1.0.0
  */
 class FileWorker() {

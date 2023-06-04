@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gcunicorn-deployment
+  namespace: unicorn
+  labels:
+    app: gcunicorn
+spec:
+  replicas: 2
+  template:
+    metadata:
+      name: gcunicorn
+      labels:
+        app: gcunicorn
+    spec:
+      containers:
+        - name: gcunicorn
+          image: gcunicorn:1.1.0
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Never
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: gcunicorn
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gcunicorn-service
+  namespace: unicorn
+spec:
+  selector:
+    app: gcunicorn
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer

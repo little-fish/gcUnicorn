@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -25,8 +25,6 @@ import cz.babi.gcunicorn.android.dagger.AndroidApplication
 /**
  * Extension property to get rid of casting every single time we would need an instance of [AndroidApplication].
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 val Activity.androidApplication
@@ -36,8 +34,6 @@ val Activity.androidApplication
  * Extension property to easy access to Activity's root view.
  * Could be used for showing Snackbar.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 val Activity.rootView: View

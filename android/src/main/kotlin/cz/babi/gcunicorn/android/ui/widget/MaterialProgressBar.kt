@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -31,7 +31,6 @@ import cz.babi.gcunicorn.android.`fun`.getPlatformColor
  * Custom progress bar.
  *
  * @author FD_
- * @version 1.0.0
  * @since 1.0.0
  */
 class MaterialProgressBar : ProgressBar {
@@ -47,7 +46,7 @@ class MaterialProgressBar : ProgressBar {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
             val screenDensity = resources.displayMetrics.density
 
             indeterminateDrawable = CircularProgressDrawable(context).apply {

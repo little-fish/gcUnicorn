@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,98 +18,49 @@
 
 import java.text.SimpleDateFormat
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$versionKotlin"
-    }
-}
-
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.6.10'
-    id 'org.jetbrains.kotlin.plugin.allopen' version '1.6.10'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.6.10'
+    alias(libs.plugins.org.jetbrains.kotlin.jvm)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.serialization)
+    id('jvm-test-suite')
 }
-
-apply plugin: 'kotlinx-serialization'
 
 dependencies {
-    // TODO: Use implementation configuration where possible.
     api(
-            "org.jetbrains.kotlin:kotlin-stdlib:$versionKotlin",
-            "org.jetbrains.kotlin:kotlin-reflect:$versionKotlin",
-            "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$versionKotlinSerialization",
-            "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versionKotlinCoroutines",
-            "com.squareup.okhttp3:okhttp:$versionOkHttp",
-            "org.slf4j:slf4j-api:$versionSlf4J",
-            "org.redundent:kotlin-xml-builder:$versionKotlinXmlBuilder"
+            platform(libs.spring.boot.dependencies),
+            libs.okhttp,
+            libs.kotlinx.coroutines.core,
+            libs.kotlinx.serialization.json
     )
-    testImplementation(
-            "org.testng:testng:$versionTestNG",
-            "org.springframework:spring-context:$versionSpring",
-            "org.springframework:spring-test:$versionSpring"
-    )
-    testRuntimeOnly(
-            "ch.qos.logback:logback-classic:$versionLogback"
+
+    implementation(
+            libs.slf4j.api,
+            libs.kotlin.xml.builder
     )
 }
 
-compileKotlin.dependsOn(processResources)
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+        }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
+}
 
 jar {
     manifest {
         attributes(
-                "Created-By": project.maintainer,
                 "Created-On": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
-                "Implementation-Title": project.name,
+                "Implementation-Title": "gcUnicorn-webapp",
                 "Implementation-Version": project.version,
-                "Build-JDK": getJavaVersion(),
-                "Source-Compatibility": project.sourceCompatibility,
-                "Target-Compatibility": project.targetCompatibility,
+                "Build-Jdk-Spec": project.java.toolchain.languageVersion,
                 "License": "GPL-2.0"
         )
     }
-}
-
-test {
-    useTestNG()
-}
-
-/**
- * Obtain java version. It tries to load java from custom location (if exists).
- * @return Java version used for compilation.
- */
-def getJavaVersion() {
-    // Use custom jdk if exists.
-    def localProperties = new Properties()
-    def localPropertiesFile = file(localPropertiesFile)
-    
-    if (localPropertiesFile.exists()) {
-        localProperties.load(localPropertiesFile.newDataInputStream())
-
-        if (localProperties['java.home']) {
-            def outStream = new ByteArrayOutputStream()
-            exec {
-                workingDir localProperties['java.home'] + File.separator + 'bin'
-                if (org.apache.tools.ant.taskdefs.condition.Os.isFamily(org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS)) {
-                    commandLine 'cmd', '/c', 'java', '-version', '2>&1'
-                } else {
-                    commandLine 'java', '-version', '2>&1'
-                }
-
-                standardOutput = outStream
-            }
-
-            def matcher = (outStream.toString() =~ /\(build (.+)\)/)
-            if (matcher.hasGroup()) {
-                return matcher[0][1]
-            }
-        }
-    }
-
-    return System.getProperty('java.version')
 }

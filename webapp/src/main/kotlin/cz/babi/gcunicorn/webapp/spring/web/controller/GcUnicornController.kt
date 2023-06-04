@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -18,29 +18,29 @@
 
 package cz.babi.gcunicorn.webapp.spring.web.controller
 
+import cz.babi.gcunicorn.core.network.service.Service
+import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheFilter
+import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheType
 import cz.babi.gcunicorn.`fun`.Constant
 import cz.babi.gcunicorn.`fun`.dateFormat
 import cz.babi.gcunicorn.`fun`.logger
 import cz.babi.gcunicorn.`fun`.nullableExecute
-import cz.babi.gcunicorn.core.network.service.Service
-import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheFilter
-import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheType
 import cz.babi.gcunicorn.webapp.entity.CacheFilterWeb
 import cz.babi.gcunicorn.webapp.entity.JobStatusWeb
 import cz.babi.gcunicorn.webapp.entity.task.JobsWrapper
 import cz.babi.gcunicorn.webapp.entity.task.SearchJob
 import cz.babi.gcunicorn.webapp.entity.task.Status
 import cz.babi.gcunicorn.webapp.spring.validation.CacheFilterWebValidator
-import kotlinx.coroutines.CoroutineStart
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpSession
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -52,8 +52,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import java.io.IOException
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpSession
 
 /**
  * gcUnicorn controller.
@@ -65,8 +63,6 @@ import javax.servlet.http.HttpSession
  * @param jobsWrapper Job wrapper. Holds all search jobs.
  * @param simpMessagingTemplate Simple message template.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.1
  * @since 1.0.0
  */
 @Controller
@@ -81,19 +77,26 @@ class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheF
     }
 
     @GetMapping(path = ["/search"])
-    fun searchGet(model: Model, httpSession: HttpSession): String {
+    suspend fun searchGet(model: Model, httpSession: HttpSession): String {
         fillModelWithDefaultAttributes(model, httpSession)
         model.addAttribute("cacheFilterWeb", CacheFilterWeb())
 
         return "search"
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     @PostMapping(path = ["/search"])
-    fun searchPost(@ModelAttribute(name = "cacheFilterWeb") cacheFilterWeb: CacheFilterWeb,
-               @RequestParam(name = "allowDisabled", required = false, defaultValue = "0") allowDisabled: Boolean,
-               @RequestParam(name = "includeOwnAndFound", required = false, defaultValue = "0") includeOwnAndFound: Boolean,
-               @RequestParam(name = "skipPremium", required = false, defaultValue = "1") skipPremium: Boolean,
-               bindingResult: BindingResult, model: Model, httpServletResponse: HttpServletResponse, httpSession: HttpSession): String {
+    suspend fun searchPost(
+        @ModelAttribute(name = "cacheFilterWeb") cacheFilterWeb: CacheFilterWeb,
+        @RequestParam(name = "allowDisabled", required = false, defaultValue = "0") allowDisabled: Boolean,
+        @RequestParam(name = "includeOwn", required = false, defaultValue = "0") includeOwn: Boolean,
+        @RequestParam(name = "includeFound", required = false, defaultValue = "0") includeFound: Boolean,
+        @RequestParam(name = "skipPremium", required = false, defaultValue = "1") skipPremium: Boolean,
+        bindingResult: BindingResult,
+        model: Model,
+        httpServletResponse: HttpServletResponse,
+        httpSession: HttpSession
+    ): String {
         // Process validation of input parameters.
         cacheFilterWebValidator.validate(cacheFilterWeb, bindingResult)
         if(bindingResult.hasErrors()) {
@@ -103,27 +106,25 @@ class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheF
 
         val parent = Job()
         val jobId = jobsWrapper.getSearchJobsCount(httpSession.id) + 1
-        val job = GlobalScope.async(start = CoroutineStart.LAZY) {
+        val job = GlobalScope.async {
             service.createGpx(
                     service.lookForCaches(
                             cacheFilterWebValidator.parser.parse(cacheFilterWeb.coordinates!!),
-                            CacheFilter(listOf(CacheType.findByCode(cacheFilterWeb.cacheType!!)), cacheFilterWeb.distance!!, allowDisabled, includeOwnAndFound, skipPremium),
+                            CacheFilter(listOf(CacheType.findByCode(cacheFilterWeb.cacheType!!)), cacheFilterWeb.distance!!, allowDisabled, !includeOwn, !includeFound, skipPremium),
                             cacheFilterWeb.count!!,
-                            null,
-                            parent),
+                            null
+                    ),
                     false)
 
+        }.apply {
+            invokeOnCompletion {
+                // Should be as fast as possible.
+                notifyStatusChanged(JobStatusWeb(jobId, jobsWrapper.getSearchJob(httpSession.id, jobId)!!.getStatus()))
+                notifyActiveCountChanged(jobsWrapper.getSearchJobsCount(httpSession.id, Status.ACTIVE))
+            }
         }
 
         jobsWrapper.putSearchJob(httpSession.id, SearchJob(parent = parent, job = job, id = jobId))
-
-        GlobalScope.launch {
-            job.join()
-
-            // Should be as fast as possible.
-            notifyStatusChanged(JobStatusWeb(jobId, jobsWrapper.getSearchJob(httpSession.id, jobId)!!.getStatus()))
-            notifyActiveCountChanged(jobsWrapper.getSearchJobsCount(httpSession.id, Status.ACTIVE))
-        }
 
         httpServletResponse.setHeader("Location", "/queue/$jobId")
         httpServletResponse.status = HttpStatus.ACCEPTED.value()
@@ -132,7 +133,7 @@ class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheF
     }
 
     @GetMapping(path = [ "/queue" ])
-    fun queue(model: Model, httpSession: HttpSession): String {
+    suspend fun queue(model: Model, httpSession: HttpSession): String {
         model.addAttribute("searchJobs", jobsWrapper.getSearchJobs(httpSession.id))
         model.addAttribute("activeJobsCount", jobsWrapper.getSearchJobsCount(httpSession.id, Status.ACTIVE))
 
@@ -140,7 +141,7 @@ class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheF
     }
 
     @GetMapping(path = ["/queue/{jobId}/status"])
-    fun queue(@PathVariable(name = "jobId", required = true) jobId: Int, httpServletResponse: HttpServletResponse, httpSession: HttpSession) {
+    suspend fun queue(@PathVariable(name = "jobId", required = true) jobId: Int, httpServletResponse: HttpServletResponse, httpSession: HttpSession) {
         jobsWrapper.getSearchJob(httpSession.id, jobId).nullableExecute({
             when {
                 this.job.isActive -> {
@@ -178,7 +179,7 @@ class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheF
                     } finally {
                         try {
                             it.close()
-                        } catch (e: IOException) {}
+                        } catch (_: IOException) {}
                     }
                 }
             } else {

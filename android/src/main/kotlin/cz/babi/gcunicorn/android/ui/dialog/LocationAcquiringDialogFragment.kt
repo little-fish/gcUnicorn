@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -34,8 +34,6 @@ import cz.babi.gcunicorn.android.`fun`.hasPermissions
 /**
  * Custom dialog requesting a user location.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 class LocationAcquiringDialogFragment : DialogFragment() {
@@ -49,7 +47,7 @@ class LocationAcquiringDialogFragment : DialogFragment() {
     internal lateinit var onError: OnError
 
     private val locationManager by lazy {
-        context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 
     private val locationListener: LocationListener by lazy {
@@ -79,7 +77,7 @@ class LocationAcquiringDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(context!!)
+        return AlertDialog.Builder(requireContext())
                 .setView(R.layout.layout_acquiring_location_dialog)
                 .setNegativeButton(R.string.text_cancel) { _, _ ->
                     internalCancelWithDismiss()

@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -31,9 +31,10 @@ import androidx.core.app.JobIntentService
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.FileProvider
-import cz.babi.gcunicorn.`fun`.format
-import cz.babi.gcunicorn.`fun`.nullableExecute
 import cz.babi.gcunicorn.android.R
+import cz.babi.gcunicorn.android.dagger.qualifier.Named
+import cz.babi.gcunicorn.android.dagger.qualifier.Named.Companion.PREFERENCES_NORMAL
+import cz.babi.gcunicorn.android.dagger.qualifier.Named.Companion.PREFERENCES_PRIVATE
 import cz.babi.gcunicorn.android.`fun`.ACTION_CANCEL_DOWNLOADING
 import cz.babi.gcunicorn.android.`fun`.ACTION_EXPORT_GPX
 import cz.babi.gcunicorn.android.`fun`.ACTION_NOTIFY
@@ -46,9 +47,6 @@ import cz.babi.gcunicorn.android.`fun`.androidApplication
 import cz.babi.gcunicorn.android.`fun`.dismissNotification
 import cz.babi.gcunicorn.android.`fun`.localBroadcastManager
 import cz.babi.gcunicorn.android.`fun`.showNotification
-import cz.babi.gcunicorn.android.dagger.qualifier.Named
-import cz.babi.gcunicorn.android.dagger.qualifier.Named.Companion.PREFERENCES_NORMAL
-import cz.babi.gcunicorn.android.dagger.qualifier.Named.Companion.PREFERENCES_PRIVATE
 import cz.babi.gcunicorn.android.preference.PreferenceKey
 import cz.babi.gcunicorn.android.receiver.ShareBroadcastReceiver
 import cz.babi.gcunicorn.android.security.Security
@@ -64,15 +62,14 @@ import cz.babi.gcunicorn.core.network.service.Service
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheFilter
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheType
 import cz.babi.gcunicorn.core.network.service.geocachingcom.model.Geocache
+import cz.babi.gcunicorn.`fun`.format
+import cz.babi.gcunicorn.`fun`.nullableExecute
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.io.File
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 import cz.babi.gcunicorn.android.`fun`.FILTER_MAX_DISTANCE as CONST_FILTER_MAX_DISTANCE
@@ -84,8 +81,6 @@ import cz.babi.gcunicorn.android.`fun`.FILTER_MAX_DISTANCE as CONST_FILTER_MAX_D
  *
  * Once the process of downloading is done, it shows a notification allowed an user to view/share created GPX file.
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 1.0.0
  * @since 1.0.0
  */
 class UnicornService : JobIntentService() {
@@ -97,7 +92,8 @@ class UnicornService : JobIntentService() {
         const val FILTER_MAX_CACHE_COUNT = "max_count"
         const val FILTER_MAX_DISTANCE = "max_distance"
         const val FILTER_ALLOW_DISABLED = "allow_disable"
-        const val FILTER_INCLUDE_OWN_AND_FOUND = "include_own_and_found"
+        const val FILTER_EXCLUDE_OWN = "include_own"
+        const val FILTER_EXCLUDE_FOUND = "include_found"
         const val FILTER_SKIP_PREMIUM = "skip_premium"
         const val NOTIFICATION_MESSAGE = "notification_message"
         const val TAG = "UnicornService"
@@ -184,12 +180,14 @@ class UnicornService : JobIntentService() {
         onPreExecute(intent)
 
         try {
-            service.login(Credentials(
+            runBlocking {
+                service.login(Credentials(
                     sharedPreferences.getString(PreferenceKey.GC_USERNAME.key, "")!!,
                     security.decryptWithBase64(
-                            privateSharedPreferences.getString(PreferenceKey.SECURE_KEY.key, "")!!,
-                            sharedPreferences.getString(PreferenceKey.GC_PASSWORD.key, "")!!)
-            ))
+                        privateSharedPreferences.getString(PreferenceKey.SECURE_KEY.key, "")!!,
+                        sharedPreferences.getString(PreferenceKey.GC_PASSWORD.key, "")!!)
+                ))
+            }
 
             if (canContinue) {
                 val jobStarted = Date()
@@ -201,14 +199,15 @@ class UnicornService : JobIntentService() {
                 }
 
                 runBlocking {
-                    downloadJob = GlobalScope.async(Dispatchers.IO) {
+                    downloadJob = async {
                         service.lookForCaches(
                                 parser.parse("${intent.getStringExtra(COORDINATION_LAT)}, ${intent.getStringExtra(COORDINATION_LON)}"),
                                 CacheFilter(
                                         listOf(CacheType.findByPattern(intent.getStringExtra(FILTER_CACHE_TYPE)!!)),
                                         intent.getDoubleExtra(FILTER_MAX_DISTANCE, CONST_FILTER_MAX_DISTANCE),
                                         intent.getBooleanExtra(FILTER_ALLOW_DISABLED, false),
-                                        intent.getBooleanExtra(FILTER_INCLUDE_OWN_AND_FOUND, false),
+                                        intent.getBooleanExtra(FILTER_EXCLUDE_OWN, false),
+                                        intent.getBooleanExtra(FILTER_EXCLUDE_FOUND, false),
                                         intent.getBooleanExtra(FILTER_SKIP_PREMIUM, true)
                                 ),
                                 maxCount,
@@ -230,8 +229,7 @@ class UnicornService : JobIntentService() {
                                             }
                                         }
                                     }
-                                },
-                                null
+                                }
                         )
                     }
 
@@ -289,7 +287,9 @@ class UnicornService : JobIntentService() {
 
                 sendLocalBroadcast(createNotificationIntent(getText(R.string.notification_logging_out)))
 
-                service.logout()
+                runBlocking {
+                    service.logout()
+                }
             } catch (logoutException: LogoutException) {
                 Log.e(TAG, "Can not log out.", logoutException)
             } catch (e: Exception) {

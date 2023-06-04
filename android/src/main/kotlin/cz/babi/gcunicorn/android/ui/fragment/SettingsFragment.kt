@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2018  Martin Misiarz
+ * Copyright (C) 2023  Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -36,7 +36,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         findPreference<Preference>(PreferenceKey.GC_USERNAME.key)?.apply {
-            summary = sharedPreferences.getString(PreferenceKey.GC_USERNAME.key, null)
+            summary = sharedPreferences?.getString(PreferenceKey.GC_USERNAME.key, null)
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
                 summary = newValue?.toString()
                 true
@@ -44,7 +44,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>(PreferenceKey.GC_PASSWORD.key)?.apply {
-            summary = generateSecretSummary(sharedPreferences.getString(PreferenceKey.GC_PASSWORD.key, null))
+            summary = generateSecretSummary(sharedPreferences?.getString(PreferenceKey.GC_PASSWORD.key, null))
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
                 summary = generateSecretSummary(newValue?.toString())
                 true
@@ -56,7 +56,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
      * Generates summary for password field.
      */
     private fun generateSecretSummary(value: String?) = when {
-        value==null || value.isEmpty() -> null
+        value.isNullOrEmpty() -> null
         else -> "<${resources.getString(R.string.text_encrypted)}>"
     }
 }
