@@ -23,7 +23,7 @@ jobs:
       - name: Install pack CLI via the official buildpack Action https://github.com/buildpacks/github-actions#setup-pack-cli-action
         uses: buildpacks/github-actions/setup-pack@v5.0.0
 
-      - name: Just to prepare an empty file for Gradle build..
+      - name: Just to prepare an empty file for Gradle build to satisfy Android Gradle plugin..
         run: |
           touch local.properties
 
@@ -40,7 +40,7 @@ jobs:
             --buildpack paketo-buildpacks/java-native-image@8.7.1 \
             --path . \
             --env "BP_JVM_VERSION=17" \
-            --env "BP_GRADLE_BUILD_ARGUMENTS=--no-daemon :webapp:signedBootJar" \
+            --env "BP_GRADLE_BUILD_ARGUMENTS=--no-daemon :webapp:bootJar" \
             --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/*signed.jar" \
             --env "BP_INCLUDE_FILES=webapp/src/graalvm/config/v1.1.0/*.json" \
             --env "BP_NATIVE_IMAGE=true" \
