@@ -221,6 +221,8 @@ class Network(private val okHttpClient: OkHttpClient, val json: Json) {
     @Throws(NetworkException::class)
     fun getResponseStringBody(response: Response): String {
         if(!response.isSuccessful) {
+            response.body?.close()
+
             throw NetworkException("Request was not successful. Returned code is '${response.code}'.")
         }
 
@@ -250,7 +252,7 @@ class Network(private val okHttpClient: OkHttpClient, val json: Json) {
         try {
             return response.body?.byteStream() ?: throw NetworkException("Can't obtain response body.")
         } catch (e: Exception) {
-            throw NetworkException("Can't obtain response body.")
+            throw NetworkException("Can't obtain response body.", e)
         }
     }
 }
