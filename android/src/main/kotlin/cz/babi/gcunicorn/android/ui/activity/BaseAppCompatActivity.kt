@@ -37,15 +37,15 @@ import javax.inject.Inject
 abstract class BaseAppCompatActivity : AppCompatActivity() {
 
     @Inject
-    protected lateinit var security: Security
+    lateinit var security: Security
 
     @Inject
     @field:Named(PREFERENCES_NORMAL)
-    protected lateinit var sharedPreferences: android.content.SharedPreferences
+    lateinit var sharedPreferences: android.content.SharedPreferences
 
     @Inject
     @field:Named(PREFERENCES_PRIVATE)
-    protected lateinit var privateSharedPreferences: android.content.SharedPreferences
+    lateinit var privateSharedPreferences: android.content.SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

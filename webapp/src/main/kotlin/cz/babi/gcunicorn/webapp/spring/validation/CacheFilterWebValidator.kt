@@ -21,7 +21,7 @@ package cz.babi.gcunicorn.webapp.spring.validation
 import cz.babi.gcunicorn.core.exception.location.CoordinateParseException
 import cz.babi.gcunicorn.core.location.parser.Parser
 import cz.babi.gcunicorn.webapp.entity.CacheFilterWeb
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.validation.Errors
 import org.springframework.validation.ValidationUtils
@@ -33,18 +33,10 @@ import org.springframework.validation.Validator
  * @param parser Parser to be used for coordinates validation.
  * @see [CacheFilterWeb]
  *
- * @author Martin Misiarz `<dev.misiarz@gmail.com>`
- * @version 2.0.0
  * @since 1.0.0
  */
 @Component
-class CacheFilterWebValidator(@Autowired val parser: Parser) : Validator {
-
-    companion object {
-        private const val DISTANCE_DEFAULT = 10.0
-        private const val COUNT_DEFAULT = 100
-        private const val COUNT_MAX = 200
-    }
+class CacheFilterWebValidator(val parser: Parser, @Value("\${search.max-count:200}") val maxCount: Int, @Value("\${search.default-count:100}") val defaultCount: Int, @Value("\${search.default-distance-km:10.0}") val defaultDistance: Double) : Validator {
 
     override fun validate(target: Any, errors: Errors) {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cacheType", "field.required")
@@ -59,15 +51,15 @@ class CacheFilterWebValidator(@Autowired val parser: Parser) : Validator {
         }
 
         if(cacheFilterWeb.distance==null) {
-            cacheFilterWeb.distance = DISTANCE_DEFAULT
+            cacheFilterWeb.distance = defaultDistance
         }
 
         cacheFilterWeb.count?.let {
-            if(it > COUNT_MAX) {
-                cacheFilterWeb.count = COUNT_MAX
+            if(it > maxCount) {
+                cacheFilterWeb.count = maxCount
             }
         } ?: kotlin.run {
-            cacheFilterWeb.count = COUNT_DEFAULT
+            cacheFilterWeb.count = if (defaultCount > maxCount) { maxCount } else { defaultCount }
         }
     }
 

@@ -21,7 +21,7 @@
     <string name="text_app_name" translatable="false">gcUnicorn</string>
     <string name="empty_string" translatable="false"/>
     <string name="text_android" translatable="false">android</string>
-    <string name="text_app_core" translatable="false">gcUnicorn-core v3.0.0</string>
+    <string name="text_app_core" translatable="false">gcUnicorn-core v3.0.1</string>
     <string name="text_github">Follow gcUnicorn project @<a href="https://github.com/little-fish/gcUnicorn">GitHub</a>.</string>
 
     <string name="activity_search">gcUnicorn</string>

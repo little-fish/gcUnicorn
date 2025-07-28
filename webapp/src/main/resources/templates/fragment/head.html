@@ -25,7 +25,7 @@
         <link rel="stylesheet" th:if="${currentDevice.isNormal() || currentDevice.isTablet()}" th:href="@{/resources/css/desktop/style.css}">
         <link rel="stylesheet" th:if="${currentDevice.isMobile()}" th:href="@{/resources/css/mobile/style.css}">
         <link rel="icon" th:href="@{/resources/img/favicon.ico}" type="image/x-icon">
-        <script th:src="@{/resources/script/jquery-3.3.1.min.js}"></script>
+        <script th:src="@{/resources/script/jquery-3.7.1.min.js}"></script>
 
         <th:block th:replace="${scripts} ?: ~{}"/>
     </head>

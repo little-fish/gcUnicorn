@@ -43,7 +43,7 @@ configure([ project(':core'), project(':webapp') ]) {
                 def task = project.tasks.register('signedJar', Sign) {
                     group = 'build'
                     dependsOn = [ project.tasks.named('signArchives'), project.tasks.named('test') ]
-                    buildDir = project.buildDir.absolutePath
+                    buildDir = project.layout.buildDirectory.asFile.get().absolutePath
                     archiveName = project.tasks.jar.archiveFileName
                     alias = keystoreProperties['jarsigning.alias']
                     keyStoreType = keystoreProperties['jarsigning.keystoreType']
@@ -59,7 +59,7 @@ configure([ project(':core'), project(':webapp') ]) {
                 def task = project.tasks.register('signedBootJar', Sign) {
                     group = 'build'
                     dependsOn = [ project.tasks.named('bootJar') ]
-                    buildDir = project.buildDir.absolutePath
+                    buildDir = project.layout.buildDirectory.asFile.get().absolutePath
                     archiveName = project.tasks.bootJar.archiveFileName
                     alias = keystoreProperties['jarsigning.alias']
                     keyStoreType = keystoreProperties['jarsigning.keystoreType']

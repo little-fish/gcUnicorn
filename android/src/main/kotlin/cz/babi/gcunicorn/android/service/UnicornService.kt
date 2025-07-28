@@ -100,24 +100,24 @@ class UnicornService : JobIntentService() {
     }
 
     @Inject
-    protected lateinit var fileWorker: FileWorker
+    lateinit var fileWorker: FileWorker
 
     @Inject
-    protected lateinit var service: Service
+    lateinit var service: Service
 
     @Inject
-    protected lateinit var security: Security
+    lateinit var security: Security
 
     @Inject
-    protected lateinit var parser: Parser
+    lateinit var parser: Parser
 
     @Inject
     @field:Named(PREFERENCES_NORMAL)
-    protected lateinit var sharedPreferences: SharedPreferences
+    lateinit var sharedPreferences: SharedPreferences
 
     @Inject
     @field:Named(PREFERENCES_PRIVATE)
-    protected lateinit var privateSharedPreferences: SharedPreferences
+    lateinit var privateSharedPreferences: SharedPreferences
 
     private val notificationBroadcastReceiver = NotificationBroadcastReceiver(object : NotificationBroadcastReceiver.Receiver {
         override fun orReceive(context: Context?, intent: Intent?) {

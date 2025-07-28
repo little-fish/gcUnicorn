@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2023  Martin Misiarz
+ * Copyright (c) 2024 Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -1330,7 +1330,8 @@ object Constant {
 
     @JvmField val REGEX_LANGUAGE_SELECTED = "<div class=\"language-dropdown[\\s\\S]*?<li class=\"selected\">.*>(.*)</a></li>".toRegex()
     @JvmField val REGEX_REQUEST_VERIFICATION_TOKEN = "<input name=\"__RequestVerificationToken\" type=\"hidden\" value=\"([^\"]*)\"[^/>]*".toRegex()
-    @JvmField val REGEX_IS_LOGGED_IN = "\"(isLoggedIn|isAuthenticated)\":\\s?true".toRegex(RegexOption.DOT_MATCHES_ALL)
+    // "publicGuid":"abc.def","referenceCode":"PRxyz","id":1234567,"username":"user","dateCreated":"2012-01-21T20:51:14","findCount":15123,
+    @JvmField val REGEX_IS_LOGGED_IN = "\"publicGuid\":\"[^\"]+\",\"referenceCode\":\"[^\"]+\",\"id\":[0-9]+,\"username\":\"([^\"]+)\",\"dateCreated\":\"[0-9:T-]+\",\"findCount\":([0-9]+),".toRegex()
     @JvmField val REGEX_USER_TOKEN = "userToken\\s*=\\s*'([^']+)'".toRegex()
     @JvmField val REGEX_CACHE_NAME = "<span id=\"ctl00_ContentBody_CacheName\".*>(.*)</span>".toRegex()
     @JvmField val REGEX_CACHE_CODE = "<span id=\"ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode\".*>(.*)</span>".toRegex()

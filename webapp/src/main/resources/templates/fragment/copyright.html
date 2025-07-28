@@ -19,8 +19,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
-        <div th:fragment="copyright" th:utext="#{app.copyright}">
-            &copy; 2018 Fluffy Unicorn
-        </div>
+        <div th:fragment="copyright" th:utext="#{app.copyright(${#dates.format(#dates.createNow(), 'YYYY')})}"></div>
     </body>
 </html>

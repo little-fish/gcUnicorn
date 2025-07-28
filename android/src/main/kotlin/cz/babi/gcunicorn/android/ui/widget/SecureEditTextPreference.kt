@@ -45,11 +45,11 @@ class SecureEditTextPreference : EditTextPreference {
     }
 
     @Inject
-    protected lateinit var security: Security
+    lateinit var security: Security
 
     @Inject
     @field:Named(PREFERENCES_PRIVATE)
-    protected lateinit var privateSharedPreferences: SharedPreferences
+    lateinit var privateSharedPreferences: SharedPreferences
 
     override fun getText(): String? {
         val text = super.getText()

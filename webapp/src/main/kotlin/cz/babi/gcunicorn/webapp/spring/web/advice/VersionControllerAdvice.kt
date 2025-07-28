@@ -19,6 +19,7 @@
 package cz.babi.gcunicorn.webapp.spring.web.advice
 
 import cz.babi.gcunicorn.core.network.service.Service
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ModelAttribute
 
@@ -36,5 +37,5 @@ class VersionControllerAdvice {
     fun versionCore() = Service::class.java.`package`?.implementationVersion ?: "unknown"
 
     @ModelAttribute(name = "versionWebapp")
-    fun versionWebapp() = VersionControllerAdvice::class.java.`package`?.implementationVersion ?: "unknown"
+    fun versionWebapp(@Value("\${version:unknown}") version: String) = VersionControllerAdvice::class.java.`package`?.implementationVersion ?: version
 }

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gcunicorn
-          image: gcunicorn:1.1.0
+          image: gcunicorn:v1.1.1
           ports:
             - containerPort: 8080
           imagePullPolicy: Never

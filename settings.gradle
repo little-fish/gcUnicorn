@@ -1,6 +1,6 @@
 /*
  * gcUnicorn
- * Copyright (C) 2023  Martin Misiarz
+ * Copyright (c) 2024 Martin Misiarz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 2
@@ -25,7 +25,7 @@ pluginManagement {
 
 plugins {
     // https://github.com/gradle/foojay-toolchains
-    id('org.gradle.toolchains.foojay-resolver') version('0.5.0')
+    id('org.gradle.toolchains.foojay-resolver') version('0.8.0')
 }
 
 toolchainManagement {
@@ -48,34 +48,36 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
-        maven { url 'https://jitpack.io' }
+        maven { url = 'https://jitpack.io' }
     }
 
     versionCatalogs {
         libs {
-            version('kotlin', '1.8.21')
-            version('kotlinx-coroutines', '1.7.1')
-            version('kotlinx-serialization', '1.5.1')
-            version('spring-boot', '3.1.0')
+            version('kotlin', '2.1.21')
+            version('kotlinx-coroutines', '1.10.2')
+            version('kotlinx-serialization', '1.8.1')
+            version('spring-boot', '3.5.0')
             version('spring-mobile-device', '2.0.0.M3')
-            version('redundent', '1.9.0')
+            version('redundent', '1.9.3')
+            version('okhttp', '4.12.0')
             // https://developer.android.com/build/releases/gradle-plugin
+            // https://developer.android.com/studio/releases#android_gradle_plugin_and_android_studio_compatibility
             // Personally, I am using IntelliJ IDEA and the latest version available doesn't support the latest version of Android Gradle Plugin..
-            version('android-application', '7.4.2')
+            version('android-application', '8.10.1')
             version('android-secrets', '2.0.1')
-            version('androidx-preference', '1.2.0')
-            version('androidx-constraintlayout', '2.1.4')
-            version('androidx-appcompat', '1.6.1')
+            version('androidx-preference', '1.2.1')
+            version('androidx-constraintlayout', '2.2.1')
+            version('androidx-appcompat', '1.7.1')
             version('androidx-legacy', '1.0.0')
             version('androidx-multidex', '2.0.1')
-            version('android-material', '1.9.0')
-            version('android-places', '3.1.0')
-            version('android-play-services-maps', '18.1.0')
-            version('dagger', '2.46.1')
+            version('android-material', '1.12.0')
+            version('android-places', '4.3.1')
+            version('android-play-services-maps', '19.2.0')
+            version('dagger', '2.56.2')
             version('suchox-placepicker', '1.1.2')
-            version('locus', '0.9.50')
-            version('logback-android', '2.0.1')
-            version('graalvm-native', '0.9.22')
+            version('locus', '0.9.64')
+            version('logback-android', '3.0.0')
+            version('graalvm-native', '0.10.6')
 
             // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
             library('spring-boot-dependencies', 'org.springframework.boot', 'spring-boot-dependencies').versionRef('spring-boot')
@@ -88,7 +90,6 @@ dependencyResolutionManagement {
             library('tomcat-embed-el', 'org.apache.tomcat.embed', 'tomcat-embed-el').withoutVersion()
             library('thymeleaf-spring6', 'org.thymeleaf', 'thymeleaf-spring6').withoutVersion()
             library('undertow-websockets-jsr', 'io.undertow', 'undertow-websockets-jsr').withoutVersion()
-            library('okhttp', 'com.squareup.okhttp3', 'okhttp').withoutVersion()
             library('jackson-module-kotlin', 'com.fasterxml.jackson.module', 'jackson-module-kotlin').withoutVersion()
             library('reactive-streams', 'org.reactivestreams', 'reactive-streams').withoutVersion()
             library('slf4j-api', 'org.slf4j', 'slf4j-api').withoutVersion()
@@ -99,6 +100,7 @@ dependencyResolutionManagement {
             library('kotlinx-coroutines-android', 'org.jetbrains.kotlinx', 'kotlinx-coroutines-android').versionRef('kotlinx-coroutines')
             library('kotlinx-serialization-json', 'org.jetbrains.kotlinx', 'kotlinx-serialization-json').versionRef('kotlinx-serialization')
             library('kotlin-xml-builder', 'org.redundent', 'kotlin-xml-builder').versionRef('redundent')
+            library('okhttp', 'com.squareup.okhttp3', 'okhttp').versionRef('okhttp')
             library('dagger-compiler', 'com.google.dagger', 'dagger-compiler').versionRef('dagger')
             library('dagger', 'com.google.dagger', 'dagger').versionRef('dagger')
             library('androidx.preference', 'androidx.preference', 'preference').versionRef('androidx-preference')
@@ -126,4 +128,3 @@ dependencyResolutionManagement {
         }
     }
 }
-

@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="gcUnicorn" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="INCLUDE_PROVIDED_SCOPE" value="false" />
+    <module name="gcUnicorn.webapp.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="cz.babi.gcunicorn.webapp.ApplicationWrapper" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

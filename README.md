@@ -193,10 +193,22 @@ Once the properties are provided, signing will be enabled automatically.
 
 ## Release notes
 
+##### 2024-06-18: core v3.0.1 webapp v1.1.1 & android v1.1.1
+* Updated all the dependencies to the latest versions available.
+
+* __core__
+  * Fixed a login process.
+* __android__
+  * Adapt to new core.
+* __webapp__
+  * Search properties can be defined via application's property:
+    * `search.max-count` - default value is `200`.
+    * `search.default-count` - default value is `100`.
+    * `search.default-distance-km` - default value is `10.0`.
+
 ##### 2023-06-03: core v3.0.0 webapp v1.1.0 & android v1.1.0
 * Updated to the latest Gradle with all the related improvements (configuration and build caches, version library, ...)
 * Updated all the dependencies to the latest versions available.
-
 
 * __core__
   * Used different method for cache searching.
