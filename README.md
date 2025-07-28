@@ -193,7 +193,7 @@ Once the properties are provided, signing will be enabled automatically.
 
 ## Release notes
 
-##### 2024-06-18: core v3.0.1 webapp v1.1.1 & android v1.1.1
+##### 2025-07-28: core v3.0.1 webapp v1.1.1 & android v1.1.1
 * Updated all the dependencies to the latest versions available.
 
 * __core__
