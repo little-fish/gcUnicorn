@@ -50,6 +50,7 @@ jobs:
             --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/*.jar" \
             --env "BP_INCLUDE_FILES=webapp/src/graalvm/config/v1.1.1/*.json" \
             --env "BP_NATIVE_IMAGE=true" \
+          --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-run-time=kotlin.DeprecationLevel -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json" \
             --cache-image ghcr.io/little-fish/gcunicorn-cache-image:v1.1.1 \
             --publish
       - name: Install flyctl via https://github.com/superfly/flyctl-actions
