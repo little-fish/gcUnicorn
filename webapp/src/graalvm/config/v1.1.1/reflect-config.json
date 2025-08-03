@@ -186,7 +186,7 @@
   "name":"com.fasterxml.jackson.core.ObjectCodec",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getJsonFactory","parameterTypes":[] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.ResolvedType"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.TypeReference"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","java.lang.Class"] }]
+  "methods":[{"name":"getJsonFactory","parameterTypes":[] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.ResolvedType"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.TypeReference"] }]
 },
 {
   "name":"com.fasterxml.jackson.core.TreeCodec",
@@ -572,7 +572,7 @@
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"addInterceptors","parameterTypes":["org.springframework.web.servlet.config.annotation.InterceptorRegistry"] }, {"name":"addResourceHandlers","parameterTypes":["org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry"] }, {"name":"characterEncodingFilter","parameterTypes":[] }, {"name":"configureViewResolvers","parameterTypes":["org.springframework.web.servlet.config.annotation.ViewResolverRegistry"] }, {"name":"deviceResolverInterceptor","parameterTypes":[] }, {"name":"dispatcherServlet","parameterTypes":[] }, {"name":"liteDeviceDelegatingViewResolver","parameterTypes":["org.springframework.web.servlet.ViewResolver"] }, {"name":"localeChangeInterceptor","parameterTypes":[] }, {"name":"localeResolver","parameterTypes":[] }, {"name":"messageSource","parameterTypes":[] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }, {"name":"templateEngine","parameterTypes":["org.thymeleaf.templateresolver.ITemplateResolver"] }, {"name":"templateResolver","parameterTypes":[] }, {"name":"thymeleafViewResolver","parameterTypes":[] }, {"name":"undertowWebServerCustomizer","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"addInterceptors","parameterTypes":["org.springframework.web.servlet.config.annotation.InterceptorRegistry"] }, {"name":"addResourceHandlers","parameterTypes":["org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry"] }, {"name":"characterEncodingFilter","parameterTypes":[] }, {"name":"configureViewResolvers","parameterTypes":["org.springframework.web.servlet.config.annotation.ViewResolverRegistry"] }, {"name":"deviceResolverInterceptor","parameterTypes":[] }, {"name":"dispatcherServlet","parameterTypes":[] }, {"name":"liteDeviceDelegatingViewResolver","parameterTypes":[] }, {"name":"localeChangeInterceptor","parameterTypes":[] }, {"name":"localeResolver","parameterTypes":[] }, {"name":"messageSource","parameterTypes":[] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }, {"name":"templateEngine","parameterTypes":[] }, {"name":"templateResolver","parameterTypes":[] }, {"name":"thymeleafViewResolver","parameterTypes":[] }, {"name":"undertowWebServerCustomizer","parameterTypes":[] }]
 },
 {
   "name":"cz.babi.gcunicorn.webapp.spring.configuration.WebConfiguration$$SpringCGLIB$$0",
@@ -921,7 +921,7 @@
   "name":"jakarta.servlet.Filter",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x00000246015c1090"] }, {"name":"from","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x00000246015c1090"] }, {"name":"of","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x00000246015c1090"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x00000246015c1090"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x0000015aa05c2fd8"] }, {"name":"from","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x0000015aa05c2fd8"] }, {"name":"of","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x0000015aa05c2fd8"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x0000015aa05c2fd8"] }]
 },
 {
   "name":"jakarta.servlet.GenericServlet",
@@ -1536,6 +1536,10 @@
   "fields":[{"name":"_decisionAndIndex$volatile"}, {"name":"_parentHandle$volatile"}, {"name":"_state$volatile"}]
 },
 {
+  "name":"kotlinx.coroutines.CompletedExceptionally",
+  "fields":[{"name":"_handled$volatile"}]
+},
+{
   "name":"kotlinx.coroutines.Deferred"
 },
 {
@@ -1805,8 +1809,7 @@
 },
 {
   "name":"org.slf4j.spi.LocationAwareLogger",
-  "queryAllDeclaredMethods":true,
-  "methods":[{"name":"log","parameterTypes":["org.slf4j.Marker","java.lang.String","int","java.lang.String","java.lang.Object[]","java.lang.Throwable"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.aop.framework.AopInfrastructureBean",
