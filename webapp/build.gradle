@@ -47,28 +47,32 @@ tasks.named('bootRun').configure {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
         vendor = JvmVendorSpec.GRAAL_VM
     }
 }
 
+// https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html
 graalvmNative {
     // It might not work as expected. It is better to set GRAALVM_HOME env variable instead.
     // See: https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration-toolchains-enabling.
-//     toolchainDetection = true
+    toolchainDetection = false
 
     binaries {
         main {
             mainClass = 'cz.babi.gcunicorn.webapp.ApplicationWrapperKt'
             imageName = "${project.name}-v${project.version}"
+            buildArgs.add('--initialize-at-build-time=kotlin.DeprecationLevel')
+            buildArgs.add('-H:+ReportExceptionStackTraces')
+
+            buildArgs.add('-H:+UnlockExperimentalVMOptions')
 //            buildArgs.add("-H:JNIConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/jni-config.json")
 //            buildArgs.add("-H:DynamicProxyConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/proxy-config.json")
-//            buildArgs.add("-H:ReflectionConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/reflect-config.json")
-//            buildArgs.add("-H:ResourceConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/resource-config.json")
-//            buildArgs.add("-H:+ReportExceptionStackTraces")
+            buildArgs.add("-H:ReflectionConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/reflect-config.json")
+            buildArgs.add("-H:ResourceConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/resource-config.json")
 
             javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(17)
+                languageVersion = JavaLanguageVersion.of(21)
                 vendor = JvmVendorSpec.GRAAL_VM
             }
         }
