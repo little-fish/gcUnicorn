@@ -127,7 +127,7 @@ class WebConfiguration : WebMvcConfigurer {
     }
 
     @Bean
-    fun templateResolver(): ITemplateResolver {
+    fun templateResolver(): ClassLoaderTemplateResolver {
         return ClassLoaderTemplateResolver().apply {
             prefix = "templates/"
             suffix = ".html"
@@ -137,16 +137,16 @@ class WebConfiguration : WebMvcConfigurer {
     }
 
     @Bean
-    fun templateEngine(templateResolver: ITemplateResolver): ISpringTemplateEngine {
+    fun templateEngine(): SpringTemplateEngine {
         return SpringTemplateEngine().apply {
-            setTemplateResolver(templateResolver)
+            setTemplateResolver(templateResolver())
         }
     }
 
     @Bean
-    fun thymeleafViewResolver(): ViewResolver {
+    fun thymeleafViewResolver(): ThymeleafViewResolver {
         return ThymeleafViewResolver().apply {
-            templateEngine = templateEngine(templateResolver())
+            templateEngine = templateEngine()
             characterEncoding = Charsets.UTF_8.name()
         }
     }
@@ -156,8 +156,8 @@ class WebConfiguration : WebMvcConfigurer {
      * Device specific views are handled by css rules.
      */
     @Bean
-    fun liteDeviceDelegatingViewResolver(@Qualifier("thymeleafViewResolver") viewResolver: ViewResolver): ViewResolver {
-        return LiteDeviceDelegatingViewResolver(viewResolver).apply {
+    fun liteDeviceDelegatingViewResolver(): LiteDeviceDelegatingViewResolver {
+        return LiteDeviceDelegatingViewResolver(thymeleafViewResolver()).apply {
             setNormalPrefix("page/")
             setMobilePrefix("page/")
             setTabletPrefix("page/")
@@ -165,7 +165,7 @@ class WebConfiguration : WebMvcConfigurer {
     }
 
     override fun configureViewResolvers(registry: ViewResolverRegistry) {
-        registry.viewResolver(liteDeviceDelegatingViewResolver(thymeleafViewResolver()))
+        registry.viewResolver(liteDeviceDelegatingViewResolver())
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {

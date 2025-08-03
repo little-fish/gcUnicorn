@@ -1,5 +1,6 @@
 # IntelliJ IDEA
 .idea
+.run
 *.iml
 out
 captures
@@ -15,4 +16,4 @@ keystore.properties
 .log
 
 # webapp
-/webapp/resources/docker/*.jar
+/webapp/resources/docker/run/*.jar

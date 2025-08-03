@@ -30,7 +30,7 @@ plugins {
     alias(libs.plugins.org.graalvm.buildtools.native)
 }
 
-bootJar {
+tasks.named('bootJar').configure {
     manifest {
         attributes(
                 "Created-On": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
@@ -38,6 +38,11 @@ bootJar {
                 "License": "GPL-2.0"
         )
     }
+}
+
+tasks.named('bootRun').configure {
+    // To generate native metadata.
+    jvmArgs = ["-agentlib:native-image-agent=config-output-dir=build/native/generated-metadata"]
 }
 
 java {
@@ -56,11 +61,11 @@ graalvmNative {
         main {
             mainClass = 'cz.babi.gcunicorn.webapp.ApplicationWrapperKt'
             imageName = "${project.name}-v${project.version}"
-            buildArgs.add("-H:JNIConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/jni-config.json")
-            buildArgs.add("-H:DynamicProxyConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/proxy-config.json")
-            buildArgs.add("-H:ReflectionConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/reflect-config.json")
-            buildArgs.add("-H:ResourceConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/resource-config.json")
-            buildArgs.add("-H:+ReportExceptionStackTraces")
+//            buildArgs.add("-H:JNIConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/jni-config.json")
+//            buildArgs.add("-H:DynamicProxyConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/proxy-config.json")
+//            buildArgs.add("-H:ReflectionConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/reflect-config.json")
+//            buildArgs.add("-H:ResourceConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/resource-config.json")
+//            buildArgs.add("-H:+ReportExceptionStackTraces")
 
             javaLauncher = javaToolchains.launcherFor {
                 languageVersion = JavaLanguageVersion.of(17)
