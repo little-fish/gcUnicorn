@@ -11,12 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT }}
+      - name: Log in to Fly.io registry
+        run: docker login registry.fly.io -u x -p $FLY_API_TOKEN
+
+#      - name: Login to GitHub Container Registry
+#        uses: docker/login-action@v1
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.CR_PAT }}
 
       - name: Install pack CLI via the official buildpack Action https://github.com/buildpacks/github-actions#setup-pack-cli-action
         uses: buildpacks/github-actions/setup-pack@v5.0.0
@@ -40,7 +43,7 @@ jobs:
       # WIP #1: Possible native build arguments: -H:JNIConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/jni-config.json -H:DynamicProxyConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/proxy-config.json
       - name: Build app with pack CLI & publish to GitHub Container Registry
         run: |
-          pack build ghcr.io/little-fish/gcunicorn:v1.1.1 \
+          pack build registry.fly.io/gcunicorn:v1.1.1 \
             --builder paketobuildpacks/builder:tiny \
             --buildpack paketo-buildpacks/java-native-image@8.7.1 \
             --path . \
@@ -49,11 +52,10 @@ jobs:
             --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/*.jar" \
             --env "BP_INCLUDE_FILES=webapp/src/graalvm/config/v1.1.1/*.json" \
             --env "BP_NATIVE_IMAGE=true" \
-            --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=kotlin.DeprecationLevel -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json" \
-            --cache-image ghcr.io/little-fish/gcunicorn-cache-image:v1.1.1 \
+            --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=kotlin.DeprecationLevel -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json"
             --publish
       - name: Install flyctl via https://github.com/superfly/flyctl-actions
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy our Spring Boot app to fly.io
-        run: flyctl deploy --image ghcr.io/little-fish/gcunicorn:v1.1.1 --local-only
+        run: flyctl deploy --image registry.fly.io/gcunicorn:v1.1.1
