@@ -68,8 +68,8 @@ graalvmNative {
             buildArgs.add('-H:+UnlockExperimentalVMOptions')
 //            buildArgs.add("-H:JNIConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/jni-config.json")
 //            buildArgs.add("-H:DynamicProxyConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/proxy-config.json")
-            buildArgs.add("-H:ReflectionConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/reflect-config.json")
-            buildArgs.add("-H:ResourceConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/resource-config.json")
+//            buildArgs.add("-H:ReflectionConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/reflect-config.json")
+//            buildArgs.add("-H:ResourceConfigurationFiles=${projectDir.getAbsolutePath()}/src/graalvm/config/v1.1.1/resource-config.json")
 
             javaLauncher = javaToolchains.launcherFor {
                 languageVersion = JavaLanguageVersion.of(21)
