@@ -5,14 +5,14 @@ on: [push]
 jobs:
   autodeploy:
     runs-on: ubuntu-latest
-    env:
-      FLY_API_TOKEN: ${{ secrets.FLY_TOKEN }}
+#    env:
+#      FLY_API_TOKEN: ${{ secrets.FLY_TOKEN }}
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Log in to Fly.io registry
-        run: docker login registry.fly.io -u x -p $FLY_API_TOKEN
+        run: echo "${{ secrets.FLY_TOKEN }}" | docker login registry.fly.io -u x --password-stdin
 
 #      - name: Login to GitHub Container Registry
 #        uses: docker/login-action@v1
@@ -52,7 +52,7 @@ jobs:
             --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/*.jar" \
             --env "BP_INCLUDE_FILES=webapp/src/graalvm/config/v1.1.1/*.json" \
             --env "BP_NATIVE_IMAGE=true" \
-            --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=kotlin.DeprecationLevel -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json"
+            --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=kotlin.DeprecationLevel -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json" \
             --publish
       - name: Install flyctl via https://github.com/superfly/flyctl-actions
         uses: superfly/flyctl-actions/setup-flyctl@master
