@@ -33,16 +33,7 @@
   "name":"[Lcz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheType;"
 },
 {
-  "name":"[Ljava.io.Serializable;"
-},
-{
-  "name":"[Ljava.lang.CharSequence;"
-},
-{
   "name":"[Ljava.lang.Class;"
-},
-{
-  "name":"[Ljava.lang.Comparable;"
 },
 {
   "name":"[Ljava.lang.Object;"
@@ -54,12 +45,6 @@
   "name":"[Ljava.lang.annotation.Annotation;"
 },
 {
-  "name":"[Ljava.lang.constant.Constable;"
-},
-{
-  "name":"[Ljava.lang.constant.ConstantDesc;"
-},
-{
   "name":"[Ljavax.management.ObjectName;"
 },
 {
@@ -67,9 +52,6 @@
 },
 {
   "name":"[Lkotlin.annotation.AnnotationTarget;"
-},
-{
-  "name":"[Lorg.springframework.boot.context.config.ConfigDataLocation;"
 },
 {
   "name":"[Lorg.springframework.core.annotation.AnnotationAttributes;"
@@ -204,7 +186,7 @@
   "name":"com.fasterxml.jackson.core.ObjectCodec",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getJsonFactory","parameterTypes":[] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.ResolvedType"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.TypeReference"] }]
+  "methods":[{"name":"getJsonFactory","parameterTypes":[] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.TypeReference"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","java.lang.Class"] }]
 },
 {
   "name":"com.fasterxml.jackson.core.TreeCodec",
@@ -657,7 +639,7 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"error403","parameterTypes":["jakarta.servlet.http.HttpServletRequest","kotlin.coroutines.Continuation"] }, {"name":"error403$default","parameterTypes":["cz.babi.gcunicorn.webapp.spring.web.controller.ErrorController","jakarta.servlet.http.HttpServletRequest","kotlin.coroutines.Continuation","int","java.lang.Object"] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"error403","parameterTypes":["jakarta.servlet.http.HttpServletRequest"] }, {"name":"error403$default","parameterTypes":["cz.babi.gcunicorn.webapp.spring.web.controller.ErrorController","jakarta.servlet.http.HttpServletRequest","int","java.lang.Object"] }, {"name":"error404","parameterTypes":["jakarta.servlet.http.HttpServletRequest"] }, {"name":"error404$default","parameterTypes":["cz.babi.gcunicorn.webapp.spring.web.controller.ErrorController","jakarta.servlet.http.HttpServletRequest","int","java.lang.Object"] }, {"name":"error500","parameterTypes":["jakarta.servlet.http.HttpServletRequest"] }, {"name":"error500$default","parameterTypes":["cz.babi.gcunicorn.webapp.spring.web.controller.ErrorController","jakarta.servlet.http.HttpServletRequest","int","java.lang.Object"] }]
 },
 {
   "name":"cz.babi.gcunicorn.webapp.spring.web.controller.GcUnicornController",
@@ -747,8 +729,10 @@
   "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
 },
 {
-  "name":"io.undertow.UndertowMessages_$bundle",
-  "fields":[{"name":"INSTANCE"}]
+  "name":"io.undertow.UndertowLogger_$logger_en"
+},
+{
+  "name":"io.undertow.UndertowLogger_$logger_en_US"
 },
 {
   "name":"io.undertow.UndertowOptions",
@@ -803,8 +787,13 @@
   "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
 },
 {
-  "name":"io.undertow.servlet.UndertowServletMessages_$bundle",
-  "fields":[{"name":"INSTANCE"}]
+  "name":"io.undertow.servlet.UndertowServletLogger_$logger_en"
+},
+{
+  "name":"io.undertow.servlet.UndertowServletLogger_$logger_en_US"
+},
+{
+  "name":"io.undertow.servlet.api.DeploymentInfo"
 },
 {
   "name":"io.undertow.servlet.core.ManagedFilter",
@@ -822,10 +811,6 @@
   "name":"io.undertow.servlet.spec.ServletContextImpl",
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"addFilter","parameterTypes":["java.lang.String","jakarta.servlet.Filter"] }, {"name":"addFilter","parameterTypes":["java.lang.String","java.lang.Class"] }, {"name":"addFilter","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"addJspFile","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"addListener","parameterTypes":["java.lang.Class"] }, {"name":"addListener","parameterTypes":["java.lang.String"] }, {"name":"addListener","parameterTypes":["java.util.EventListener"] }, {"name":"addServlet","parameterTypes":["java.lang.String","jakarta.servlet.Servlet"] }, {"name":"addServlet","parameterTypes":["java.lang.String","java.lang.Class"] }, {"name":"addServlet","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"createFilter","parameterTypes":["java.lang.Class"] }, {"name":"createListener","parameterTypes":["java.lang.Class"] }, {"name":"createServlet","parameterTypes":["java.lang.Class"] }, {"name":"declareRoles","parameterTypes":["java.lang.String[]"] }, {"name":"getAttribute","parameterTypes":["java.lang.String"] }, {"name":"getAttributeNames","parameterTypes":[] }, {"name":"getClassLoader","parameterTypes":[] }, {"name":"getContext","parameterTypes":["java.lang.String"] }, {"name":"getContextPath","parameterTypes":[] }, {"name":"getDefaultSessionTrackingModes","parameterTypes":[] }, {"name":"getEffectiveMajorVersion","parameterTypes":[] }, {"name":"getEffectiveMinorVersion","parameterTypes":[] }, {"name":"getEffectiveSessionTrackingModes","parameterTypes":[] }, {"name":"getFilterRegistration","parameterTypes":["java.lang.String"] }, {"name":"getFilterRegistrations","parameterTypes":[] }, {"name":"getInitParameter","parameterTypes":["java.lang.String"] }, {"name":"getInitParameterNames","parameterTypes":[] }, {"name":"getJspConfigDescriptor","parameterTypes":[] }, {"name":"getMajorVersion","parameterTypes":[] }, {"name":"getMimeType","parameterTypes":["java.lang.String"] }, {"name":"getMinorVersion","parameterTypes":[] }, {"name":"getNamedDispatcher","parameterTypes":["java.lang.String"] }, {"name":"getRealPath","parameterTypes":["java.lang.String"] }, {"name":"getRequestCharacterEncoding","parameterTypes":[] }, {"name":"getRequestDispatcher","parameterTypes":["java.lang.String"] }, {"name":"getResource","parameterTypes":["java.lang.String"] }, {"name":"getResourceAsStream","parameterTypes":["java.lang.String"] }, {"name":"getResourcePaths","parameterTypes":["java.lang.String"] }, {"name":"getResponseCharacterEncoding","parameterTypes":[] }, {"name":"getServerInfo","parameterTypes":[] }, {"name":"getServletContextName","parameterTypes":[] }, {"name":"getServletRegistration","parameterTypes":["java.lang.String"] }, {"name":"getServletRegistrations","parameterTypes":[] }, {"name":"getSessionCookieConfig","parameterTypes":[] }, {"name":"getSessionTimeout","parameterTypes":[] }, {"name":"getVirtualServerName","parameterTypes":[] }, {"name":"log","parameterTypes":["java.lang.String"] }, {"name":"log","parameterTypes":["java.lang.String","java.lang.Throwable"] }, {"name":"removeAttribute","parameterTypes":["java.lang.String"] }, {"name":"setAttribute","parameterTypes":["java.lang.String","java.lang.Object"] }, {"name":"setInitParameter","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"setRequestCharacterEncoding","parameterTypes":["java.lang.String"] }, {"name":"setResponseCharacterEncoding","parameterTypes":["java.lang.String"] }, {"name":"setSessionTimeout","parameterTypes":["int"] }, {"name":"setSessionTrackingModes","parameterTypes":["java.util.Set"] }]
-},
-{
-  "name":"io.undertow.servlet.spec.ServletInputStreamImpl",
-  "fields":[{"name":"state"}]
 },
 {
   "name":"io.undertow.servlet.spec.ServletOutputStreamImpl",
@@ -869,8 +854,20 @@
   "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
 },
 {
+  "name":"io.undertow.websockets.core.WebSocketLogger_$logger_en"
+},
+{
+  "name":"io.undertow.websockets.core.WebSocketLogger_$logger_en_US"
+},
+{
   "name":"io.undertow.websockets.core.WebSocketMessages_$bundle",
   "fields":[{"name":"INSTANCE"}]
+},
+{
+  "name":"io.undertow.websockets.core.WebSocketMessages_$bundle_en"
+},
+{
+  "name":"io.undertow.websockets.core.WebSocketMessages_$bundle_en_US"
 },
 {
   "name":"io.undertow.websockets.jsr.Bootstrap$WebSocketListener",
@@ -939,7 +936,7 @@
   "name":"jakarta.servlet.Filter",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x0000015aa05c2fd8"] }, {"name":"from","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x0000015aa05c2fd8"] }, {"name":"of","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x0000015aa05c2fd8"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda$981/0x0000015aa05c2fd8"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000001e4c95f6ab8"] }, {"name":"from","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000001e4c95f6ab8"] }, {"name":"of","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000001e4c95f6ab8"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.filter.ServletRequestPathFilter"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000001e4c95f6ab8"] }]
 },
 {
   "name":"jakarta.servlet.GenericServlet",
@@ -974,11 +971,10 @@
 {
   "name":"jakarta.servlet.http.HttpServlet",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"init","parameterTypes":["jakarta.servlet.ServletConfig"] },
-    {"name":"service","parameterTypes":["jakarta.servlet.ServletRequest","jakarta.servlet.ServletResponse"] }
-  ]
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"jakarta.servlet.http.HttpServletRequest"
 },
 {
   "name":"jakarta.servlet.http.HttpServletResponse"
@@ -1026,7 +1022,8 @@
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "queryAllPublicMethods":true
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"getCode","parameterTypes":[] }, {"name":"name","parameterTypes":[] }, {"name":"toLowerCase","parameterTypes":[] }]
 },
 {
   "name":"java.lang.Boolean",
@@ -1039,7 +1036,8 @@
   "fields":[{"name":"TYPE"}]
 },
 {
-  "name":"java.lang.CharSequence"
+  "name":"java.lang.CharSequence",
+  "methods":[{"name":"toLowerCase","parameterTypes":[] }]
 },
 {
   "name":"java.lang.Character",
@@ -1067,22 +1065,28 @@
   "name":"java.lang.Comparable",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"getCode","parameterTypes":[] }, {"name":"name","parameterTypes":[] }, {"name":"toLowerCase","parameterTypes":[] }]
 },
 {
   "name":"java.lang.Deprecated",
-  "queryAllPublicMethods":true
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"forRemoval","parameterTypes":[] }, {"name":"since","parameterTypes":[] }]
 },
 {
   "name":"java.lang.Double",
   "fields":[{"name":"TYPE"}]
 },
 {
+  "name":"java.lang.DoubleEditor"
+},
+{
   "name":"java.lang.Enum",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"clone","parameterTypes":[] }, {"name":"compareTo","parameterTypes":["java.lang.Enum"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"hashCode","parameterTypes":[] }, {"name":"name","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
+  "methods":[{"name":"clone","parameterTypes":[] }, {"name":"compareTo","parameterTypes":["java.lang.Enum"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getCode","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"name","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"java.lang.Enum$EnumDesc"
@@ -1094,6 +1098,9 @@
 {
   "name":"java.lang.Integer",
   "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.IntegerEditor"
 },
 {
   "name":"java.lang.Iterable",
@@ -1110,7 +1117,7 @@
 {
   "name":"java.lang.Object",
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"authentication$default","parameterTypes":["java.lang.Object","java.lang.Object"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"error403$default","parameterTypes":["java.lang.Object","jakarta.servlet.http.HttpServletRequest","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"gpx$default","parameterTypes":["java.lang.Object","int","jakarta.servlet.http.HttpServletResponse","jakarta.servlet.http.HttpSession","int","java.lang.Object"] }, {"name":"hashCode","parameterTypes":[] }, {"name":"loginGet$default","parameterTypes":["java.lang.Object","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"queue$default","parameterTypes":["java.lang.Object","org.springframework.ui.Model","jakarta.servlet.http.HttpSession","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"searchGet$default","parameterTypes":["java.lang.Object","org.springframework.ui.Model","jakarta.servlet.http.HttpSession","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"searchPost$default","parameterTypes":["java.lang.Object","cz.babi.gcunicorn.webapp.entity.CacheFilterWeb","boolean","boolean","boolean","boolean","org.springframework.validation.BindingResult","org.springframework.ui.Model","jakarta.servlet.http.HttpServletResponse","jakarta.servlet.http.HttpSession","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"toString","parameterTypes":[] }, {"name":"versionCore$default","parameterTypes":["java.lang.Object","java.lang.Object"] }, {"name":"versionWebapp$default","parameterTypes":["java.lang.Object","java.lang.String","int","java.lang.Object"] }]
+  "methods":[{"name":"authentication$default","parameterTypes":["java.lang.Object","java.lang.Object"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"error404$default","parameterTypes":["java.lang.Object","jakarta.servlet.http.HttpServletRequest","int","java.lang.Object"] }, {"name":"gpx$default","parameterTypes":["java.lang.Object","int","jakarta.servlet.http.HttpServletResponse","jakarta.servlet.http.HttpSession","int","java.lang.Object"] }, {"name":"hashCode","parameterTypes":[] }, {"name":"loginGet$default","parameterTypes":["java.lang.Object","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"queue$default","parameterTypes":["java.lang.Object","org.springframework.ui.Model","jakarta.servlet.http.HttpSession","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"searchGet$default","parameterTypes":["java.lang.Object","org.springframework.ui.Model","jakarta.servlet.http.HttpSession","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"searchPost$default","parameterTypes":["java.lang.Object","cz.babi.gcunicorn.webapp.entity.CacheFilterWeb","boolean","boolean","boolean","boolean","org.springframework.validation.BindingResult","org.springframework.ui.Model","jakarta.servlet.http.HttpServletResponse","jakarta.servlet.http.HttpSession","kotlin.coroutines.Continuation","int","java.lang.Object"] }, {"name":"toString","parameterTypes":[] }, {"name":"versionCore$default","parameterTypes":["java.lang.Object","java.lang.Object"] }, {"name":"versionWebapp$default","parameterTypes":["java.lang.Object","java.lang.String","int","java.lang.Object"] }]
 },
 {
   "name":"java.lang.Record",
@@ -1131,6 +1138,9 @@
   "queryAllPublicMethods":true,
   "fields":[{"name":"TYPE"}],
   "methods":[{"name":"toLowerCase","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.StringEditor"
 },
 {
   "name":"java.lang.Thread",
@@ -1167,10 +1177,12 @@
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "queryAllPublicMethods":true
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"getCode","parameterTypes":[] }, {"name":"name","parameterTypes":[] }, {"name":"toLowerCase","parameterTypes":[] }]
 },
 {
-  "name":"java.lang.constant.ConstantDesc"
+  "name":"java.lang.constant.ConstantDesc",
+  "methods":[{"name":"toLowerCase","parameterTypes":[] }]
 },
 {
   "name":"java.lang.constant.DynamicConstantDesc"
@@ -1299,12 +1311,15 @@
 },
 {
   "name":"java.util.ArrayList",
-  "queryAllPublicMethods":true,
-  "methods":[{"name":"isEmpty","parameterTypes":[] }]
+  "queryAllPublicMethods":true
 },
 {
   "name":"java.util.Date",
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.util.List",
+  "methods":[{"name":"isEmpty","parameterTypes":[] }]
 },
 {
   "name":"java.util.Optional"
@@ -1515,7 +1530,8 @@
 },
 {
   "name":"kotlin.annotation.Target",
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"allowedTargets","parameterTypes":[] }]
 },
 {
   "name":"kotlin.collections.List"
@@ -1553,10 +1569,6 @@
 {
   "name":"kotlinx.coroutines.CancellableContinuationImpl",
   "fields":[{"name":"_decisionAndIndex$volatile"}, {"name":"_parentHandle$volatile"}, {"name":"_state$volatile"}]
-},
-{
-  "name":"kotlinx.coroutines.CompletedExceptionally",
-  "fields":[{"name":"_handled$volatile"}]
 },
 {
   "name":"kotlinx.coroutines.Deferred"
@@ -1800,6 +1812,12 @@
 {
   "name":"org.jboss.threads.Messages_$logger",
   "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
+},
+{
+  "name":"org.jboss.threads.Messages_$logger_en"
+},
+{
+  "name":"org.jboss.threads.Messages_$logger_en_US"
 },
 {
   "name":"org.jboss.threads.management.StandardThreadPoolMXBean",
@@ -2314,6 +2332,10 @@
   "methods":[{"name":"<init>","parameterTypes":["org.springframework.beans.factory.ObjectProvider","org.springframework.boot.autoconfigure.http.client.reactive.HttpReactiveClientProperties"] }, {"name":"clientHttpConnectorBuilder","parameterTypes":["org.springframework.beans.factory.ObjectProvider"] }, {"name":"clientHttpConnectorSettings","parameterTypes":[] }, {"name":"setBeanClassLoader","parameterTypes":["java.lang.ClassLoader"] }]
 },
 {
+  "name":"org.springframework.boot.autoconfigure.http.client.reactive.ConditionalOnClientHttpConnectorBuilderDetection",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"org.springframework.boot.autoconfigure.http.client.reactive.HttpReactiveClientProperties",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
@@ -2414,7 +2436,7 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.boot.autoconfigure.reactor.ReactorProperties"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.boot.autoconfigure.reactor.ReactorProperties"] }, {"name":"reactorAutoConfigurationLazyInitializationExcludeFilter","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.boot.autoconfigure.reactor.ReactorProperties",
@@ -2693,6 +2715,13 @@
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"undertowWebServerFactoryCustomizer","parameterTypes":["org.springframework.core.env.Environment","org.springframework.boot.autoconfigure.web.ServerProperties"] }]
+},
+{
+  "name":"org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration$UndertowWebServerFactoryCustomizerConfiguration$UndertowServletWebServerFactoryCustomizerConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.boot.autoconfigure.web.embedded.UndertowWebServerFactoryCustomizer",
@@ -3085,14 +3114,7 @@
   "name":"org.springframework.boot.http.client.ClientHttpRequestFactorySettings",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"close","parameterTypes":[] },
-    {"name":"shutdown","parameterTypes":[] },
-    { "name": "sslBundle", "parameterTypes": [] },
-    { "name": "readTimeout", "parameterTypes": [] },
-    { "name": "connectTimeout", "parameterTypes": [] },
-    { "name": "redirects", "parameterTypes": [] }
-  ]
+  "methods":[{"name":"close","parameterTypes":[] }, {"name":"shutdown","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.boot.http.client.JdkClientHttpRequestFactoryBuilder",
@@ -3113,14 +3135,7 @@
   "name":"org.springframework.boot.http.client.reactive.ClientHttpConnectorSettings",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"close","parameterTypes":[] },
-    {"name":"shutdown","parameterTypes":[] },
-    { "name": "sslBundle", "parameterTypes": [] },
-    { "name": "readTimeout", "parameterTypes": [] },
-    { "name": "connectTimeout", "parameterTypes": [] },
-    { "name": "redirects", "parameterTypes": [] }
-  ]
+  "methods":[{"name":"close","parameterTypes":[] }, {"name":"shutdown","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.boot.http.client.reactive.JdkClientHttpConnectorBuilder",
@@ -3639,12 +3654,15 @@
   "queryAllDeclaredMethods":true
 },
 {
-  "name":"org.springframework.core.env.AbstractEnvironment",
-  "methods":[{"name":"getProperty","parameterTypes":["java.lang.String"] }]
+  "name":"org.springframework.core.env.ConfigurableEnvironment"
 },
 {
   "name":"org.springframework.core.env.EnvironmentCapable",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.springframework.core.env.PropertyResolver",
+  "methods":[{"name":"getProperty","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"org.springframework.core.io.ResourceLoader"
@@ -3941,6 +3959,10 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.springframework.mobile.device.Device",
+  "methods":[{"name":"isMobile","parameterTypes":[] }, {"name":"isNormal","parameterTypes":[] }, {"name":"isTablet","parameterTypes":[] }]
+},
+{
   "name":"org.springframework.mobile.device.DeviceResolverHandlerInterceptor",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
@@ -3948,8 +3970,7 @@
 },
 {
   "name":"org.springframework.mobile.device.LiteDevice",
-  "queryAllPublicMethods":true,
-  "methods":[{"name":"isMobile","parameterTypes":[] }, {"name":"isNormal","parameterTypes":[] }, {"name":"isTablet","parameterTypes":[] }]
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.springframework.mobile.device.view.AbstractDeviceDelegatingViewResolver",
@@ -5194,8 +5215,6 @@
 {
   "name":"org.thymeleaf.spring6.SpringTemplateEngine",
   "allDeclaredFields":true,
-  "allDeclaredConstructors": true,
-  "allPublicMethods": true,
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"close","parameterTypes":[] }, {"name":"setMessageSource","parameterTypes":["org.springframework.context.MessageSource"] }, {"name":"setTemplateEngineMessageSource","parameterTypes":["org.springframework.context.MessageSource"] }, {"name":"shutdown","parameterTypes":[] }]
 },
@@ -5277,7 +5296,6 @@
 {
   "name":"org.thymeleaf.templateresolver.ClassLoaderTemplateResolver",
   "allDeclaredFields":true,
-  "allDeclaredConstructors": true,
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"close","parameterTypes":[] }, {"name":"shutdown","parameterTypes":[] }]
 },
@@ -5312,6 +5330,12 @@
   "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
 },
 {
+  "name":"org.xnio._private.Messages_$logger_en"
+},
+{
+  "name":"org.xnio._private.Messages_$logger_en_US"
+},
+{
   "name":"org.xnio.management.XnioProviderMXBean",
   "queryAllPublicMethods":true
 },
@@ -5330,6 +5354,12 @@
 {
   "name":"org.xnio.nio.Log_$logger",
   "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
+},
+{
+  "name":"org.xnio.nio.Log_$logger_en"
+},
+{
+  "name":"org.xnio.nio.Log_$logger_en_US"
 },
 {
   "name":"org.xnio.nio.NioSocketConduit",
@@ -5448,10 +5478,6 @@
 },
 {
   "name":"sun.security.provider.DSA$SHA256withDSA",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.provider.JavaKeyStore$JKS",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {

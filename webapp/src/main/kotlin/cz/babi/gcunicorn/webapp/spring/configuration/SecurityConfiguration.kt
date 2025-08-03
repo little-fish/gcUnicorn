@@ -30,7 +30,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.csrf.CsrfFilter
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher
 
 /**
  * Security configuration.
@@ -44,9 +44,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = [Securities::class])
-class SecurityConfiguration(@Autowired private val serviceAuthenticationProvider: ServiceAuthenticationProvider,
-                            @Autowired private val serviceLogoutHandler: ServiceLogoutHandler,
-                            @Autowired private val characterEncodingFilter: Filter) {
+class SecurityConfiguration(
+    @Autowired private val serviceAuthenticationProvider: ServiceAuthenticationProvider,
+    @Autowired private val serviceLogoutHandler: ServiceLogoutHandler,
+    @Autowired private val characterEncodingFilter: Filter
+) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain? {
@@ -58,7 +60,7 @@ class SecurityConfiguration(@Autowired private val serviceAuthenticationProvider
             }
             .addFilterBefore(characterEncodingFilter, CsrfFilter::class.java)
             .authorizeHttpRequests {
-                it.requestMatchers("/gcUnicorn/**").hasAuthority(ServiceAuthenticationProvider.ROLE)
+                it.requestMatchers("/gcUnicorn/**", "/ws/gcUnicorn/**").hasAuthority(ServiceAuthenticationProvider.ROLE)
                     .requestMatchers("/login", "/logout", "/error/**", "/resources/**").permitAll()
                     .anyRequest().authenticated()
             }
@@ -68,7 +70,7 @@ class SecurityConfiguration(@Autowired private val serviceAuthenticationProvider
                     .failureUrl("/login?error")
             }
             .logout {
-                it.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
+                it.logoutRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher("/logout"))
                     .addLogoutHandler(serviceLogoutHandler)
                     .logoutSuccessUrl("/")
             }

@@ -34,11 +34,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 class ErrorController {
 
     @RequestMapping(path = ["/403"])
-    suspend fun error403(request: HttpServletRequest) = "error/403"
+    fun error403(request: HttpServletRequest) = "error/403"
 
     @RequestMapping(path = ["/404"])
-    suspend fun error404(request: HttpServletRequest) = "error/404"
+    fun error404(request: HttpServletRequest) = "error/404"
 
     @RequestMapping(path = ["/500"])
-    suspend fun error500(request: HttpServletRequest) = "error/500"
+    fun error500(request: HttpServletRequest) = "error/500"
 }

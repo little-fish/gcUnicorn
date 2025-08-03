@@ -4,7 +4,7 @@ To build native image on Windows, one have to install additional tools. See the 
 
 There is also a good [tutorial](https://medium.com/graalvm/using-graalvm-and-native-image-on-windows-10-9954dc071311) available.
 
-Once you have all the prerequisites installed, you have to execute the Gradle build from within the __x64 Native Tools Command Prompt for VS 20xx__. The build won't work from any other command prompt.
+Once you have all the prerequisites installed, you have to execute the Gradle build from within the __x64 Native Tools Command Prompt for VS 20xx__. The build won't work from any other command prompt. Or see [possible solution](#error-failed-to-find-vcvarsallbat-in-a-visual-studio-installation).
 
 ## Build arguments
 
@@ -32,15 +32,15 @@ To simulate GitHub Actions, you can test them locally.
 
 ```powershell
 pack build gcunicorn:v1.1.1 `
-  --builder paketobuildpacks/builder:tiny `
-  --buildpack paketo-buildpacks/java-native-image@8.7.1 `
+  --builder paketobuildpacks/builder-jammy-tiny:0.0.374 `
+  --buildpack paketo-buildpacks/java-native-image@11.14.0 `
   --path . `
-  --env "BP_JVM_VERSION=17" `
+  --env "BP_JVM_VERSION=21" `
   --env "BP_GRADLE_BUILD_ARGUMENTS=--no-daemon :webapp:bootJar" `
   --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/webapp-1.1.1.jar" `
   --env "BP_INCLUDE_FILES=webapp/src/graalvm/config/v1.1.1/*.json" `
   --env "BP_NATIVE_IMAGE=true" `
-  --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=kotlin.DeprecationLevel --trace-class-initialization=kotlin.DeprecationLevel -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json"
+  --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=kotlin.DeprecationLevel -H:+UnlockExperimentalVMOptions -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json"
 ```
 
 ```powershell

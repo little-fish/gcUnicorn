@@ -1,6 +1,8 @@
 {
   "resources":{
   "includes":[{
+    "pattern":"\\QMETA-INF/build-info.properties\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/ch.qos.logback.classic.spi.Configurator\\E"
   }, {
     "pattern":"\\QMETA-INF/services/io.undertow.servlet.ServletExtension\\E"
@@ -9,9 +11,25 @@
   }, {
     "pattern":"\\QMETA-INF/services/jakarta.websocket.server.ServerEndpointConfig$Configurator\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.util.spi.ResourceBundleControlProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/javax.xml.parsers.SAXParserFactory\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/kotlin.reflect.jvm.internal.impl.builtins.BuiltInsLoader\\E"
   }, {
     "pattern":"\\QMETA-INF/services/kotlin.reflect.jvm.internal.impl.resolve.ExternalOverridabilityCondition\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/kotlin.reflect.jvm.internal.impl.util.ModuleVisibilityHelper\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.slf4j.spi.SLF4JServiceProvider\\E"
   }, {
@@ -19,15 +37,49 @@
   }, {
     "pattern":"\\QMETA-INF/spring-autoconfigure-metadata.properties\\E"
   }, {
+    "pattern":"\\QMETA-INF/spring.components\\E"
+  }, {
     "pattern":"\\QMETA-INF/spring.factories\\E"
+  }, {
+    "pattern":"\\QMETA-INF/spring.integration.properties\\E"
   }, {
     "pattern":"\\QMETA-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports\\E"
   }, {
     "pattern":"\\QMETA-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.replacements\\E"
   }, {
+    "pattern":"\\Qapplication-default.properties\\E"
+  }, {
+    "pattern":"\\Qapplication-default.xml\\E"
+  }, {
+    "pattern":"\\Qapplication-default.yaml\\E"
+  }, {
+    "pattern":"\\Qapplication-default.yml\\E"
+  }, {
     "pattern":"\\Qapplication.properties\\E"
   }, {
+    "pattern":"\\Qapplication.xml\\E"
+  }, {
+    "pattern":"\\Qapplication.yaml\\E"
+  }, {
+    "pattern":"\\Qapplication.yml\\E"
+  }, {
     "pattern":"\\Qbanner\\E"
+  }, {
+    "pattern":"\\Qconfig/application-default.properties\\E"
+  }, {
+    "pattern":"\\Qconfig/application-default.xml\\E"
+  }, {
+    "pattern":"\\Qconfig/application-default.yaml\\E"
+  }, {
+    "pattern":"\\Qconfig/application-default.yml\\E"
+  }, {
+    "pattern":"\\Qconfig/application.properties\\E"
+  }, {
+    "pattern":"\\Qconfig/application.xml\\E"
+  }, {
+    "pattern":"\\Qconfig/application.yaml\\E"
+  }, {
+    "pattern":"\\Qconfig/application.yml\\E"
   }, {
     "pattern":"\\Qcz/babi/gcunicorn/webapp/\\E"
   }, {
@@ -63,9 +115,13 @@
   }, {
     "pattern":"\\Qcz/babi/gcunicorn/webapp/spring/web/websocket/HttpHandshakeInterceptor.class\\E"
   }, {
+    "pattern":"\\Qgit.properties\\E"
+  }, {
     "pattern":"\\Qio/undertow/servlet/core/charset.mapping\\E"
   }, {
     "pattern":"\\Qio/undertow/version.properties\\E"
+  }, {
+    "pattern":"\\Qjndi.properties\\E"
   }, {
     "pattern":"\\Qkotlin/Metadata.class\\E"
   }, {
@@ -77,7 +133,27 @@
   }, {
     "pattern":"\\Qkotlin/reflect/full\\E"
   }, {
+    "pattern":"\\Qlogback-spring.groovy\\E"
+  }, {
     "pattern":"\\Qlogback-spring.xml\\E"
+  }, {
+    "pattern":"\\Qlogback-test-spring.groovy\\E"
+  }, {
+    "pattern":"\\Qlogback-test-spring.xml\\E"
+  }, {
+    "pattern":"\\Qlogback-test.groovy\\E"
+  }, {
+    "pattern":"\\Qlogback-test.scmo\\E"
+  }, {
+    "pattern":"\\Qlogback-test.xml\\E"
+  }, {
+    "pattern":"\\Qlogback.groovy\\E"
+  }, {
+    "pattern":"\\Qlogback.scmo\\E"
+  }, {
+    "pattern":"\\Qlogback.xml\\E"
+  }, {
+    "pattern":"\\Qmessages.properties\\E"
   }, {
     "pattern":"\\Qokhttp3/internal/publicsuffix/publicsuffixes.gz\\E"
   }, {
@@ -311,6 +387,8 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/web/embedded/EmbeddedWebServerFactoryCustomizerAutoConfiguration$TomcatWebServerFactoryCustomizerConfiguration.class\\E"
   }, {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/embedded/EmbeddedWebServerFactoryCustomizerAutoConfiguration$UndertowWebServerFactoryCustomizerConfiguration$UndertowServletWebServerFactoryCustomizerConfiguration.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/web/embedded/EmbeddedWebServerFactoryCustomizerAutoConfiguration$UndertowWebServerFactoryCustomizerConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/web/embedded/EmbeddedWebServerFactoryCustomizerAutoConfiguration.class\\E"
@@ -471,11 +549,19 @@
   }, {
     "pattern":"\\Qorg/xnio/nio/Version.properties\\E"
   }, {
+    "pattern":"\\Qspring.properties\\E"
+  }, {
     "pattern":"\\Qstatic/css/any/style.css\\E"
   }, {
     "pattern":"\\Qstatic/css/desktop/style.css\\E"
   }, {
     "pattern":"\\Qstatic/css/mobile/style.css\\E"
+  }, {
+    "pattern":"\\Qstatic/img/403.png\\E"
+  }, {
+    "pattern":"\\Qstatic/img/404.png\\E"
+  }, {
+    "pattern":"\\Qstatic/img/500.png\\E"
   }, {
     "pattern":"\\Qstatic/img/download-128.png\\E"
   }, {
@@ -493,11 +579,19 @@
   }, {
     "pattern":"\\Qstatic/script/stomp.min.js\\E"
   }, {
+    "pattern":"\\Qtemplates/error.html\\E"
+  }, {
     "pattern":"\\Qtemplates/fragment/copyright.html\\E"
   }, {
     "pattern":"\\Qtemplates/fragment/head.html\\E"
   }, {
     "pattern":"\\Qtemplates/fragment/version.html\\E"
+  }, {
+    "pattern":"\\Qtemplates/page/error/403.html\\E"
+  }, {
+    "pattern":"\\Qtemplates/page/error/404.html\\E"
+  }, {
+    "pattern":"\\Qtemplates/page/error/500.html\\E"
   }, {
     "pattern":"\\Qtemplates/page/login.html\\E"
   }, {
@@ -505,11 +599,13 @@
   }, {
     "pattern":"\\Qtemplates/page/search.html\\E"
   }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt67b/nfkc.nrm\\E"
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/nfkc.nrm\\E"
   }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt67b/uprops.icu\\E"
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/uprops.icu\\E"
   }, {
     "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
+  }, {
+    "pattern":"jdk.jfr:\\Qjdk/jfr/internal/query/view.ini\\E"
   }]},
   "bundles":[{
     "name":"i18n/messages",

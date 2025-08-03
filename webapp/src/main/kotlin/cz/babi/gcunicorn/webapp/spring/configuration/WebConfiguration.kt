@@ -22,10 +22,11 @@ import cz.babi.gcunicorn.webapp.spring.validation.Validators
 import cz.babi.gcunicorn.webapp.spring.web.advice.Advices
 import cz.babi.gcunicorn.webapp.spring.web.controller.Controllers
 import io.undertow.Undertow
+import io.undertow.server.DefaultByteBufferPool
+import io.undertow.server.XnioBufferPoolAdaptor
 import io.undertow.server.XnioByteBufferPool
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo
 import jakarta.servlet.Filter
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.web.embedded.undertow.UndertowDeploymentInfoCustomizer
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory
 import org.springframework.boot.web.server.ErrorPage
@@ -42,21 +43,13 @@ import org.springframework.web.filter.CharacterEncodingFilter
 import org.springframework.web.servlet.DispatcherServlet
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.LocaleResolver
-import org.springframework.web.servlet.ViewResolver
-import org.springframework.web.servlet.config.annotation.EnableWebMvc
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
-import org.springframework.web.servlet.config.annotation.ViewResolverRegistry
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.web.servlet.config.annotation.*
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor
 import org.springframework.web.servlet.i18n.SessionLocaleResolver
-import org.thymeleaf.spring6.ISpringTemplateEngine
 import org.thymeleaf.spring6.SpringTemplateEngine
 import org.thymeleaf.spring6.view.ThymeleafViewResolver
 import org.thymeleaf.templatemode.TemplateMode
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
-import org.thymeleaf.templateresolver.ITemplateResolver
-import org.xnio.ByteBufferSlicePool
 import org.xnio.OptionMap
 import org.xnio.Xnio
 import java.util.*
@@ -86,7 +79,7 @@ class WebConfiguration : WebMvcConfigurer {
         factory.addDeploymentInfoCustomizers(UndertowDeploymentInfoCustomizer { deploymentInfo ->
                 deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, WebSocketDeploymentInfo().apply {
                         worker = Supplier { Xnio.getInstance("nio", Undertow::class.java.classLoader).createWorker(OptionMap.builder().map) }
-                        buffers = XnioByteBufferPool(ByteBufferSlicePool(1024, 1024))
+                        buffers = XnioByteBufferPool(XnioBufferPoolAdaptor(DefaultByteBufferPool(true, 1024)))
                 })
         })
     }

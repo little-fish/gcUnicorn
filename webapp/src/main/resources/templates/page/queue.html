@@ -39,7 +39,7 @@
             var stompClient = null;
 
             function connect() {
-                var socket = new SockJS("/gcUnicorn");
+                var socket = new SockJS("/ws/gcUnicorn");
                 stompClient = Stomp.over(socket);
                 stompClient.connect({}, function(frame) {
                     console.log('Connected: ' + frame);

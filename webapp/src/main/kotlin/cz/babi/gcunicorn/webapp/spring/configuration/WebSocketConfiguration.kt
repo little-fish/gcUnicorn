@@ -41,12 +41,12 @@ import org.springframework.web.socket.server.HandshakeInterceptor
 class WebSocketConfiguration(@Autowired private val handshakeInterceptor: HandshakeInterceptor) : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/gcUnicorn").addInterceptors(handshakeInterceptor)
-        registry.addEndpoint("/gcUnicorn").addInterceptors(handshakeInterceptor).withSockJS()
+        registry.addEndpoint("/ws/gcUnicorn").addInterceptors(handshakeInterceptor)
+        registry.addEndpoint("/ws/gcUnicorn").addInterceptors(handshakeInterceptor).withSockJS()
     }
 
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
         registry.enableSimpleBroker("/topic")
-        registry.setApplicationDestinationPrefixes("/gcUnicorn")
+        registry.setApplicationDestinationPrefixes("/ws/gcUnicorn")
     }
 }

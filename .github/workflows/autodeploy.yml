@@ -29,7 +29,7 @@ jobs:
 
       # Caching Paketo Build see https://stackoverflow.com/a/66598693/4964553
       # BP_OCI_SOURCE as --env creates the GitHub Container Registry <-> Repository link (https://paketo.io/docs/buildpacks/configuration/#applying-custom-labels)
-      # BP_JVM_VERSION 17, because we use Java 17 inside our Gradle build but Paketo defaults to 11
+      # BP_JVM_VERSION 21, because we use Java 21 inside our Gradle build but Paketo defaults to ??
       # Explicitly defining the java-native-image buildpack as described here https://paketo.io/docs/howto/java/#configure-the-graalvm-version to pin the GraalVM version (5.12.0 = GraalVM 21.3)
       # Files specifies within BP_NATIVE_IMAGE_BUILD_ARGUMENTS have to be absolute path related to the workspace - they have to be prefixed with "/workspace/"
       # https://paketo.io/docs/reference/builders-reference/
@@ -41,12 +41,12 @@ jobs:
             --builder paketobuildpacks/builder-jammy-tiny:0.0.374 \
             --buildpack paketo-buildpacks/java-native-image@11.14.0 \
             --path . \
-            --env "BP_JVM_VERSION=17" \
+            --env "BP_JVM_VERSION=21" \
             --env "BP_GRADLE_BUILD_ARGUMENTS=--no-daemon :webapp:bootJar" \
             --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/*.jar" \
             --env "BP_INCLUDE_FILES=webapp/src/graalvm/config/v1.1.1/*.json" \
             --env "BP_NATIVE_IMAGE=true" \
-            --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=kotlin.DeprecationLevel -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json" \
+            --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=kotlin.DeprecationLevel -H:+UnlockExperimentalVMOptions -H:+ReportExceptionStackTraces -H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json" \
             --publish
 
       - name: Install flyctl via https://github.com/superfly/flyctl-actions.
