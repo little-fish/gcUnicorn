@@ -33,7 +33,16 @@
   "name":"[Lcz.babi.gcunicorn.core.network.service.geocachingcom.model.CacheType;"
 },
 {
+  "name":"[Ljava.io.Serializable;"
+},
+{
+  "name":"[Ljava.lang.CharSequence;"
+},
+{
   "name":"[Ljava.lang.Class;"
+},
+{
+  "name":"[Ljava.lang.Comparable;"
 },
 {
   "name":"[Ljava.lang.Object;"
@@ -45,6 +54,12 @@
   "name":"[Ljava.lang.annotation.Annotation;"
 },
 {
+  "name":"[Ljava.lang.constant.Constable;"
+},
+{
+  "name":"[Ljava.lang.constant.ConstantDesc;"
+},
+{
   "name":"[Ljavax.management.ObjectName;"
 },
 {
@@ -52,6 +67,9 @@
 },
 {
   "name":"[Lkotlin.annotation.AnnotationTarget;"
+},
+{
+  "name":"[Lorg.springframework.boot.context.config.ConfigDataLocation;"
 },
 {
   "name":"[Lorg.springframework.core.annotation.AnnotationAttributes;"
@@ -956,10 +974,11 @@
 {
   "name":"jakarta.servlet.http.HttpServlet",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"jakarta.servlet.http.HttpServletRequest"
+  "queryAllDeclaredMethods":true,
+  "methods":[
+    {"name":"init","parameterTypes":["jakarta.servlet.ServletConfig"] },
+    {"name":"service","parameterTypes":["jakarta.servlet.ServletRequest","jakarta.servlet.ServletResponse"] }
+  ]
 },
 {
   "name":"jakarta.servlet.http.HttpServletResponse"
