@@ -37,7 +37,8 @@ jobs:
       # Explicitly defining the java-native-image buildpack as described here https://paketo.io/docs/howto/java/#configure-the-graalvm-version to pin the GraalVM version (5.12.0 = GraalVM 21.3)
       # Files specifies within BP_NATIVE_IMAGE_BUILD_ARGUMENTS have to be absolute path related to the workspace - they have to be prefixed with "/workspace/"
       # https://github.com/paketo-buildpacks/java-native-image
-      # WIP: Possible native build arguments: -H:JNIConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/jni-config.json -H:DynamicProxyConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/proxy-config.json
+      # WIP #1: My own default argument: --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=-H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json" \
+      # WIP #2: Possible native build arguments: -H:JNIConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/jni-config.json -H:DynamicProxyConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/proxy-config.json
       - name: Build app with pack CLI & publish to GitHub Container Registry
         run: |
           pack build ghcr.io/little-fish/gcunicorn:v1.1.1 \
@@ -49,7 +50,6 @@ jobs:
             --env "BP_GRADLE_BUILT_ARTIFACT=webapp/build/libs/*.jar" \
             --env "BP_INCLUDE_FILES=webapp/src/graalvm/config/v1.1.1/*.json" \
             --env "BP_NATIVE_IMAGE=true" \
-            --env "BP_NATIVE_IMAGE_BUILD_ARGUMENTS=-H:ReflectionConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/reflect-config.json -H:ResourceConfigurationFiles=/workspace/webapp/src/graalvm/config/v1.1.1/resource-config.json" \
             --cache-image ghcr.io/little-fish/gcunicorn-cache-image:v1.1.1 \
             --publish
       - name: Install flyctl via https://github.com/superfly/flyctl-actions
