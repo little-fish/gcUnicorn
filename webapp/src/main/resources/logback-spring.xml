@@ -29,7 +29,7 @@
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
     <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
 
-    <logger name="cz.babi.gcunicorn" level="info"/>
+    <logger name="cz.babi.gcunicorn" level="debug"/>
     <logger name="org.springframework" level="warn"/>
     <logger name="okhttp3" level="warn"/>
 
