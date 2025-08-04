@@ -50,6 +50,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine
 import org.thymeleaf.spring6.view.ThymeleafViewResolver
 import org.thymeleaf.templatemode.TemplateMode
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
+import org.xnio.ByteBufferSlicePool
 import org.xnio.OptionMap
 import org.xnio.Xnio
 import java.util.*
@@ -79,7 +80,7 @@ class WebConfiguration : WebMvcConfigurer {
         factory.addDeploymentInfoCustomizers(UndertowDeploymentInfoCustomizer { deploymentInfo ->
                 deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, WebSocketDeploymentInfo().apply {
                         worker = Supplier { Xnio.getInstance("nio", Undertow::class.java.classLoader).createWorker(OptionMap.builder().map) }
-                        buffers = XnioByteBufferPool(XnioBufferPoolAdaptor(DefaultByteBufferPool(true, 1024)))
+                        buffers = XnioByteBufferPool( XnioBufferPoolAdaptor(DefaultByteBufferPool(true, 16 * 1024)))
                 })
         })
     }
