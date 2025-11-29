@@ -998,7 +998,10 @@
   "name":"jakarta.validation.executable.ExecutableValidator"
 },
 {
-  "name":"jakarta.websocket.server.ServerContainer"
+  "name":"jakarta.websocket.server.ServerContainer",
+  "allDeclaredFields":true,
+  "allDeclaredMethods": true,
+  "allDeclaredConstructors": true
 },
 {
   "name":"jakarta.xml.bind.Binder"
@@ -5618,8 +5621,9 @@
 },
 {
   "name": "io.undertow.websockets.jsr.ServerWebSocketContainer",
-  "allDeclaredConstructors": true,
-  "allDeclaredMethods": true
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
 },
 {
   "name": "io.undertow.websockets.core.WebSocketChannel",

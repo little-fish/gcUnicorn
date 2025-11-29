@@ -610,6 +610,9 @@
       "pattern": "undertow/.*\\.xml"
   }, {
       "pattern": "undertow/.*\\.properties"
+    },
+    {
+      "pattern": "\\QMETA-INF/services/jakarta.websocket.server.ServerContainerProvider\\E"
     }
   ]},
   "bundles":[{
