@@ -5606,5 +5606,23 @@
   "methods": [
     { "name": "getProperty", "parameterTypes": ["java.lang.String"] }
   ]
+},
+{
+  "name": "org.springframework.web.socket.server.support.DefaultHandshakeHandler",
+  "allDeclaredMethods": true,
+  "allDeclaredConstructors": true
+},
+{
+  "name": "org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor",
+  "allDeclaredMethods": true
+},
+{
+  "name": "io.undertow.websockets.jsr.ServerWebSocketContainer",
+  "allDeclaredConstructors": true,
+  "allDeclaredMethods": true
+},
+{
+  "name": "io.undertow.websockets.core.WebSocketChannel",
+  "allDeclaredMethods": true
 }
 ]
