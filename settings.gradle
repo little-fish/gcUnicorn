@@ -25,7 +25,7 @@ pluginManagement {
 
 plugins {
     // https://github.com/gradle/foojay-toolchains
-    id('org.gradle.toolchains.foojay-resolver') version('0.8.0')
+    id('org.gradle.toolchains.foojay-resolver') version('1.0.0')
 }
 
 toolchainManagement {
@@ -53,17 +53,17 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         libs {
-            version('kotlin', '2.1.21')
+            version('kotlin', '2.2.21')
             version('kotlinx-coroutines', '1.10.2')
-            version('kotlinx-serialization', '1.8.1')
-            version('spring-boot', '3.5.4')
+            version('kotlinx-serialization', '1.9.0')
+            version('spring-boot', '3.5.8')
             version('spring-mobile-device', '2.0.0.M3')
             version('redundent', '1.9.3')
-            version('okhttp', '4.12.0')
+            version('okhttp', '5.3.2')
             // https://developer.android.com/build/releases/gradle-plugin
             // https://developer.android.com/studio/releases#android_gradle_plugin_and_android_studio_compatibility
             // Personally, I am using IntelliJ IDEA and the latest version available doesn't support the latest version of Android Gradle Plugin..
-            version('android-application', '8.10.1')
+            version('android-application', '8.12.0')
             version('android-secrets', '2.0.1')
             version('androidx-preference', '1.2.1')
             version('androidx-constraintlayout', '2.2.1')
@@ -77,7 +77,7 @@ dependencyResolutionManagement {
             version('suchox-placepicker', '1.1.2')
             version('locus', '0.9.64')
             version('logback-android', '3.0.0')
-            version('graalvm-native', '0.10.6')
+            version('graalvm-native', '0.11.3')
 
             // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
             library('spring-boot-dependencies', 'org.springframework.boot', 'spring-boot-dependencies').versionRef('spring-boot')

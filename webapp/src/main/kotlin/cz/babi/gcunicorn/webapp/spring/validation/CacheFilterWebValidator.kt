@@ -21,6 +21,7 @@ package cz.babi.gcunicorn.webapp.spring.validation
 import cz.babi.gcunicorn.core.exception.location.CoordinateParseException
 import cz.babi.gcunicorn.core.location.parser.Parser
 import cz.babi.gcunicorn.webapp.entity.CacheFilterWeb
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.validation.Errors
@@ -36,7 +37,7 @@ import org.springframework.validation.Validator
  * @since 1.0.0
  */
 @Component
-class CacheFilterWebValidator(val parser: Parser, @Value("\${search.max-count:200}") val maxCount: Int, @Value("\${search.default-count:100}") val defaultCount: Int, @Value("\${search.default-distance-km:10.0}") val defaultDistance: Double) : Validator {
+class CacheFilterWebValidator(val parser: Parser, @param:Value("\${search.max-count:200}") val maxCount: Int, @param:Value("\${search.default-count:100}") val defaultCount: Int, @param:Value("\${search.default-distance-km:10.0}") val defaultDistance: Double) : Validator {
 
     override fun validate(target: Any, errors: Errors) {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cacheType", "field.required")

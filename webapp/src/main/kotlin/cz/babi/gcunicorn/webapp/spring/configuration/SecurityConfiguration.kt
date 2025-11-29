@@ -45,9 +45,9 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = [Securities::class])
 class SecurityConfiguration(
-    @Autowired private val serviceAuthenticationProvider: ServiceAuthenticationProvider,
-    @Autowired private val serviceLogoutHandler: ServiceLogoutHandler,
-    @Autowired private val characterEncodingFilter: Filter
+    @param:Autowired private val serviceAuthenticationProvider: ServiceAuthenticationProvider,
+    @param:Autowired private val serviceLogoutHandler: ServiceLogoutHandler,
+    @param:Autowired private val characterEncodingFilter: Filter
 ) {
 
     @Bean

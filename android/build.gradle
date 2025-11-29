@@ -95,8 +95,8 @@ android {
 
     // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
     buildTypes {
@@ -107,13 +107,20 @@ android {
 
             proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
             proguardFiles fileTree(dir: 'proguard-rules', include: '*.pro').getFiles() as File[]
-            setProperty('archivesBaseName', "gcUnicorn-${project.name}-${keystorePropertiesFile.exists() ? 'signed-' : ''}v${project.version}")
         }
 
         dev {
             debuggable true
 
             crunchPngs = false
+        }
+    }
+
+    applicationVariants.all { variant ->
+        if (variant.name == "release") {
+            variant.outputs.all {
+                outputFileName = "gcUnicorn-${project.name}-v${project.version}${keystorePropertiesFile.exists() ? '-signed' : ''}-${variant.buildType.name}.apk"
+            }
         }
     }
 

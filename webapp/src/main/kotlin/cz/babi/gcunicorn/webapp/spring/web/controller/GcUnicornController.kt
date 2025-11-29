@@ -67,10 +67,10 @@ import java.io.IOException
  */
 @Controller
 @RequestMapping(path = ["/gcUnicorn"])
-class GcUnicornController(@Autowired private val cacheFilterWebValidator: CacheFilterWebValidator,
-                          @Autowired private val service: Service,
-                          @Autowired private val jobsWrapper: JobsWrapper,
-                          @Autowired private val simpMessagingTemplate: SimpMessagingTemplate) {
+class GcUnicornController(@param:Autowired private val cacheFilterWebValidator: CacheFilterWebValidator,
+                          @param:Autowired private val service: Service,
+                          @param:Autowired private val jobsWrapper: JobsWrapper,
+                          @param:Autowired private val simpMessagingTemplate: SimpMessagingTemplate) {
 
     companion object {
         private val LOG: Logger = logger<GcUnicornController>()

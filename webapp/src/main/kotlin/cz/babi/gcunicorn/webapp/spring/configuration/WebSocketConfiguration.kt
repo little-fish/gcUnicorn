@@ -38,7 +38,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor
 @Configuration
 @EnableWebSocketMessageBroker
 @ComponentScan(basePackageClasses = [WebSockets::class])
-class WebSocketConfiguration(@Autowired private val handshakeInterceptor: HandshakeInterceptor) : WebSocketMessageBrokerConfigurer {
+class WebSocketConfiguration(@param:Autowired private val handshakeInterceptor: HandshakeInterceptor) : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/ws/gcUnicorn").addInterceptors(handshakeInterceptor)
