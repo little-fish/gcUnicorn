@@ -3970,7 +3970,11 @@
 },
 {
   "name":"org.springframework.mobile.device.LiteDevice",
-  "queryAllPublicMethods":true
+  "methods": [
+    { "name": "isNormal", "parameterTypes": [] },
+    { "name": "isMobile", "parameterTypes": [] },
+    { "name": "isTablet", "parameterTypes": [] }
+  ]
 },
 {
   "name":"org.springframework.mobile.device.view.AbstractDeviceDelegatingViewResolver",
