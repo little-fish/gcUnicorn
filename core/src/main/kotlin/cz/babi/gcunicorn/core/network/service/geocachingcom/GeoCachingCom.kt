@@ -117,7 +117,7 @@ class GeoCachingCom(private val network: Network, private val parser: Parser, pr
 
             val loginResponseBody = network.getResponseStringBody(network.postRequest(Constant.URI_LOGIN, parameters, null))
 
-            LOG.debug("Login response body: {} - '{}'.", loginResponseBody.length, loginResponseBody)
+            LOG.trace("Login response body: {} - '{}'.", loginResponseBody.length, loginResponseBody)
 
             if(!isLoggedIn(loginResponseBody)) throw NetworkException("An error occurred during login process.")
 
