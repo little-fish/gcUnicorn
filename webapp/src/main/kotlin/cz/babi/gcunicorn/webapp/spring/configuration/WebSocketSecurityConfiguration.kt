@@ -39,27 +39,28 @@ class WebSocketSecurityConfiguration {
     @Bean
     fun authorizationManager(messages: MessageMatcherDelegatingAuthorizationManager.Builder): AuthorizationManager<Message<*>?> {
         return messages
-            .simpTypeMatchers(
-                SimpMessageType.CONNECT,
-            ).permitAll()
-
-            // 1. Authorize connection and disconnection messages.
-            // CONNECT, SUBSCRIBE, UNSUBSCRIBE, HEARTBEAT must be authenticated (via session context).
-            .simpTypeMatchers(
+//            .simpTypeMatchers(
 //                SimpMessageType.CONNECT,
-                SimpMessageType.SUBSCRIBE,
-                SimpMessageType.UNSUBSCRIBE,
-                SimpMessageType.DISCONNECT
-            ).authenticated()
-
-            // 2. Authorize messages sent to the application.
-            .simpDestMatchers("/ws/gcUnicorn/**").authenticated()
-
-            // 3. Authorize messages sent to the Simple Broker.
-            .simpDestMatchers("/topic/**").authenticated()
-
-            // 4. Deny all other message types.
-            .anyMessage().denyAll()
+//            ).permitAll()
+//
+//            // 1. Authorize connection and disconnection messages.
+//            // CONNECT, SUBSCRIBE, UNSUBSCRIBE, HEARTBEAT must be authenticated (via session context).
+//            .simpTypeMatchers(
+////                SimpMessageType.CONNECT,
+//                SimpMessageType.SUBSCRIBE,
+//                SimpMessageType.UNSUBSCRIBE,
+//                SimpMessageType.DISCONNECT
+//            ).authenticated()
+//
+//            // 2. Authorize messages sent to the application.
+//            .simpDestMatchers("/ws/gcUnicorn/**").authenticated()
+//
+//            // 3. Authorize messages sent to the Simple Broker.
+//            .simpDestMatchers("/topic/**").authenticated()
+//
+//            // 4. Deny all other message types.
+//            .anyMessage().denyAll()
+            .anyMessage().permitAll()
             .build()
     }
 
