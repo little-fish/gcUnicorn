@@ -119,7 +119,7 @@ android {
     applicationVariants.all { variant ->
         if (variant.name == "release") {
             variant.outputs.all {
-                outputFileName = "gcUnicorn-${project.name}-v${project.version}${keystorePropertiesFile.exists() ? '-signed' : ''}-${variant.buildType.name}.apk"
+                outputFileName = "gcUnicorn-${project.name}-${variant.buildType.name}-v${project.version}${keystorePropertiesFile.exists() ? '-signed' : ''}.apk"
             }
         }
     }

@@ -5624,5 +5624,11 @@
 {
   "name": "io.undertow.websockets.core.WebSocketChannel",
   "allDeclaredMethods": true
+},
+{
+  "name": "io.undertow.websockets.jsr.WebSocketDeploymentInfo",
+  "allDeclaredFields":true,
+  "allDeclaredMethods": true,
+  "allDeclaredConstructors": true
 }
 ]

@@ -606,7 +606,12 @@
     "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
   }, {
     "pattern":"jdk.jfr:\\Qjdk/jfr/internal/query/view.ini\\E"
-  }]},
+  }, {
+      "pattern": "undertow/.*\\.xml"
+  }, {
+      "pattern": "undertow/.*\\.properties"
+    }
+  ]},
   "bundles":[{
     "name":"i18n/messages",
     "locales":[""]
