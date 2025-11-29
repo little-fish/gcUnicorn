@@ -63,8 +63,8 @@ class WebSocketSecurityConfiguration {
             .build()
     }
 
-//    @Bean
-//    fun csrfChannelInterceptor(): ChannelInterceptor? {
-//        return object : ChannelInterceptor { }
-//    }
+    @Bean
+    fun csrfChannelInterceptor(): ChannelInterceptor? {
+        return object : ChannelInterceptor { }
+    }
 }

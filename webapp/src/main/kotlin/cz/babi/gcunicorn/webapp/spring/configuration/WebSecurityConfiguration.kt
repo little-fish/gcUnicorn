@@ -66,7 +66,7 @@ class WebSecurityConfiguration(
                     .anyRequest().authenticated()
             }
             .csrf { csrf ->
-                csrf.ignoringRequestMatchers("/ws/gcUnicorn/**")
+//                csrf.ignoringRequestMatchers("/ws/gcUnicorn/**")
             }
             .formLogin {
                 it.loginPage("/login")
