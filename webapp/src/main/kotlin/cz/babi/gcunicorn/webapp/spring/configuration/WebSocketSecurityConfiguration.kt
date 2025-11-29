@@ -39,10 +39,6 @@ class WebSocketSecurityConfiguration {
     @Bean
     fun authorizationManager(messages: MessageMatcherDelegatingAuthorizationManager.Builder): AuthorizationManager<Message<*>?> {
         return messages
-//            .simpTypeMatchers(
-//                SimpMessageType.CONNECT,
-//            ).permitAll()
-
             // 1. Authorize connection and disconnection messages.
             // CONNECT, SUBSCRIBE, UNSUBSCRIBE, HEARTBEAT must be authenticated (via session context).
             .simpTypeMatchers(
