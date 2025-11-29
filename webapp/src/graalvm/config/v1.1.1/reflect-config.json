@@ -5634,5 +5634,14 @@
   "allDeclaredFields":true,
   "allDeclaredMethods": true,
   "allDeclaredConstructors": true
-}
+},
+  {
+    "name": "org.springframework.messaging.simp.SimpMessageType",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "org.springframework.security.messaging.access.intercept.MessageSecurityMetadataSource",
+    "allDeclaredMethods": true
+  }
 ]
