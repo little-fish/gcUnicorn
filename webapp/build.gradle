@@ -53,6 +53,7 @@ java {
 }
 
 // https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html
+// https://graalvm.github.io/native-build-tools/latest/end-to-end-gradle-guide.html
 graalvmNative {
     // It might not work as expected. It is better to set GRAALVM_HOME env variable instead.
     // See: https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration-toolchains-enabling.
@@ -98,6 +99,7 @@ dependencies {
             libs.spring.boot.autoconfigure,
             libs.spring.security.config,
             libs.spring.security.web,
+            libs.spring.security.messaging,
             libs.spring.webmvc,
             libs.spring.websocket,
             libs.spring.messaging,

@@ -67,10 +67,6 @@ import java.util.function.Supplier
 @ComponentScan(basePackageClasses = [Controllers::class, Advices::class, Validators::class])
 class WebConfiguration : WebMvcConfigurer {
 
-    companion object {
-        private val LOG = logger<ServiceAuthenticationProvider>()
-    }
-
     @Bean
     fun dispatcherServlet() = DispatcherServlet()
 
@@ -83,16 +79,9 @@ class WebConfiguration : WebMvcConfigurer {
         )
 
         factory.addDeploymentInfoCustomizers(UndertowDeploymentInfoCustomizer { deploymentInfo ->
-                LOG.debug("Undertow customizer invoked. Applying WebSocketDeploymentInfo..")
-
                 deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME, WebSocketDeploymentInfo().apply {
-                        LOG.debug("Creating XNIO worker for WebSocket handling..")
                         worker = Supplier { Xnio.getInstance("nio", Undertow::class.java.classLoader).createWorker(OptionMap.builder().map) }
-
-                        LOG.debug("Creating buffer pool..")
                         buffers = XnioByteBufferPool( XnioBufferPoolAdaptor(DefaultByteBufferPool(true, 16 * 1024)))
-
-                        LOG.debug("WebSocketDeploymentInfo successfully attached!")
                 })
         })
     }

@@ -84,6 +84,7 @@ dependencyResolutionManagement {
             library('spring-boot-autoconfigure', 'org.springframework.boot', 'spring-boot-autoconfigure').withoutVersion()
             library('spring-security-config', 'org.springframework.security', 'spring-security-config').withoutVersion()
             library('spring-security-web', 'org.springframework.security', 'spring-security-web').withoutVersion()
+            library('spring-security-messaging', 'org.springframework.security', 'spring-security-messaging').withoutVersion()
             library('spring-webmvc', 'org.springframework', 'spring-webmvc').withoutVersion()
             library('spring-websocket', 'org.springframework', 'spring-websocket').withoutVersion()
             library('spring-messaging', 'org.springframework', 'spring-messaging').withoutVersion()

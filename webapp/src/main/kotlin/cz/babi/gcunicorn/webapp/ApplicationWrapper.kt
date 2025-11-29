@@ -19,9 +19,10 @@
 package cz.babi.gcunicorn.webapp
 
 import cz.babi.gcunicorn.webapp.spring.configuration.ApplicationConfiguration
-import cz.babi.gcunicorn.webapp.spring.configuration.SecurityConfiguration
+import cz.babi.gcunicorn.webapp.spring.configuration.WebSecurityConfiguration
 import cz.babi.gcunicorn.webapp.spring.configuration.WebConfiguration
 import cz.babi.gcunicorn.webapp.spring.configuration.WebSocketConfiguration
+import cz.babi.gcunicorn.webapp.spring.configuration.WebSocketSecurityConfiguration
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration
@@ -35,7 +36,11 @@ import org.springframework.context.annotation.Import
  * @since 1.0.0
  */
 @Configuration
-@Import(value = [ApplicationConfiguration::class, WebConfiguration::class, WebSocketConfiguration::class, SecurityConfiguration::class])
+@Import(value = [
+    ApplicationConfiguration::class,
+    WebConfiguration::class, WebSecurityConfiguration::class,
+    WebSocketConfiguration::class, WebSocketSecurityConfiguration::class
+])
 @EnableAutoConfiguration(
         exclude = [ThymeleafAutoConfiguration::class, WebSocketServletAutoConfiguration::class]
 )
